@@ -4,10 +4,7 @@ import { type AppType } from "next/app"
 
 import { api } from "~/utils/api"
 
-import "~/styles/globals.css"
-
 import "@mantine/core/styles.css"
-
 import type { AppProps } from "next/app"
 import { createTheme, MantineProvider } from "@mantine/core"
 
@@ -20,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider theme={theme} defaultColorScheme="light">
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
