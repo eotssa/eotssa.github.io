@@ -7,7 +7,6 @@ import {
   List,
   ThemeIcon,
   rem,
-  useMantineTheme,
   JsonInput,
 } from "@mantine/core"
 import { IconCheck } from "@tabler/icons-react"
@@ -35,9 +34,6 @@ const placeholder = `{
 }`
 
 export function HeroBullets2() {
-  const theme = useMantineTheme()
-  console.log("Breakpoint sm:", theme.breakpoints.sm)
-
   const jsonInputStyle = {
     // Hide the component on screens smaller than 768px
     [`@media (max-width: 768px)`]: {

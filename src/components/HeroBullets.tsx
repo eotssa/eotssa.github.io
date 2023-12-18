@@ -10,7 +10,6 @@ import {
   rem,
 } from "@mantine/core"
 import { IconCheck } from "@tabler/icons-react"
-import image2 from "./image2.svg"
 import classes from "./HeroBullets.module.css"
 
 export function HeroBullets() {
@@ -68,7 +67,7 @@ export function HeroBullets() {
             </Button>
           </Group>
         </div>
-        <Image src={image2.src} className={classes.image} />
+        <Image src={"image2.src" as string} className={classes.image} />
       </div>
     </Container>
   )

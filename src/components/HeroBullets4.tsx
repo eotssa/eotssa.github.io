@@ -7,7 +7,6 @@ import {
   List,
   ThemeIcon,
   rem,
-  useMantineTheme,
   Image,
 } from "@mantine/core"
 import { IconCheck } from "@tabler/icons-react"
@@ -15,9 +14,6 @@ import classes from "./HeroBullets.module.css"
 import cplusplus from "./icons/C++.png"
 
 export function HeroBullets4() {
-  const theme = useMantineTheme()
-  console.log("Breakpoint sm:", theme.breakpoints.sm)
-
   // const jsonInputStyle = {
   //   // Hide the component on screens smaller than 768px
   //   [`@media (max-width: 768px)`]: {

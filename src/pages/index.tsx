@@ -1,14 +1,9 @@
-import { Container, Divider, Title } from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
-import { GetInTouchSimple } from "~/components/EmailButton"
+import { Container, Divider } from "@mantine/core"
 import { HeaderSimple } from "~/components/HeaderSimple"
 import { HeroBullets } from "~/components/HeroBullets"
 import { HeroBullets2 } from "~/components/HeroBullets2"
 import { HeroBullets3 } from "~/components/HeroBullets3"
 import { HeroBullets4 } from "~/components/HeroBullets4"
-import { Footer } from "~/components/Footer"
-
-import { HeroTitle } from "~/components/HeroTitle"
 
 export default function Home() {
   return (

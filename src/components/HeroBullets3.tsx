@@ -7,10 +7,8 @@ import {
   List,
   ThemeIcon,
   rem,
-  useMantineTheme,
   Stack,
   Image,
-  AspectRatio,
 } from "@mantine/core"
 import { IconCheck } from "@tabler/icons-react"
 import classes from "./HeroBullets.module.css"
@@ -21,11 +19,6 @@ import node from "./icons/node-js.svg"
 import react from "./icons/react.svg"
 
 export function HeroBullets3() {
-  const theme = useMantineTheme()
-  console.log("Breakpoint sm:", theme.breakpoints.sm)
-
-  const images = [cypress.src, mongo.src, react.src, jest.src, node.src]
-
   // const jsonInputStyle = {
   //   // Hide the component on screens smaller than 768px
   //   [`@media (max-width: 768px)`]: {
@@ -103,29 +96,29 @@ export function HeroBullets3() {
         <Stack align="center">
           <Image
             fit="contain"
-            src={mongo.src}
+            src={"mongo.src" as string}
             className={classes.image}
             style={{ maxWidth: "70%", height: "auto" }}
           />
           <Image
-            src={cypress.src}
+            src={"cypress.src" as string}
             style={{ maxWidth: "30%", height: "auto" }}
           />
           <Image
             fit="contain"
-            src={react.src}
+            src={"react.src" as string}
             className={classes.image}
             style={{ maxWidth: "25%", height: "auto" }}
           />
           <Image
             fit="contain"
-            src={jest.src}
+            src={"jest.src" as string}
             className={classes.image}
             style={{ maxWidth: "25%", height: "auto" }}
           />
           <Image
             fit="contain"
-            src={node.src}
+            src={"node.src" as string}
             className={classes.image}
             style={{ maxWidth: "25%", height: "auto" }}
           />

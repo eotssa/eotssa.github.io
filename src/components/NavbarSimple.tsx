@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Group, Code } from "@mantine/core"
+import { Group } from "@mantine/core"
 import {
   IconBellRinging,
   IconFingerprint,
@@ -11,7 +11,6 @@ import {
   IconSwitchHorizontal,
   IconLogout,
 } from "@tabler/icons-react"
-import { MantineLogo } from "@mantinex/mantine-logo"
 import classes from "./NavbarSimple.module.css"
 
 const data = [
