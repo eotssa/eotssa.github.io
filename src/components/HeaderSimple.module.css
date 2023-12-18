@@ -1,6 +1,6 @@
 .header {
-  height: rem(100%);
-  margin-bottom: rem(100%);
+  height: rem(56px);
+  margin-bottom: rem(120px);
   background-color: var(--mantine-color-body);
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
@@ -9,8 +9,18 @@
 .inner {
   height: rem(56px);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+}
+
+.group {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.actionToggle {
+  margin-left: auto;
 }
 
 .link {

@@ -6,10 +6,10 @@ import classes from "./HeaderSimple.module.css"
 import { ActionToggle } from "./ActionToggle"
 
 const links = [
-  { link: "/about", label: "Features" },
-  { link: "/pricing", label: "Pricing" },
-  { link: "/learn", label: "Learn" },
-  { link: "/community", label: "Community" },
+  { link: "/home", label: "Home" },
+  { link: "/projects", label: "Projects" },
+  { link: "/aboutme", label: "About Me" },
+  { link: "/github", label: "Github" },
 ]
 
 export function HeaderSimple() {
@@ -34,13 +34,17 @@ export function HeaderSimple() {
   return (
     <header className={classes.header}>
       <Container size="md" className={classes.inner}>
-        <MantineLogo size={28} />
-        <Group gap={5} visibleFrom="xs">
-          {items}
-        </Group>
+        <div className={classes.group}>
+          <Group gap={5} visibleFrom="xs">
+            {items}
+          </Group>
+        </div>
 
         <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
-        <ActionToggle />
+
+        <div className={classes.actionToggle}>
+          <ActionToggle />
+        </div>
       </Container>
     </header>
   )
