@@ -32,8 +32,7 @@ const placeholder = `{
     "dataHandling": {},
     "eslintDetails": {}
   }
-}
-`
+}`
 
 export function HeroBullets2() {
   const theme = useMantineTheme()

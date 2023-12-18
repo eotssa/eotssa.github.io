@@ -10,7 +10,7 @@ import {
   rem,
 } from "@mantine/core"
 import { IconCheck } from "@tabler/icons-react"
-import image from "./image.svg"
+import image2 from "./image2.svg"
 import classes from "./HeroBullets.module.css"
 
 export function HeroBullets() {
@@ -41,27 +41,22 @@ export function HeroBullets() {
             }
           >
             <List.Item>
-              <b>Interactive Web Features</b> – Enhanced user engagement by 23%
-              through custom web features and A/B testing (Evergreen
-              Investments).
+              <b>Web Developer</b> – I worked for a real estate company building
+              custom web features and ended up really enjoying my day to day!
             </List.Item>
             <List.Item>
-              <b>Data Process Automation</b> – Automated data acquisition
-              processes by integrating various APIs and CRM configurations.
+              <b>Journey</b> – I graduated from John Jay College with a BS in
+              Computer Science and Information Security in December 2024.
             </List.Item>
             <List.Item>
-              <b>Chrome Extension Security Analysis</b> – Developed a web
-              application and API which automates risk analysis of Chrome
-              extensions and returns a JSON file for SIEM integration.
-            </List.Item>
-            <List.Item>
-              <b>Full-Stack Development</b> – Web applications, using Next.js,
-              Typescript, tRPC, Prisma, Mantine and Tailwind CSS, NextAuth.js.
+              <b>Site Info</b> – This site was made using, using Next.js,
+              Typescript, and Mantine. If you want to fork it for your own use,
+              you are free to do so!
             </List.Item>
           </List>
           <Group mt={30}>
             <Button radius="xl" size="md" className={classes.control}>
-              Get Resume
+              View Resume
             </Button>
             <Button
               variant="default"
@@ -73,7 +68,7 @@ export function HeroBullets() {
             </Button>
           </Group>
         </div>
-        <Image src={image.src} className={classes.image} />
+        <Image src={image2.src} className={classes.image} />
       </div>
     </Container>
   )
