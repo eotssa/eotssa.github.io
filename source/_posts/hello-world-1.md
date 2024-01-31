@@ -1,5 +1,7 @@
 ---
-title: hello world
+title: Refresher on Copy Constructors, Overloading, Initializer Lists, Inheritances, and Polymorphic Structures
+categories:
+  - CPlusPlus
 date: 2024-01-30 18:28:32
 tags:
 ---

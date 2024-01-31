@@ -16,7 +16,9 @@ direction: ltr
 nav:
   home: /
   about: /about/
-  C++: /archives/
+  C++: /categories/CPlusPlus/
+  Python: /categories/Python/
+  archives: /archives/
   ChromeScope: https://www.chromescope.net
 
 # Links to your social media accounts.
