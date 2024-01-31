@@ -147,7 +147,7 @@ Declaration `Vect c` invokes the default constructor, which has a default size o
 
 ### The Fix: Provide a **copy constructor** and \*\*overload the assignment operator
 
-The problems arose because we allocated memory and we used the system’s default copy constructor and assignment operator.
+The problems arose because we allocated memory, and we used the system’s default copy constructor and assignment operator.
 
 If a class allocates memory, you should provide a copy constructor and assignment operator to allocate new memory for making copies. A copy constructor for a class T is typically declared to take a single argument, which is a constant reference to an object of the same class, that is, `T(const T& t)`. As shown in the code fragment below, it copies each of the data members from one class to the other while allocating memory for any dynamic members.
 
@@ -161,7 +161,7 @@ Vect::Vect(const Vect& a) {                   //copy constructor from a
 }
 ```
 
-The assignment operator is handled by overloading the = operator as shown in the next code fragment. The argument “a” plays the role of the object on the right side of the assignment operator.
+The assignment operator is handled by overloading the `=` operator as shown in the next code fragment. The argument “a” plays the role of the object on the right side of the assignment operator.
 
 The assignment operator deletes the existing array storage, allocates a new array of the proper size, and copies elements into this new array.
 
@@ -256,12 +256,12 @@ private:
 	int gradYear;
 public:
 	//...
-	void print();     //NEEDS A NEW PRINT FUNCTION IT'LL USE PERSON (PARENT) PRINT FUNCTION.
+	void print();     //NEEDS A NEW PRINT FUNCTION OR IT'LL USE PERSON (PARENT) PRINT FUNCTION.
 	void changeMajor(const string& newMajor);
 }
 ```
 
-## Usage of Inheritence
+## Usage of Inheritance
 
 An object of type Person can access the public members of Person. An object of type Student can access the public members of both classes. If a Student object invokes the shared print function, it will use its own version by default. We use the class scope operator (::) to specify which class’s function is used, as in Person::print and Student::print. Note that an object of type Person cannot access members of derived type, and **_thus it is not possible for a Person object to invoke the changeMajor function of class Student._**
 
@@ -460,14 +460,15 @@ In this case, pp[1] contains a pointer to an object of type Student, and by the 
 
 Dynamic binding is a powerful technique, **since it allows us to create an object, such as the array pp above**, whose behavior varies depending on its contents. This technique is fundamental to the concept of polymorphism
 
-## Virtual Destructors (not in Lecture Notes)
+## Virtual Destructors
 
 **RULE:**
-If a base class defines any virtual functions, it should define a virtual destructor, even if it is empty.
 
-If we store types Person and Student in the array, it is important to call the appropriate destructor. It isn't an issue for the example above (because nothing is stored dynamically).
+- If a base class defines any virtual functions, it should define a virtual destructor, even if it is empty.
 
-If a Student class had allocated memory dynamically, the fact that the wrong constructor is called would result in a memory leak.
+- If we store types Person and Student in the array, it is important to call the appropriate destructor. It isn't an issue for the example above (because nothing is stored dynamically).
+
+- If a Student class had allocated memory dynamically, the fact that the wrong constructor is called would result in a memory leak.
 
 ## Polymorphism
 
@@ -633,8 +634,6 @@ long FibonacciProgression::nextValue() {
 	return cur;
 }
 ```
-
-![[Pasted image 20220918001110.png]]
 
 ## Entire Progression Class Combined
 
@@ -822,7 +821,7 @@ class Derive3 : private Base { // public inheritance
 }
 ```
 
-## Dynamic Casting (not in notes)
+## Dynamic Casting
 
 Dynamic casting can only be applied to polymorphic objects, that is, objects that come from a class with at least one virtual function.
 `dynamic cast < desired type > ( expression )`
@@ -831,8 +830,6 @@ Dynamic casting can only be applied to polymorphic objects, that is, objects tha
 Student* sp = dynamic cast(pp[1]); // cast pp[1] to
 Student* sp−>changeMajor("Chemistry"); // now changeMajor is legal
 ```
-
-????????????????????????????????????????????????????????????????????????????????????????????????????
 
 ## Interfaces and Abstract Base Classes/Pure Virtual Functions
 
