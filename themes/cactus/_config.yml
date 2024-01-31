@@ -17,7 +17,7 @@ nav:
   home: /
   about: /about/
   C++: /archives/
-  projects: https://github.com/eotssa/
+  ChromeScope: https://www.chromescope.net
 
 # Links to your social media accounts.
 # The 'icon' keys should correspond to Fontawesome icon names
@@ -28,10 +28,8 @@ nav:
 social_links:
   - icon: github
     link: https://github.com/eotssa/
-  - icon: twitter
-    link: /
-  - icon: facebook
-    link: /
+  - icon: linkedin
+    link: https://www.linkedin.com/in/wwu331/
   - icon: mail
     link: mailto:wilsonwu97@outlook.com
 
