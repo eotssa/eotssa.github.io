@@ -6,25 +6,13 @@ date: 2024-01-30 18:28:32
 tags:
 ---
 
-# Interface 1.4 to like 1.5.3 and beyond
+Constructors are called when an instance of the  class is created
 
-- An interface is the definition of a class
-- It contains data members and methods
-  It specifies whether a data member or method is a public, private or protected
-- **Public**: Can be accessed by any object user
-- **Private**: Can be accessed only from within the class or from friend classes
-- **Protected**: Can be accessed from derived classes (Inheritance)
-
-# Constructors: called when an instance of the  class is created
-
-Overloading
-
-- More than one functions with the same and return type but different set and type of arguments
-
-### Copy constructor
+## Copy constructor
 
 - A constructor that copies value from one instance of the object to another
-- \*\*Important: Because if pointer, no copy is made, but if one is deleted, the other doesn't know it's been deleted as well.
+- This is important because without a copy constructor, you would end up with two variables pointing to the same object.
+  - If one is deleted, the other doesn't know it's been deleted as well.
 
 ```C++ EXAMPLE OF COPY CONSTRUCTOR
 class Passenger
@@ -35,7 +23,7 @@ private:
 
 public:
   Passenger(); //Default
-  Passenger(const string& nm, MealType mp, const string& ffn = "NONE");   //override
+  Passenger(const string& nm, MealType mp, const string& ffn = "NONE");   // override
   Passenger(const Passenger& pass);     // copy constructor
 
 };
@@ -48,7 +36,7 @@ Passenger::Passenger() //default constructor
   freqFlyerNo = "NONE";
 }
 
-Passenger::Passenger(const string& nm, MealType mp, const string& ffn) //constructor with given values
+Passenger::Passenger(const string& nm, MealType mp, const string& ffn) // constructor with given values
 {
   name = nm;
   mealPref = mp;
@@ -56,7 +44,7 @@ Passenger::Passenger(const string& nm, MealType mp, const string& ffn) //constru
   freqFlyerNo = ffn;
 }
 
-Passenger::Passenger(const Passenger& pass)  //copy constructor
+Passenger::Passenger(const Passenger& pass)  // copy constructor
 {
   name = pass.name;
   mealPref = pass.mealPref;
@@ -66,18 +54,18 @@ Passenger::Passenger(const Passenger& pass)  //copy constructor
 }
 ```
 
-#### How to Invoke Constructors
+### How to Invoke Constructors
 
 ```C++
 Passenger p1; //default constructor
 Passenger p2("John Smith", VEGETERIAN, 293145); // 2nd constructor
 Passenger p3("Pocahontas", REGULAR); // not a frequent flyer
-Passenger p4(p3); //copy constructor used to copy from p3
-Passenger p5 = p2; //copied from p2...but not a copy constructor...?
+Passenger p4(p3); // copy constructor used to copy from p3
+Passenger p5 = p2; // copied from p2...but not a copy constructor...?
 
-Passenger* pp1 = new Passenger; //default constructor
+Passenger* pp1 = new Passenger; // default constructor
 Passenger* pp2 = new Passenger("Joe Blow", NO_PREF); // 2nd constructor
-Passenger pa[20];               //default constructor
+Passenger pa[20];               // default constructor
 
 ```
 
@@ -85,7 +73,7 @@ Passenger pa[20];               //default constructor
 
 - Enumerables are used as a way to represent a category. Each "label" in an enumerable is associated with an int value, but as a programmer, typing the same would be the same as if we typed that specific int value.
 
-# Constructor using initializer list
+## Constructor using initializer list
 
 - Initializer list avoids calling default constructor for no reason.
 - It's used when the arguments are not simple data types. For example, if the argument is another class called "Name".
@@ -97,7 +85,7 @@ Passenger::Passenger(const string& nm, MealType mp, string ffn)
 { freqFlyerNo = ffn; }
 ```
 
-# Destructors
+## Destructors
 
 - A destructor is a member function which is called automatically when the object is destroyed, when the program terminates or when memory is released
 - A destructor of class Passenger is denoted by ~Passenger
@@ -126,9 +114,7 @@ Vect::~Vect() {            //DESTRUCTOR
 }
 ```
 
-# Classes and Memory Allocation Problem
-
-PROBLEM:
+## Classes and Memory Allocation Problem
 
 ```C++
 Vect a(100);     //vector 'a' has a size of 100
@@ -159,7 +145,7 @@ Declaration `Vect c` invokes the default constructor, which has a default size o
 
 `c = a`, once again, since no assignment operator is provided, it does a shallow copy, which means only the pointer of `a` is copied to the first element of `c`. - Moreover, we lost the pointer to c's original 10-element array--resulting in a memory leak.
 
-# FIX: Provide a **copy constructor** and \*\*overload the assignment operator
+### The Fix: Provide a **copy constructor** and \*\*overload the assignment operator
 
 The problems arose because we allocated memory and we used the system’s default copy constructor and assignment operator.
 
@@ -197,7 +183,7 @@ Vect& Vect::operator=(const Vect& a) {        //assignment operator from
 
 Notice that in the last line of the assignment operator we return a reference to the current object with the statement “`return *this`.” Such an approach is useful for assignment operators, since it allows us to chain together assignments, as in “a=b=c.” The assignment “b=c” invokes the assignment operator, copying variable c to b and then returns a reference to b. This result is then assigned to variable a
 
-# Main Takeaways (above)
+## The Upshot
 
 - Everything class that allocate its own objects using `new` should:
   - Define a destructor to free any allocated objects
@@ -206,7 +192,7 @@ Notice that in the last line of the assignment operator we return a reference to
 
 ---
 
-# Friend Class
+## Friend Class
 
 - Friend designation gives access rights to private members
 
@@ -238,7 +224,7 @@ Vector Matrix::multiply(const Vector& v) {
 
 ---
 
-# Object Oriented Programming Goals:
+## Object Oriented Programming Goals:
 
 Robustness:
 Correct software that can catch errors and recover or gracefully terminate
@@ -247,10 +233,10 @@ Complex software will need to change with time to add new features
 Reusability
 After writing something complex, you want to be able to reuse it elsewhere
 
-# Inheritance
+## Inheritance
 
 - Inheritance is a technique of reusing existing class definitions to derive new classes
-- These new classes (called **derived classes** or **subclasses** or  **child classes**) can inherit the attributes and behavior of the pre-existing classes (called **base classes** or s**uperclasses** or  **parent classes**)
+- These new classes (called **derived classes** or **subclasses** or  **child classes**) can inherit the attributes and behavior of the pre-existing classes (called **base classes** or **superclasses** or  **parent classes**)
   - Derived classes can add, delete, & modify methods and data members in their own definitions (known as **overriding**)
 
 ```C++ //Example: Derive a student class from a person class
@@ -323,7 +309,7 @@ void Student::printName() {
 
 **Special access privileges for derived classes can be provided by declaring members to be “protected.”** A protected member is “public” to all classes derived from this one, but “private” to all other functions. From a syntactic perspective, the keyword protected behaves in the same way as the keyword private and public. In the class example above, had we declared name to be protected rather than private, the above function printName would work fine.
 
-# Note on public, private and protected: Illustrating Class Protection/Derived Accessibility
+## Note on public, private and protected: Illustrating Class Protection/Derived Accessibility
 
 Consider for example, three classes: a base class Base, a derived class Derived, and an unrelated class Unrelated. The base class defines three integer members, one of each access type.
 
@@ -361,9 +347,9 @@ class Unrelated {        //not inherited or derived
 Member functions are always declared `private` or `protected`.
 Protected members are commonly used for `utility functions`, which may be useful for derived classes.
 
-# Inheritance Summary
+## Inheritance Summary
 
-- The amount of access, and levels of modification are controlled by specifiying `public`, `protected`, or `private` in the derived class header.
+- The amount of access, and levels of modification are controlled by specifying `public`, `protected`, or `private` in the derived class header.
   - **Public inhertiance** of a `derived class` preserves the access classes of the `base class`.
     - E.g.,
       - private remains private.
@@ -374,7 +360,7 @@ Protected members are commonly used for `utility functions`, which may be useful
     - Private members remain private.
   - **Private inheritence** of a `derived class` treats all members of the base class as private.
 
-# Constructor and Destructors for Derived (Not in the Class Notes)
+## Constructor and Destructors for Derived
 
 Class hierarchies in C++ are constructed bottom-up:
 base class first,
@@ -419,7 +405,7 @@ delete s1; // calls ˜Student() then ˜Person()
 
 Unlike constructors, the Student destructor does not need to (and is not allowed to) call the Person destructor.
 
-# Static Binding: Declared Type vs. Actual Type
+## Static Binding: Declared Type vs. Actual Type
 
 When a class is derived from a base class, as with Student and Person, the derived class becomes a subtype of the base class, which means that we can use the derived class wherever the base class is acceptable.
 
@@ -442,7 +428,7 @@ pp[1]->changeMajor("English");              //ERROR! Why?
 
 Nonetheless, C++ provides a way to achieve the desired dynamic effect using the technique we describe next
 
-# Dynamic Binding and Virtual Functions
+## Dynamic Binding and Virtual Functions
 
 As we saw above, C++ uses `static binding` by default to determine which member function to call for a derived class.
 
@@ -474,7 +460,7 @@ In this case, pp[1] contains a pointer to an object of type Student, and by the 
 
 Dynamic binding is a powerful technique, **since it allows us to create an object, such as the array pp above**, whose behavior varies depending on its contents. This technique is fundamental to the concept of polymorphism
 
-# Virtual Destructors (not in Lecture Notes)
+## Virtual Destructors (not in Lecture Notes)
 
 **RULE:**
 If a base class defines any virtual functions, it should define a virtual destructor, even if it is empty.
@@ -483,7 +469,7 @@ If we store types Person and Student in the array, it is important to call the a
 
 If a Student class had allocated memory dynamically, the fact that the wrong constructor is called would result in a memory leak.
 
-# Polymorphism
+## Polymorphism
 
 Literally, “polymorphism” means “many forms.” In the context of object-oriented design, it refers to the ability of a variable to take different types. Polymorphism is typically applied in C++ using pointer variables. In particular, a variable p declared to be a pointer to some class S implies that p can point to any object belonging to any derived class T of S.
 
@@ -497,20 +483,20 @@ Now consider what happens if both of these classes define a virtual member funct
 –**Static binding** determines the function call at compile time
 –**Dynamic binding** delays the decision until run time
 
-## Polymorphisms: Specialization
+### Polymorphisms: Specialization
 
 - In short, the base class and the derived class have the same functions, but one or more functions of the same name can be altered to meet specific goals.
   - Dog and bloodhound have a drink() and sniff() function.
     - Bloodhounds have a much higher sniff() sensitivity, so sniff() is "specialized" and overrides the base class (Dog) sniff().
 
-## Polymorphisms: Extension
+### Polymorphisms: Extension
 
 - In short, the base class and the derived class have the same functions, but the derived class has extra functions. No overlap compared to specialization.
 
 TLDR:
 With polymorphism we can both specialize and extend a class - Specialize by overriding a function or implementing a virtual function - Extend by introducing new functions
 
-# 2.23.3 Examples of Inheritance and Polymorphism
+## Examples of Inheritance and Polymorphism
 
 ## Define a base class, `Progression`, which defines the "generic" numbers and functions of a numeric progression.
 
@@ -811,14 +797,14 @@ Fibonacci progression with start values 4 and 6:
 4 6 10 16 26 42 68 110 178 288
 ```
 
-### Without virtual function, the output of the program in the previous slide will be different. WHY?
+### Without virtual function, the output of the program in the previous slide will be different. Why?
 
 All values will print the same as the Arithmetic progression with default increment.
 Due to Static binding since the variable prog is of type Progression.
 
 ---
 
-# Other Types of Inheritance (Summary)
+## Other Types of Inheritance (Summary)
 
 ```C++
 class Base { // base class
@@ -836,7 +822,7 @@ class Derive3 : private Base { // public inheritance
 }
 ```
 
-# Dynamic Casting (not in notes)
+## Dynamic Casting (not in notes)
 
 Dynamic casting can only be applied to polymorphic objects, that is, objects that come from a class with at least one virtual function.
 `dynamic cast < desired type > ( expression )`
@@ -857,6 +843,7 @@ In C++, an abstract class is defined when one or more members are **abstract** o
 - **Pure virtual** is when a function is given "`=0`" in place of its body.
   - C++ does not allow the creation of a pure virtual function.
     - As a result, the compiler will not allow the creation of objects of type Progression, since the function nextValue is “pure virtual.” However, its derived classes, ArithProgression for example, can be defined because they provide a definition for this member function.
+    -
 
 ```C++
 class Progression { // abstract base class
@@ -867,7 +854,7 @@ class Progression { // abstract base class
 
 ```
 
-### Interfaces and Abstract Base Classes
+## Interfaces and Abstract Base Classes
 
 While C++ does not provide a direct mechanism for defining interfaces for abstract data types--we can use abstract classes to achieve much of the same purpose.
 
