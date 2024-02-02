@@ -1,5 +1,7 @@
 ---
 title: Program for Peak Stock Prices using Historical Data
+categories:
+  - CPlusPlus
 date: 2024-02-01 20:54:29
 tags:
 ---
