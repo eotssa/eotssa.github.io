@@ -66,7 +66,7 @@ post:
 # Customize the copyright years
 # Note: if start_year/end_year not provided, will use current year.
 copyright:
-  start_year: 2016
+  start_year: 2023
   end_year:
 
 # Customize the 404 page
@@ -127,7 +127,7 @@ favicon:
 colorscheme: dark
 
 # Maximal width of the page in rem units.
-page_width: 48
+page_width: 54
 
 ##############################################################################
 # Miscellaneous

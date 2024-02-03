@@ -1,6 +1,7 @@
 ---
 title: Music Player Implementation Using a Cirlce List Structure
-
+categories:
+  - CPlusPlus
 date: 2024-02-02 22:19:36
 tags:
 ---
