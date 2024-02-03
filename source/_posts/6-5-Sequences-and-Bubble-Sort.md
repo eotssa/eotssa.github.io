@@ -1,5 +1,5 @@
 ---
-title: 6.5 Sequences and Bubble Sort
+title: Sequences and Bubble Sort
 categories:
   - CPlusPlus
 date: 2024-01-31 13:48:01
