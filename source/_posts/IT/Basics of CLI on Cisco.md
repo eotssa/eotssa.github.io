@@ -6,8 +6,9 @@ tags:
 ---
 
 ## Privileged EXEC Mode
-- Provides complete access to view device configuration, restart the device, etc.
-- Cannot change the configuration, but can change the time on the device, save configuration files, and more.
+Provides complete access to view device configuration, restart the device, etc.
+
+Cannot change the configuration, but can change the time on the device, save configuration files, and more.
 ```
 Router>enable
 Router#
@@ -37,7 +38,6 @@ Router#
 ```
 
 ## Running-Config / Startup Config
-
 
 ```
 Router#show running-config
@@ -69,6 +69,7 @@ Router#copy cunning-config startup-config
 	- `enable secrets` will not be affected
 - If you disable `servie password-encryption`:
 	- current passwords will not be decrypted
+
 ```
 Router# conf t
 
