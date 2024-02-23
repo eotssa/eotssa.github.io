@@ -1,5 +1,5 @@
 ---
-title: "[CCNA] Ethernet Lan Switching"
+title: "[CCNA] Ethernet Lan Switching Part 1"
 categories:
   - IT
 date: 2024-02-23 17:32:48
@@ -56,7 +56,9 @@ tags:
 	- IPv4 = 0x0800 (2048 in decimal)
 	- IPv6 = 0x86DD (34525 in decimal) 
 
-Preamble (7) - SFD (1) - Destination (6) - Source (6) - Type (2) 
+
+HEADER                                                              | TRAILER
+[Preamble (7) - SFD (1) - Destination (6) - Source (6) - Type (2)]    [FCS (4)]
 
 
 ### Ethernet Trailer: FCS (Frame Check Sequence)
