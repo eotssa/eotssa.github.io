@@ -10,5 +10,8 @@ tags:
 - Therefore, the size of the Ethernet header is "technically" 18 bytes.
 	- [Preamble (7) - SFD (1) - Destination (6) - Source (6) - Type (2)] + [SFD (4)]
 - The minimum size of an Ethernet frame is 64 bytes.
-	- 64 bytes - 18 bytes (header + trailer size) = 46 bytes.
+	- 64 bytes - 18 bytes (header + trailer size) = **46 bytes**.
 	- Therefore, the minimum payload (packet) size is 46 bytes. If the payload is less than 46 bytes, padding bytes are added. Padding bytes consists of just 0's. 
+
+## Ethernet LAN Switching
+![](Pasted%20image%2020240223163655.png)
