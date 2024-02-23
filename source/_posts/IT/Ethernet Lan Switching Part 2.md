@@ -133,3 +133,7 @@ Which type o frames does a switch send out of all interfaces, except one frame w
 - Broadcast AND unknown unicast. 
 	- Broadcast frames have a destination address of FFFF.FFFF.FFFF and are sent to all hosts on the local network.
 	- Unknown unicast frames are destined for a single host. However, the switch does not have an entry for the destination in its MAC address table so it must flood the frame. 
+
+## Which command is used on a Cisco switch to clear all dynamic MAC addresses on a specific interface from the MAC address table?
+
+`clear mac address-table dynamic interface INTERFACE-ID`
