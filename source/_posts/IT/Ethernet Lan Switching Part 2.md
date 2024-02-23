@@ -80,8 +80,28 @@ tags:
 - In short, if device A wants to send traffic to device B on the SAME NETWORK, device A must use ARP. Then it can send traffic to device B.
 
 
-## MAC Address Table on Cisco
+## MAC Address Table on Cisco and Commands
 - `#show mac address-table`
 
 ![](../../images/Pasted%20image%2020240223180109.png)
-- 
+- **Aging**: if a Cisco switch does not receive any traffic from that MAC address for 5 minutes, it'll delete.
+- Another way `clear mac address-table dynamic`
+- If you want to delete a specific mac address: `clear mac address-table dynamic address MAC-ADDRESS`
+- You can also do it via interface: `clear mac address-table dynamic interface INTERFACE-ID`
+
+## Ethernet Frame (Cont.) What if we send a ping with a payload of size 36?
+- `#ping 192.168.1.3 size 36`
+![](../../images/Pasted%20image%2020240223180554.png)
+- Recall that the minimum payload size of an ethernet frame (not accounting for the preamble and SFD) is 46 bytes.
+- If we send a size 36 byte payload, how many 0's will there be in the padding?
+	- Each hexadecimal 0 = 4 bits ((recall hexadecimal is 16, so 2^4, takes 4 bits to represent one hexadecimal number))
+	- So, 00 = 8 bits = 1 byte
+	- If you count the 0's, there should be 20 bits (10 bytes). 
+
+## What is the ARP ethernet Type? 
+- **ARP: 0x0806**
+- IPv4: 0x86DD
+- IPv6: 0x0800 (?)
+
+
+
