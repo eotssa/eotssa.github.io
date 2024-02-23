@@ -39,3 +39,49 @@ tags:
 
 ![](../../images/Pasted%20image%2020240223165019.png)
 
+- Finally, when the ARP reply is received by the original sender (PC 1), it is added to the ARP table. 
+
+![](../../images/Pasted%20image%2020240223165215.png)
+
+### [CMD] arp - a
+- Use `arp -a` to view the ARP table.
+- Internet Address = IP Address (Layer 3 address)
+- Physical Address = MAC address (Layer 2 address)
+- Type static = default entry
+- Type dynamic = learned via ARP
+
+## Ping
+- Network utility to test reachability
+- Measures Round-Trip-Time (RTT)
+- Uses two messages (like ARP): ICMP Echo Request and ICMP Echo Reply
+	- However, unlike ARP, it is sent to a specific host, so it must know the destination of the MAC address, which is why ARP must be used first.
+
+### What is the arp command in Linux, Mac, Windows IOS? What about CISCO?
+- Windows/Mac/Linux all use `arp`
+- Cisco switches use `show arp` from previlged EXEC mode 
+
+### This is a ping request on a CISCO switch. What is a likely reason the first ping failed?
+
+![](../../images/Pasted%20image%2020240223170234.png)
+- PC1 likely did not know the destination MAC address. So it had to use ARP first.
+
+### Take a look at the ARP table after the ping.
+
+![](../../images/Pasted%20image%2020240223170528.png)
+
+- Notice the protocol ARP. 
+- The ARP request is asking "Who has 192.161.1.3" and to 'Tell 192.168.1.1'.
+- Followed by an ARP reply on frame 2.
+![](../../images/Pasted%20image%2020240223170835.png)
+
+- Also note in frame 4 and frame 5 have reversed source and destination.
+![](../../images/Pasted%20image%2020240223170915.png)
+
+- In short, if device A wants to send traffic to device B on the SAME NETWORK, device A must use ARP. Then it can send traffic to device B.
+
+
+## MAC Address Table on Cisco
+- `#show mac address-table`
+
+![](../../images/Pasted%20image%2020240223180109.png)
+- 
