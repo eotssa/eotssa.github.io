@@ -29,7 +29,7 @@ tags:
 
 ### ARP Request
 - Before PC1 sends something to PC3, it must send an ARP Request Frame.
-- Notice the 'FFFF.FFFF.FFFF.FFFF', which is known as a **broadcast** frame. 
+- Notice the 'FFFF.FFFF.FFFF', which is known as a **broadcast** frame. 
 	- It is similar to an unknown unicast frame. 
 	- A broadcast frame is dropped when the destination IP address does not match. 
 
@@ -104,4 +104,32 @@ tags:
 - IPv6: 0x0800 (?)
 
 
+## Conclusion
+- Ethernet frame payload minimum size
+- ARP (Address Resolution Protocol): ARP Request/Reply
+- ARP Table (in CISCO)
+- Ping (ICMP Echo Request/Reply)
+- MAC Address (CISCO clear MAC addresses all/via MAC address/via INTERFACE ID)
 
+## Question 1
+You send a 36-byte ping to another computer and perform a packet capture to analyze the network traffic. You notice a long series of bytes of 00000000 at the end of the Ethernet payload. How can you explain these zeros?
+- Padding bytes.
+	- The minimum payload size is 46 bytes.
+
+## Question 2
+Which of these messages is sent to all hosts on the local network? 
+a. ARP Request - Answer -- learns a layer 2 address of the host, which if not known, needs to be broadcast to all host on the network.
+b. ARP Reply : unicast message -- 
+c. ICMP echo request: -- also a unicast message, requires
+d. ICMP echo reply -- also a unicast reply
+
+
+## Question 3
+Which fields are present in the output of the `show mac address-table` command on a Cisco switch?
+C) VLAN, MAC Address, Type, Ports
+
+## Question 4
+Which type o frames does a switch send out of all interfaces, except one frame was received on?
+- Broadcast AND unknown unicast. 
+	- Broadcast frames have a destination address of FFFF.FFFF.FFFF and are sent to all hosts on the local network.
+	- Unknown unicast frames are destined for a single host. However, the switch does not have an entry for the destination in its MAC address table so it must flood the frame. 
