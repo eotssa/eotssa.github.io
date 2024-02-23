@@ -13,5 +13,5 @@ tags:
 	- 64 bytes - 18 bytes (header + trailer size) = **46 bytes**.
 	- Therefore, the minimum payload (packet) size is 46 bytes. If the payload is less than 46 bytes, padding bytes are added. Padding bytes consists of just 0's. 
 
-## Ethernet LAN Switching
+## Ethernet LAN Switchingaaa
 ![](../../images/Pasted%20image%2020240223163901.png)
