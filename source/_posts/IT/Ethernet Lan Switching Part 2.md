@@ -2,7 +2,7 @@
 title: "[CCNA] Ethernet Lan Switching Part 2"
 categories:
   - IT
-date: 2024-02-23 17:32:48
+date: 2024-02-23 18:32:48
 tags:
 ---
 ## Ethernet Frames - Cont 
@@ -14,4 +14,4 @@ tags:
 	- Therefore, the minimum payload (packet) size is 46 bytes. If the payload is less than 46 bytes, padding bytes are added. Padding bytes consists of just 0's. 
 
 ## Ethernet LAN Switching
-![](Pasted%20image%2020240223163655.png)
+![](../../images/Pasted%20image%2020240223163901.png)
