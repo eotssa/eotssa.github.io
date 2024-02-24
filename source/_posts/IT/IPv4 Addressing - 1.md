@@ -129,3 +129,15 @@ The first usable host address is 192.168.1.1/24
 192.168.1.255/24 (X.X.X.1111111)
 
 The last usable host address is 192.168.1.254/24
+
+
+## In short, we talk about
+- Dotted decimal and binary
+- Network portion / host portion of IPv4
+- IPv4 address classes
+- Prefix lengths / netmasks (Cisco)
+- Network address / broadcast address
+
+## Question 0
+If we sent a ping to 192.168.1.255, what would be the destination MAC address?
+- Given that 255 is the broadcast address, the destination MAC address should be FFFF.FFFF.FFFF
