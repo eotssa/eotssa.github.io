@@ -1,11 +1,13 @@
 ---
-title: Eotssa's Perl Guide
-categories: 
+title: Eotssa's Python Guide
+categories:
+  - Python
 date: 2024-02-23 23:11:42
 tags:
   - Perl
 ---
-Disclaimer: These are notes that I took during lecture. I used Professor's Jin Woo Kim's slides, as well as my general research on the internet. 
+Disclaimer: These are notes I took while using MOOC 2022. 
+Pretty much everything you need to know about Python in one place for a intermediate-beginner. 
 
 ## Use of f strings to concatenate 
 
