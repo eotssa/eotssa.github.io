@@ -128,12 +128,13 @@ d. ICMP echo reply -- also a unicast reply
 Which fields are present in the output of the `show mac address-table` command on a Cisco switch?
 C) VLAN, MAC Address, Type, Ports
 
-## Question 4
-Which type o frames does a switch send out of all interfaces, except one frame was received on?
+## Question 4: 
+Which type of frames does a switch send out of all interfaces, except one frame was received on?
 - Broadcast AND unknown unicast. 
 	- Broadcast frames have a destination address of FFFF.FFFF.FFFF and are sent to all hosts on the local network.
 	- Unknown unicast frames are destined for a single host. However, the switch does not have an entry for the destination in its MAC address table so it must flood the frame. 
 
-## Which command is used on a Cisco switch to clear all dynamic MAC addresses on a specific interface from the MAC address table?
+## Question 5: 
+Which command is used on a Cisco switch to clear all dynamic MAC addresses on a specific interface from the MAC address table?
 
 `clear mac address-table dynamic interface INTERFACE-ID`
