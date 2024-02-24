@@ -103,11 +103,6 @@ erroneous input
 ```
 
 ```python
-# Write your solution here
-# If you use the classes made in the previous exercise, copy them here
-
-
-# Previous 
 class Task:
     id_counter = 0 # class-level variable, keeps track of how many Task classes are created 
 
