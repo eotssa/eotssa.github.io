@@ -4,7 +4,7 @@ categories:
   - Python
 date: 2024-02-23 23:11:42
 tags:
-  - Perl
+  - Python
 ---
 Disclaimer: These are notes I took while using MOOC 2022. 
 Pretty much everything you need to know about Python in one place for a intermediate-beginner. 
