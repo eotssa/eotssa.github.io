@@ -69,13 +69,13 @@ categories:
 
 ## IPv4 Address Classes
 
-| Class | First octet | First octet numeric range |                        |                                                               |
-| ----- | ----------- | ------------------------- | ---------------------- | ------------------------------------------------------------- |
-| A     | 0xxxxxxx    | 0-127                     | 64+32+16+8+4+2+1 = 127 | Really 0 - 126, not 127.                                      |
-| B     | 10xxxxxx    | 128 - 191                 |                        |                                                               |
-| C     | 110xxxxx    | 192-223                   |                        |                                                               |
-| D     | 1110xxxx    | 224-239                   |                        | Reserved for multicast (different from unicast and broadcast) |
-| E     | 1111xxxx    | 240-255                   |                        | Reserved for experimental use                                 |
+| Class | First octet | First octet numeric range |                                     |                                                               |
+| ----- | ----------- | ------------------------- | ----------------------------------- | ------------------------------------------------------------- |
+| A     | 0xxxxxxx    | 0-127                     | 64+32+16+8+4+2+1 = 127              | Really 0 - 126, not 127.                                      |
+| B     | 10xxxxxx    | 128 - 191                 | 128 + 32 + 16 + 8 + 4 + 2 + 1 = 191 |                                                               |
+| C     | 110xxxxx    | 192-223                   |                                     |                                                               |
+| D     | 1110xxxx    | 224-239                   |                                     | Reserved for multicast (different from unicast and broadcast) |
+| E     | 1111xxxx    | 240-255                   |                                     | Reserved for experimental use                                 |
 
 ### Why is class A range in practice only 0 - 126? Loopback Addresses
 - The 127 octet range is reserved for loopback addresses. What does that mean?

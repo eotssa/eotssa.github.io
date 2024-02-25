@@ -118,7 +118,7 @@ Now to edit the interface -- do the following in global configuration mode
 		- line protocol is up : refers to layer 2 status of the interface.
 
 
-- `#show interface description`
+- `#show interfaces description`
 ![](../../images/Pasted%20image%2020240224202103.png)
 
 ### To configure a interface description: `description LINE`
