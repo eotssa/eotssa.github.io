@@ -1,7 +1,9 @@
 ---
-title: defaultPost
+title: Cisco IP Address PacketTracer
 date: 2024-02-25 10:52:31
-tags:
+tags: 
+categories:
+  - IT
 ---
 ![](../../images/Pasted%20image%2020240225105423.png)
 
