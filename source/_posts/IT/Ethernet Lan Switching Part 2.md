@@ -5,7 +5,7 @@ categories:
 date: 2024-02-23 18:32:48
 tags:
 ---
-## Ethernet Frames - Cont 
+## Ethernet Frames - Cont - Preamble and SFD does "not" count.
 - Preamble and SFD is usually NOT consideered part of the Ethernet header.
 - Therefore, the size of the Ethernet header is "technically" 18 bytes.
 	- [Preamble (7) - SFD (1) - Destination (6) - Source (6) - Type (2)] + [SFD (4)]
