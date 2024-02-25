@@ -1,7 +1,9 @@
 ---
 title: IPv4 Addressing - 1
 date: 2024-02-23 23:44:19
-tags:
+tags: 
+categories:
+  - IT
 ---
 ## Recall Layer 3: Network Layer
 - Provides connectivity between end hosts on different networks (outside of the LAN)

@@ -1,7 +1,9 @@
 ---
 title: IPv4 Addressing - 2
 date: 2024-02-24 13:03:25
-tags: []
+tags: 
+categories:
+  - IT
 ---
 ## Overview
 - IPv4 Address Classes (review and clarification)
