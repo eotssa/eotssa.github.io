@@ -95,3 +95,26 @@ IPv4 Header focuses on L3 Header.
 	- Minimum IPv4 Header = 20 Bytes 
 	- Maximum IPv4 Header = 60 bytes
 
+
+## Wireshark Packet Capture
+
+- standard ping command
+![](../../images/Pasted%20image%2020240226184512.png)
+
+### What if we did `ping 192.168.1.2 size 10000`?
+
+![](../../images/Pasted%20image%2020240226185000.png)
+
+- The image shows the first 2 fragmented packets. 
+	- Notice the total length: 1500, so the 10,000 byte ping was divided. 
+	- Notice the identification field of 1. (This could be any value, but for fragmented packets, they'll all have the same identification field.)
+	- Notice the flags; both have the "More fragment bit set to 1". 
+		- Notice that the first fragment has an offset of 0. 
+![](../../images/Pasted%20image%2020240226185019.png)
+
+### What if we did `ping 192.168.1.2 df-bit`?
+- No issues because default size is 100 bytes. 
+![](../../images/Pasted%20image%2020240226185241.png)
+
+### What if we did `ping 192.168.1.2 size 10000 df-bit`?
+- Ping will fail and be dropped. 
