@@ -118,3 +118,23 @@ IPv4 Header focuses on L3 Header.
 
 ### What if we did `ping 192.168.1.2 size 10000 df-bit`?
 - Ping will fail and be dropped. 
+
+
+## Questions
+
+1. What is the fixed binary value of the first field of an IPv4 Header?
+0100; first field is the version field. 
+
+2. Which field will cause the packet to be dropped of it has a value of 0?
+TTL. A hop of 0 will cause the packet to be dropped. 
+
+3. How are errors in an IPv4 packet's encapsulated data detected? 
+The encapsulated protocol (TCP, UDP) checks for errors. 
+(Common misconception is that the IPv4 Header Checksum field checks for errors, but it only checks for errors in the IPv4 Header itself).
+
+4. Which field of an IPv4 header is variable in length?
+Options.
+- Although the total length and IHL fields is used to represent the variable length, the field itself is fixed in length.
+
+5. Which bit will be set to 1 on all IPv4 packet fragments except the last fragment?
+More fragment bit (Flags field)
