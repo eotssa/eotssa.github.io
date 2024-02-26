@@ -1,5 +1,5 @@
 ---
-title: defaultPost
+title: Switch Interfaces - 9
 date: 2024-02-25 17:16:01
 tags: 
 categories:
@@ -7,7 +7,7 @@ categories:
 ---
 ## Contents
 - Interface speed and duplex
-- Speed and duplex autonegotiation
+- Speed and duplex auto-negotiation
 - Interface status 
 - Interface counters & errors
 - Switch interfaces:
