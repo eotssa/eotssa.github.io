@@ -23,7 +23,7 @@ tags:
 ## The focus will be how switches receive and forward specifically ethernet "frames".
 
 ## Ethernet Frame
-- Ethernet header - Packet - Eth. Trailer
+- Ethernet header / Packet / Eth. Trailer
 
 - In the ethernet header:
 	- Preamble - SFD - Destination - Source - Type 

@@ -92,8 +92,8 @@ IPv4 Header focuses on L3 Header.
 			- Because (1111 = 15)
 		- Thus, the maximum length of the Options field is 40 bytes.
 - In short...
-	- Minimum IPv4 Header = 20 Bytes 
-	- Maximum IPv4 Header = 60 bytes
+	- Minimum IPv4 Header = 20 Bytes (without options)
+	- Maximum IPv4 Header = 60 bytes (with options)
 
 
 ## Wireshark Packet Capture

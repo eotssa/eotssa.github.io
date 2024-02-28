@@ -119,3 +119,9 @@ R1(config)# ip route 0.0.0.0 0.0.0.0 203.0.133.2
 ```
 
 ![](../../images/Pasted%20image%2020240227142051.png)
+## Questions
+
+![](../../images/Pasted%20image%2020240227142914.png)
+
+
+![](../../images/Pasted%20image%2020240227143421.png)
