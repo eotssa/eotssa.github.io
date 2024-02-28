@@ -1,5 +1,5 @@
 ---
-title: Configuring Static Routes (Packet Tracer)
+title: Configuring Static Routes (Packet Tracer 11-2)
 date: 2024-02-28 11:13:39
 tags: 
 categories:
