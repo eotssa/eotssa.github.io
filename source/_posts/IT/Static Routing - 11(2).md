@@ -1,7 +1,9 @@
 ---
-title: defaultPost
+title: Static Routing - 11(2)
 date: 2024-02-27 12:20:47
-tags:
+tags: 
+categories:
+  - IT
 ---
 ## Overview
 - Connected and Local Routes
