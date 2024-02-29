@@ -54,13 +54,35 @@ Consider the following
 ![](../../images/Pasted%20image%2020240228222135.png)
 ### 203.0.113.0/30
 ![](../../images/Pasted%20image%2020240228222153.png)
-- /30 is a subnet of the class C network. 
+## /30 is a subnet of the class C network. 
+- 203.0.113.0/30 includes 203.0.113.0 - 203.0.113.3, 4 possible addresses, but only 2 usable addresses. 
+![](../../images/Pasted%20image%2020240228231451.png)
+
+### The remaining addresses in 203.0.113.0/24 address block (203.0.113.4 - 203.0.113.255) are now available to be used in other subnets! 
+
+## Is there a way to be even more efficient beyond /30?
+
+### What's so special about /31?
+![](../../images/Pasted%20image%2020240228231649.png)
+- There are 0 usable addresses. However, **for a point-to-point connection**, it's possible to use a /32 netmask. 
+- 203.0.113.0/31 contains the addresses:
+	- 203.0.113.0
+		- 11001011.00000000.01110001.00000000
+	- 203.0.113.1
+		- 11001011.00000000.01110001.00000001
+- Such a configuration is valid for a point-to-point connection. 
+- The remaining addresses in the 203.113.0/24 address block (203.0.113.2 - 203.0.113.255) are available to be used in other networks. Great.
 
 
-### What's so special about /31 and /32?
-203.0.113.0/31
-203.0.113.0/32
+## and /32?
+![](../../images/Pasted%20image%2020240228232043.png)
+- Unusable to configure interfaces. 
+- Some uses include: 
+	- Static route to specify an exact host. 
+	- Other...
 
 
+## CIDR Notation (Class C)
 
+![](../../images/Pasted%20image%2020240228232151.png)
 
