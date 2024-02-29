@@ -1,7 +1,9 @@
 ---
 title: Troubleshooting Static Routes - Packet Tracer (11-2)
 date: 2024-02-28 12:30:49
-tags:
+tags: 
+categories:
+  - IT
 ---
 ![](../../images/Pasted%20image%2020240228123232.png)
 ## Determine the issue
