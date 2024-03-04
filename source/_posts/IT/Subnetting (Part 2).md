@@ -190,6 +190,6 @@ Class B, so...
 - ... 16, 32, 64, 128, 256, 512, 
 - /22 = 1024 - 2 = 1022 hosts... (10 borrowed bits FROM THE RIGHT TO LEFT)
 - /22 in subnets is... 6 bits so... 2 (/17) , 4, 8, 16, 32, 64 (/22)
-- Answer: 64 subnets. 
+- Answer: 64 subnets. (because 6 borrowed bits)
 
 ![](../../images/Pasted%20image%2020240304004946.png)
