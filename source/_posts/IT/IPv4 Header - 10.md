@@ -28,6 +28,8 @@ IPv4 Header focuses on L3 Header.
 ![](../../images/Pasted%20image%2020240226172913.png)
 - Version: 4 bits; identifies version of IP used (IPv4 (0100) or IPv6 (0110))
 - **IHL** (Internet Header Length): 4 bits;
+	- Minimum of 5?
+	- Maximum of 15?
 - **DSCP** (Differentiated Services Code Point): 6 bits
 	- Used for **QoS** (Quality of Service)
 		- QoS is used to prioritize delay-sensitive data (streaming voice, video, etc) 
