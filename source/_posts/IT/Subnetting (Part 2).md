@@ -144,7 +144,8 @@ Here is the table in markdown format:
 ### Question 1: You have been given 172.30.0.0/16 network. Company requires 100 subnets with at least 500 hosts per subnet. What prefix length should be used?
 - Right off the bat, Class C subnets are out of the question. The smallest subnet 2 will likely support only 128 - 2 = 126 hosts.
 - Class B subnets should be used here.
-- given the 100 subnet requirement...it should be... /16 (0), /17 (2), ... 7 borrowed bits... so /23 should be used,. 
+- given the 100 subnet requirement...it should be... /16 (0), /17 (2), ... 7 borrowed bits... so /23 should be used.
+	- 9 hosts bits allows for 2^9 - 2 = 510 usable addresses.
 
 ### Question 2: What subnet does host 172.21.111.201/20 belong to?
 Class B, so...
@@ -168,7 +169,7 @@ Class B, so...
 - xxxxxxxx.xxxxxxxx.91.64/26 (this would be the subnet)
 - Hence, the broadcast address will be the last address of this subnet... **which I have no idea how to calculate.** 
 - I assume it'd be - xxxxxxxx.xxxxxxxx.(01011011.01)(111111)
-	- So 192.168.91.127 is the broadcast address...
+	- So 192.168.91.127/26 is the broadcast address...
 
 
 ### You divide the 172.16.0.0/16 network into 4 subnets of equal size. Identify the NETWORK and BROADCAST addresses of the 2nd subnet.
