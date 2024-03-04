@@ -175,7 +175,11 @@ Class B, so...
 ### You divide the 172.16.0.0/16 network into 4 subnets of equal size. Identify the NETWORK and BROADCAST addresses of the 2nd subnet.
 
 - 4 equal sizes means 2 borrowed bits.
-- xxxxxxxx.xxxxxxxx.11xxxxxx.xxxxxxxx
+- The prefix length is therefore, /18. 
+- xxxxxxxx.xxxxxxxx.01xxxxxx.xxxxxxxx (172.16.64.0) **(Network address of the 2nd subnet)**
+	- I'm assuming 00, 01, 10, 11 are the three possible combinations here. So 01 is the 2nd subnet. Still, another way to look at it is if there's 4 possible subnets, each subnet would have 64 addresses (64 * 4 = 256). so 172.16.0.0 - 172.16.63.0 is subnet 1. And 172.16.64.0 is subnet 2. Anyways...
+	- xxxxxxxx.xxxxxxxx.01000000.00000000 = network address (172.16.64.0)
+	- xxxxxxxx.xxxxxxxx.(01)111111.11111111 = broadcast address (**172.16.128.255**)
 
 ### You divide the 172.30.0.0/16 network into subnets of 1000 hosts each. How many subnets are you able to make? 
 - Even if we don't know it, we can start at /32.
@@ -184,6 +188,8 @@ Class B, so...
 - /30 = 4 (4 addresses, 2 hosts)
 - /29 = 8
 - ... 16, 32, 64, 128, 256, 512, 
-- /22 = 1024 - 2 = 1022 hosts... 
+- /22 = 1024 - 2 = 1022 hosts... (10 borrowed bits FROM THE RIGHT TO LEFT)
 - /22 in subnets is... 6 bits so... 2 (/17) , 4, 8, 16, 32, 64 (/22)
 - Answer: 64 subnets. 
+
+![](../../images/Pasted%20image%2020240304004946.png)
