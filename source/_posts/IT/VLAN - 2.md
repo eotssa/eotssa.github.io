@@ -145,5 +145,35 @@ SW1#
 ```
 
 ### Configure a VLAN allowed on a trunk 
+```
+SW1(config)# int g0/0
+SW1(config-if)# switchport trunk allowed vlan ?
+  WORD          VLAN IDs of the allowed VLANs when this port is in trunking mode
+  add           add VLANs to the current list
+  all           all VLANs
+  except        all VLANs except the following
+  none          no VLANs
+  remove        remove VLANs from the current list
 
+SW1(config-if)# switchport trunk allowed vlan 
+```
+
+![](../../images/Pasted%20image%2020240306171804.png)
+
+### Configure to add VLAN's to a trunk
+
+```
+SW1(config)# int g0/0
+SW1(config-if)# switchport trunk allowed vlan ?
+  WORD          VLAN IDs of the allowed VLANs when this port is in trunking mode
+  add           add VLANs to the current list
+  all           all VLANs
+  except        all VLANs except the following
+  none          no VLANs
+  remove        remove VLANs from the current list
+
+SW1(config-if)# switchport trunk allowed vlan 
+```
+
+![](../../images/Pasted%20image%2020240306171855.png)
 ### Configure SW1's G0/0 as a trunk port.
