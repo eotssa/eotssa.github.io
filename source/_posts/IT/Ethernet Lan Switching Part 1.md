@@ -20,7 +20,7 @@ tags:
 ## Local Area Networks (LANs)
 - Local networks are separated by routers, not switches. 
 
-## The focus will be how switches receive and forward specifically ethernet "frames".
+## The focus will be how switches receive and forward specifically ethernet "frames". [so layer 2...]
 
 ## Ethernet Frame
 - Ethernet header / Packet / Eth. Trailer
