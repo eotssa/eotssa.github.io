@@ -158,6 +158,7 @@ SW1(config-if)# switchport trunk allowed vlan ?
 SW1(config-if)# switchport trunk allowed vlan 
 ```
 
+
 ![](../../images/Pasted%20image%2020240306171804.png)
 
 ### Configure to add VLAN's to a trunk
@@ -176,4 +177,20 @@ SW1(config-if)# switchport trunk allowed vlan
 ```
 
 ![](../../images/Pasted%20image%2020240306171855.png)
+- Note that VLAN 20 isn't shown on "VLAN allowed and active in management domain" because it wasn't been configured yet, just allowed. 
+
+### Remove VLAN 20
+![](../../images/Pasted%20image%2020240306172005.png)
+
+### Configure a VLAN to allow All
+- Same as default state if we so choose.
+![](../../images/Pasted%20image%2020240306172117.png)
+
+### Configure VLAN to except
+- except is a deny list.
+![](../../images/Pasted%20image%2020240306172141.png)
+
+### Configure VLAN to none
+
+![](../../images/Pasted%20image%2020240306172214.png)
 ### Configure SW1's G0/0 as a trunk port.
