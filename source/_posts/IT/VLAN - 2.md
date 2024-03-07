@@ -233,7 +233,7 @@ SW1(config-if)# switchport trunk allowed vlan
 1. `interface g0/0`
 2. `no shutdown`
 3. `interface g0/0.10`  // notice how to enter sub-interface mode; the sub-interface doesn't have to match, but it is recommended for visual purposes.
-4. `encapsulation dot1q 10` // tells the router that is tagged with this specific VLAN number as if they arrived on this sub-interface. 
+4. `R1(config-subif)#encapsulation dot1q 10` // tells the router that is tagged with this specific VLAN number as if they arrived on this sub-interface. 
 5. `ip address 192.168.1.62 255.255.255.192` // assigned the last usable address to the sub-int
 6. `interface g0/0.20`
 7. `encapsulation dot1q 20`
