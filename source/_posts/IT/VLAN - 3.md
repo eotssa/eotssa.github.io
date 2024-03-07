@@ -49,4 +49,6 @@ Consider the following image.
 
 
 
-2nd method: Configure the IP address for the native VLAN on the router's physical interface (the encapsulation dot1q VLAN-ID is not necessary)
+### 2nd method: Configure the IP address for the native VLAN on the router's physical interface (the encapsulation dot1q VLAN-ID is not necessary)
+
+![](../../images/Pasted%20image%2020240307132532.png)
