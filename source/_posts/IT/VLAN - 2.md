@@ -101,13 +101,8 @@ Multiple connections (shown above) are now replaced by single connections.
 - SW1 sees this untagged traffic and its default behavior is to send to VLAN 30. 
 	- However, the destination is in VLAN 10, so the frame is not forwarded. 
 
-## Trunk Configuration
-- Configure SW1's G0/0 as a trunk port.
-- Configure SW2's G0/0 and G0/1 as a trunk port. 
-![](../../images/Pasted%20image%2020240306165304.png)
 
-
-### Overview of Basic Trunk Port Configurations (Cisco vs Modern)
+## Overview of Basic Trunk Port Configurations (Cisco vs Modern)
 `SW(config)#interface g0/0`
 `switchport mode trunk` ; manually configures interface as a trunk
 `Command rejected: An interface whose trunk encapsulation is "Auto" can not be configured to "trunk" mode.`
@@ -144,7 +139,7 @@ Gi0/0      1, 10, 30
 SW1#
 ```
 
-### Configure a VLAN allowed on a trunk 
+#### Configure a VLAN allowed on a trunk 
 ```
 SW1(config)# int g0/0
 SW1(config-if)# switchport trunk allowed vlan ?
@@ -161,7 +156,7 @@ SW1(config-if)# switchport trunk allowed vlan
 
 ![](../../images/Pasted%20image%2020240306171804.png)
 
-### Configure to add VLAN's to a trunk
+#### Configure to add VLAN's to a trunk
 
 ```
 SW1(config)# int g0/0
@@ -179,18 +174,91 @@ SW1(config-if)# switchport trunk allowed vlan
 ![](../../images/Pasted%20image%2020240306171855.png)
 - Note that VLAN 20 isn't shown on "VLAN allowed and active in management domain" because it wasn't been configured yet, just allowed. 
 
-### Remove VLAN 20
+#### Remove VLAN 20
 ![](../../images/Pasted%20image%2020240306172005.png)
 
-### Configure a VLAN to allow All
+#### Configure a VLAN to allow All
 - Same as default state if we so choose.
 ![](../../images/Pasted%20image%2020240306172117.png)
 
-### Configure VLAN to except
+#### Configure VLAN to except
 - except is a deny list.
 ![](../../images/Pasted%20image%2020240306172141.png)
 
-### Configure VLAN to none
+#### Configure VLAN to none
 
 ![](../../images/Pasted%20image%2020240306172214.png)
+## Trunk Configuration
+- Configure SW1's G0/0 as a trunk port.
+- Configure SW2's G0/0 and G0/1 as a trunk port. 
+![](../../images/Pasted%20image%2020240306165304.png)
 ### Configure SW1's G0/0 as a trunk port.
+- SW1 has host in VLAN10 and VLAN30. 
+![](../../images/Pasted%20image%2020240306172401.png)
+- Configuring specific VLANs is dual-purpose. Security and performance. 
+
+### **For security purposes, the native VLAN should be changed to an UNUSED VLAN**. 
+- **Ensure the native VLAN matches between switches.** 
+![](../../images/Pasted%20image%2020240306172555.png)
+
+### `show vlan brief`
+- G0/0 is not listed anywhere, even though these VLANs are allowed on the trunk. 
+- `show vlan brief` shows access ports assigned to each VLAN, NOT the trunk ports that allow each VLAN.
+
+### `show interfaces trunk`
+- use this to confirm trunk ports.
+
+### Configure SW2's G0/0 and G0/1 as a trunk port. 
+- SW2 G0/0, must allow VLAN 10 and 30
+![](../../images/Pasted%20image%2020240306172907.png)
+
+- SW2 G0/1 must allow VLAN 10, 20, and 30.
+![](../../images/Pasted%20image%2020240306172944.png)
+
+
+## What about the Router Configuration in Trunking?
+- In a access port, we used three separate interfaces from the connection to SW2 <-> R1. We assigned a separate ip address to each one on R1; each one serving as the default gateway address for the PCs in each VLAN. 
+- Now there's a single connection, we must use **sub-interfaces**. 
+
+### Router on a Stick (ROAS)
+- Given a single physical interface connection R1's g0/0 to SW2 G0/1.
+	- We can divide this one physical interface to three sub-interfaces for **inter-VLAN routing**.
+
+- R1 will have the following:
+	- g0/0.10
+	- g0/0.20
+	- g0/0.30
+- These three sub-logical interfaces are really just one interface; and operate like three separate interfaces.
+
+1. `interface g0/0`
+2. `no shutdown`
+3. `interface g0/0.10`  // notice how to enter sub-interface mode; the sub-interface doesn't have to match, but it is recommended for visual purposes.
+4. `encapsulation dot1q 10` // tells the router that is tagged with this specific VLAN number as if they arrived on this sub-interface. 
+5. `ip address 192.168.1.62 255.255.255.192` // assigned the last usable address to the sub-int
+6. `interface g0/0.20`
+7. `encapsulation dot1q 20`
+8. `ipaddresss 192.168.1.126 255.255.255.192`
+9. `interface g0/0.30`
+10. `encapsulation dot1q 30`
+11. `ip address 192.168.1.190 255.255.255.192`
+
+
+![](../../images/Pasted%20image%2020240306173829.png)
+
+![](../../images/Pasted%20image%2020240306173837.png)
+
+
+![](../../images/Pasted%20image%2020240306174054.png)
+
+## Questions
+
+![](../../images/Pasted%20image%2020240306184055.png)
+
+![](../../images/Pasted%20image%2020240306184030.png)
+
+![](../../images/Pasted%20image%2020240306184139.png)
+
+![](../../images/Pasted%20image%2020240306184154.png)
+
+![](../../images/Pasted%20image%2020240306184306.png)
+- Even if VLAN10 is allowed, it must still be enabled or brought into existence on the switch. 
