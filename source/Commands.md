@@ -118,4 +118,65 @@ show vtp status
 
 
 vtp version NUMBER(1/2/3)
+
+
+
+sh int f0/1 switchport // checks specific interfaces for dtp/vtp
+```
+
+
+## STP
+
+```
+show spanning-tree ?
+```
+
+
+```
+SW(config-if)#spanning-tree portfast
+```
+
+```
+//enables spanning-tree on all access ports, but not trunk ports
+SW1(config)#spanning-tree portfast default
+
+```
+
+```
+//BPDU guard for interface-specific
+SW(config-if)#spanning-tree bpuguard enable
+```
+
+```
+//BPDU guard for all portfast enabled interfaces // global enable
+SW1(config)#spanning-tree portfast bpduguard default 
+
+//to renable the switch, do shutdown then no shutdown -- 
+```
+
+```
+SW1(config)#spanning-tree mode ?
+	mst 
+	pvst // classic spanning tree with p-
+	rapid-pvst // improved pvst // modern and most switches run 
+```
+
+
+```
+//configure Root bridge
+SW1(config)#spanning-tree vlan VLAN-NUMBER root primary
+
+//show info
+SW1(config)#do show spanning-tree
+
+// set 2ndary root priority
+SW1(config)#spanning-tree vlan VLAN-NUMBER root secondary
+
+```
+
+```STP Port Settings
+SW1(config)#spanning-tree vlan 1 ?
+	cost
+	port-priority
+
 ```
