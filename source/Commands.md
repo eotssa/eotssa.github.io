@@ -180,3 +180,8 @@ SW1(config)#spanning-tree vlan 1 ?
 	port-priority
 
 ```
+
+
+## EtherChannel Load Balancing
+
+![](images/Pasted%20image%2020240312015856.png)
