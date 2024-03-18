@@ -2,6 +2,9 @@
 
 Router
 ```
+show running-config 
+show startup-config
+
 show ip interface brief
 show ip route
 show interfaces status
@@ -9,6 +12,14 @@ show vlan brief
 show interfaces INTERFACE-ID switchport 
 
 show vtp status 
+
+show ip protocols 
+
+show ip ospf ? 
+show ip ospf database ## shows LSA(s) in LSDB
+show ip ospf neighbor ## shows OSPF neighbors 
+show ip ospf interface ## views all interface details on ospf 
+show ip ospf interface INTERFACE-ID
 ```
 
 
@@ -185,3 +196,35 @@ SW1(config)#spanning-tree vlan 1 ?
 ## EtherChannel Load Balancing
 
 ![](images/Pasted%20image%2020240312015856.png)
+
+
+
+## OSPF
+```
+show ip ospf interface brief 
+```
+
+```CHANGING COST
+// changes the cost of OSFP ; default reference bandwidth cost: 100
+// configure all routers to have the same osfp reference-bandwidth 
+R1(config-router)#auto-cost reference-bandwidth <1-4294967 (Mbps)>
+
+//change specific inteface cost, takes precedence over auto-cost
+R1(config-router)#ip ospf cost <1-65535>
+
+//change specific interface cost via bandwidth command (NOT RECOMMENDED)
+R1(config-router)#bandwidth ?
+R1(config-router)#bandwidth <NUM kilobits/sec>
+```
+
+```
+//activate osfp on an interface without the `network` command
+R1(config-if)#ip ospf PROCESS-ID area AREA-ID
+
+//configure all interfaces to be passive-intefaces
+R1(config-if)#router ospf PROCESS-ID
+//then select certain interfaces to enable
+R1(config-if)#no passive-interace INTERFACE-ID
+```
+
+![](images/Pasted%20image%2020240318163715.png)
