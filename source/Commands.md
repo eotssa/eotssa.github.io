@@ -14,6 +14,7 @@ show interfaces INTERFACE-ID switchport
 show vtp status 
 
 show ip protocols 
+show ip protocols brief (?)
 
 show ip ospf ? 
 show ip ospf database ## shows LSA(s) in LSDB
@@ -209,7 +210,7 @@ show ip ospf interface brief
 // configure all routers to have the same osfp reference-bandwidth 
 R1(config-router)#auto-cost reference-bandwidth <1-4294967 (Mbps)>
 
-//change specific inteface cost, takes precedence over auto-cost
+//change specific interface cost, takes precedence over auto-cost
 R1(config-router)#ip ospf cost <1-65535>
 
 //change specific interface cost via bandwidth command (NOT RECOMMENDED)
