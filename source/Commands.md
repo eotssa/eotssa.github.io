@@ -210,6 +210,15 @@ show ip ospf int INTERFACE-ID
 show ip ospf neighbor
 ```
 
+```
+R2# configure terminal
+R2(config)# router ospf 1
+R2(config-router)# network 192.168.12.0 0.0.0.3 area 0 
+R2(config-router)# exit
+R2(config)# interface s0/0/0
+R2(config-if)# ip ospf 1 area 0
+```
+
 ```CHANGING COST
 // changes the cost of OSFP ; default reference bandwidth cost: 100
 // configure all routers to have the same osfp reference-bandwidth 
