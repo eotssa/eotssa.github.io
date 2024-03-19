@@ -203,6 +203,11 @@ SW1(config)#spanning-tree vlan 1 ?
 ## OSPF
 ```
 show ip ospf interface brief 
+
+show ip ospf int INTERFACE-ID
+
+//checks neighbors for adj
+show ip ospf neighbor
 ```
 
 ```CHANGING COST
@@ -229,3 +234,67 @@ R1(config-if)#no passive-interace INTERFACE-ID
 ```
 
 ![](images/Pasted%20image%2020240318163715.png)
+```
+//Change interface priority for DR/DBR designation
+R1(config)#int g0/0
+R1(config-if)#ip ospf priority <0-255>
+
+//configure the OSPF network type
+R1(config-if)#ip ospf network ?
+	broadcast
+	non-broadcast
+	point-to-multipoint
+	point-to-point
+```
+
+![](images/Pasted%20image%2020240318212830.png)
+
+### OSPF Neighbor Requirements
+1. Area Numbers must match
+2. Interfaces must be in the same subnet
+3. OSPF process must not be shutdown
+4. OSPF router ID's must be unique 
+
+5. Set OSPF hello and dead timers
+```
+//sets hello-interval
+R1(config-if)#ip osp hello-interval SEC
+
+//sets dead-interval
+R1(config-if)#ip ospf dead-interval SEC
+```
+
+6. Set OSPF password
+```
+//set passwords -- OSPF adj must have the same password
+R1(config-if)#ip ospf authentication-key PASSWORD
+
+//must enable 
+R1(config-if)#ip ospf authentication 
+```
+
+7. Configure IP MTU (OSPF will still be on if not matching neighbors, but won't work properly)
+```
+R1(config-if)#ip mtu <68-1500>
+```
+
+8. OSPF Network Type must match 
+	- If we configure a loopback address, and then change the physical interface; might be an issue and still display FULL. 
+```
+R1(config-if)# 
+```
+
+
+
+Serial Interface's
+```SERIAL INTERFACES
+//Default encapsulation is HDLC
+//Can configure to ppp
+R1(config-if)#encaosulation ppp
+
+//One side is DCE, one side is DTE; Identify which with
+R1(config-if)#show ocntrollers INTERFACE-ID
+
+//Configure clock-rate with DCE side
+R1(config-if)#clock rate BITS-PER-SEC
+```
