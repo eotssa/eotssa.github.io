@@ -5,7 +5,7 @@ tags:
 categories:
   - IT
 ---
-![](../images/Pasted%20image%2020240319181043.png)
+![](../../images/Pasted%20image%2020240319181043.png)
 
 
 ```
@@ -313,7 +313,7 @@ R1(config)#
 ```
 What's wrong?
 
-![](../images/Pasted%20image%2020240319183739.png)
+![](../../images/Pasted%20image%2020240319183739.png)
 
 If we look at the diagram again, it looks like I misconfigured G0/0 wildcard mask to be `R1(config-router)#network 10.0.1.0 0.0.0.3 area 0`, when it should be `R1(config-router)#network 10.0.1.0 0.0.0.255 area 0`.
 
