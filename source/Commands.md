@@ -307,3 +307,19 @@ R1(config-if)#show ocntrollers INTERFACE-ID
 //Configure clock-rate with DCE side
 R1(config-if)#clock rate BITS-PER-SEC
 ```
+
+
+## IPv6 Routing
+
+Configure IPv6 on Router Interfaces
+```
+R1(config)#ipv6 unicast-routing         // enables ipv6 routing
+R1(config)#int g0/0
+R1(config-if)#ipv6 address 2001:db8:0:0::1/64
+R1(config-if)#no shutdown
+R1(config-if)#
+R1(config-if)#int g0/1
+R1(config-if)#ipv6 address 2001:db8:0:1::1/64
+R1(config-if)#no shutdown
+```
+
