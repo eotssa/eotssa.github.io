@@ -21,6 +21,9 @@ show ip ospf database ## shows LSA(s) in LSDB
 show ip ospf neighbor ## shows OSPF neighbors 
 show ip ospf interface ## views all interface details on ospf 
 show ip ospf interface INTERFACE-ID
+
+show ipv6 int brief
+
 ```
 
 
