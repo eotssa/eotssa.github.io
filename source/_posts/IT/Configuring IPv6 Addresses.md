@@ -1,7 +1,9 @@
 ---
 title: defaultPost
 date: 2024-03-20 18:57:43
-tags:
+tags: 
+categories:
+  - IT
 ---
 ## Configuring IPv6 Addresses (EUI-64)
 1. Divide MAC address in half
