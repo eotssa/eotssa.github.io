@@ -316,7 +316,7 @@ R1(config-if)#clock rate BITS-PER-SEC
 
 Configure IPv6 on Router Interfaces
 ```
-R1(config)#ipv6 unicast-routing         // enables ipv6 routing
+R1(config)#ipv6 unicast-routing         // enables ipv6 routing ; enables ipv6 forwarding; does not affect R's ability to send and recieve its own ipv6 traffic 
 R1(config)#int g0/0
 R1(config-if)#ipv6 address 2001:db8:0:0::1/64
 R1(config-if)#no shutdown
@@ -325,4 +325,55 @@ R1(config-if)#int g0/1
 R1(config-if)#ipv6 address 2001:db8:0:1::1/64
 R1(config-if)#no shutdown
 ```
+
+```
+R1#show ipv6 neighbor  // displays ipv6 neighbor table 
+```
+
+SLAAC
+```
+ipv6 address autoconfig // dont need to enter prefix; NDP is used to learn the prefix used on the local link, and devices will use eui-64 to generate the interface ID (or randomly generate depending)
+```
+
+IPv6 Static routing
+```
+R1#show ipv6 route // shows connected and local; does not show link-local
+```
+
+```
+ipv6 route destination/prefix-length (next-hop | exit-interface [next-hop]) [ad]
+
+Directly attached static route: Only the exit interface is specified. // NOT USABLE for ethernet interfaces in IPv6
+    ipv6 route destination/prefix-length exit-interface
+	    R1(config)# ipv6 route 2001:db8:0:3::/64 g0/0
+
+Recursive static route: Only the next hop is specified.
+    ipv6 route destination/prefix-length next-hop
+        R1(config)# ipv6 route 2001:db8:0:3::/64 2001:db8:0:12::2
+
+Fully specified static route: Both the exit interface and next hop are specified.
+	ipv6 route destination/prefix-length exit-interface next-hop
+        R1(config)# ipv6 route 2001:db8:0:3::/64 g0/0 2001:db8:0:12::2
+```
+
+```
+Network route:  
+	R1(config)# ipv6 route 2001:db8:0:3::/64 2001:db8:0:12::2
+
+Host route:
+
+    R2(config)# ipv6 route 2001:db8:0:1::100/128 2001:db8:0:12::1
+    R2(config)# ipv6 route 2001:db8:0:3::100/128 2001:db8:0:23::2
+
+Default route:  
+	R3(config)# ipv6 route ::/0 2001:db8:0:23::1
+
+Floating static route:
+	Configure the route using AD higher than the protocol being used. 
+
+Link-Local Next Hops:
+	Configure the route with a fully-specified static route. 
+```
+
+
 

@@ -33,3 +33,20 @@ R1(config-if)#ipv6 address 2001:db8:0:2::/64 eui-64
 
 R1(config-if)#no shutdown
 ```
+
+## Solicited-Node Multicast Address Calculations
+
+An IPv6 solicited-node multicast address is calculated from a unicast address. 
+
+The prefix is: `ff02:0000:0000:0000:0000:0001:ff` followed by the + (last 6 hex digits from unicast address)
+
+For example:
+
+`2001:0db8:0000:0001:0f2a:4fff:fea3:00b1`  
+
+Take the prefix: `2001:0db8:0000:0001:ff`, which is also written as `2001:0db8::1:ff`. 
+
+Now add the last 6 hex digits `ae:00b1`, also written as `ae:b1`
+
+Result: `2001:0db8::1:ffa3:b1`
+
