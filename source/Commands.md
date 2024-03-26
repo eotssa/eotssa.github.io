@@ -452,6 +452,45 @@ R1(config-std-nacl)#permit any
 ```
 
 ### Resequencing ACL
+
 ```
 R1(config)#ip access-list resequence acl-id start-seq-num increment
 ```
+For example, ACL 1 may be numbered 1,2,3,4,5. If we wanted to insert a rule in-between, there are no integers left. 
+Resequencing as follows like such `ip access-list resequence 1 10 10` changes the first entry to 10, and increments 10 after--resulting in 10,20,30,40,50. Now, we can add a rule in-between.
+
+
+### Extended ACL
+
+`number` range: 100-199, 2000-2699
+```
+R1(config)#access-list number [permit | deny] protocol src-ip dest-ip
+```
+
+Extended Named ACL
+```
+R1(config)#access-list extended {name | number}
+R1(config-ext-nacl)#[seq-num] [permit | deny] protocol src-ip dest-ip
+
+R1(config)#ip access-list extended EXAMPLE
+R1(config-ext-nacl)#deny ?
+	<0-255>                                     An IP protocol number  // 1: ICMP, 6: TCP, 17: UDP, 88: EIGRP, 89: OSPF
+	ahp                                         Authentication Header Protocol
+	eigrp                                       Cisco's EIGRP routing protocol
+	esp                                         Encapsulation Security Payload
+	gre                                         Cisco's GRE tunneling
+	icmp                                        Internet Control Message Protocol
+	igmp                                        Internet Gateway Message Protocol
+	ip                                          Any Internet Protocol
+	ipinip                                      IP in IP tunneling
+	nos                                         KA9Q NOS compatible IP over IP tunneling
+	object-group                                Service object group
+	ospf                                        OSPF routing protocol
+	pcp                                         Payload Compression Protocol
+	pim                                         Protocol Independent Multicast
+	sctp                                        Stream Control Transmission Protocol
+	tcp                                         Transmission Control Protocol
+	udp                                         User Datagram Protocol
+
+```
+
