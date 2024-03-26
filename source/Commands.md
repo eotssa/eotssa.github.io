@@ -492,5 +492,25 @@ R1(config-ext-nacl)#deny ?
 	tcp                                         Transmission Control Protocol
 	udp                                         User Datagram Protocol
 
+R1(config-ext-nacl)#deny tcp any ?
+	A.B.C.D                                   Source address
+	any                                       Any source host
+	host                                      A single source host // specify a host for a /32 instead of a wildcard mask
+	object-group                              Source network object group
+
+```
+
+Specifying Port Ranges
+
+```
+R1(config-ext-nacl)#deny tcp src-ip [eq | gt | lt | neq | range num num2] src-port-num dest-ip [eq | gt | lt | neq | range num num2] dst-port-num
+
+//For example,
+R1(config-ext-nacl)#
+```
+
+Show
+```
+R1#show ip interface INTERFACE-ID
 ```
 
