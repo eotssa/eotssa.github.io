@@ -379,6 +379,7 @@ Link-Local Next Hops:
 
 ## ACL
 
+### Numbered ACL
 ```
 R1(config)#access-list NUMBER {deny | permit} ip wildcard-mask
 ```
@@ -439,4 +440,18 @@ R1#show access-list
 
 // Running-Config Pipe difference (piping via access-list will not show the internals)
 R1#show running-config | section access-list
+```
+
+### Another way to configure numbered ACL (in named ACL config mode)
+Works similarly to named ACL; advantage is ability to delete rules by number. 
+Also, global config ACL deletion will delete the entire ACL, not individual entries. 
+```
+R1(config)#ip access-list standard NUMBER
+R1(config-std-nacl)#deny ip-address
+R1(config-std-nacl)#permit any
+```
+
+### Resequencing ACL
+```
+R1(config)#ip access-list resequence acl-id start-seq-num increment
 ```
