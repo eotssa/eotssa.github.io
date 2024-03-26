@@ -317,6 +317,8 @@ To meet requirement 3 and 4:
       -172.16.1.0/24 can't access 172.16.2.0/24
       -172.16.2.0/24 can't access 172.16.1.0/24
 
+We will use access-list here. 
+
 ```
 R1(config)#access-list 1 deny 172.16.1.0 0.0.0.255
 R1(config)#access-list 1 permit any
