@@ -377,3 +377,66 @@ Link-Local Next Hops:
 
 
 
+## ACL
+
+```
+R1(config)#access-list NUMBER {deny | permit} ip wildcard-mask
+```
+
+By default, the ACL is configured /32 if a wildcard-mask is not given. 
+```
+//Specifies wildcard /32 mask 
+access-list 1 deny 1.1.1.1 0.0.0.0
+
+//Implict /32 is not specified
+R1(config)#access-list 1 deny 1.1.1.1 
+
+//Same, but older method
+R1(config)#access-list 1 deny host 1.1.1.1
+```
+
+Implicit allow
+```
+R1(config)#access-list 1 permit any
+
+//Same 
+R1(config)#access-list 1 permit 0.0.0.0 255.255.255.255
+```
+
+Remark
+```
+R1(config)#access-list 1 remark DESCRIPTION 
+```
+
+Show
+```
+//Displays all kinds of ACLs
+R1#show access-lists
+
+//Displays IP ACL's only
+R1#show ip access-lists
+
+R1#show running-config | include access-list
+```
+
+Apply to an interface
+```
+R1(config-if)#ip access-group NUMBER {in | out}
+```
+
+### Standard Named ACLs
+Configuration
+```
+R1(config)#ip access-list standard acl-name
+R1(config-std-nacl)# [entry-number] {deny | permit} ip wildcard-mask
+```
+
+
+Show
+```
+// Shows all ACLs
+R1#show access-list
+
+// Running-Config Pipe difference (piping via access-list will not show the internals)
+R1#show running-config | section access-list
+```
