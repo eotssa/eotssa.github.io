@@ -26,6 +26,12 @@ show ipv6 int brief
 
 ```
 
+Switch
+```
+show ip interface brief
+show interfaces status
+
+```
 
 ## Native VLAN on a Router (ROAS)
 
@@ -514,3 +520,69 @@ Show
 R1#show ip interface INTERFACE-ID
 ```
 
+## CDP and LLDP
+Enables neighbors to share information directly with each other. 
+### CDP
+
+```
+//Shows basic information about CDP (timers, version)
+R1#show cdp
+
+//Shows how many CDP messages have been sent and recieved
+R1#show cdp traffic
+
+//Displays which interfaces CDP is enabled on
+R1#show cdp interface
+
+//lists CDP neighbors and some basic information about each neighbor
+R1#show cdp neighbors
+
+//lists each CDP neighbor with more detailed information (IP address, etc)
+R1#show cdp neighbors detail
+
+//same as detailed neighbors, but specific 
+R1#show cdp entry NAME
+```
+### LLDP
+
+LLDP Configurations 
+```
+//LLDP is globally disabled by default. Enable globally deault
+R1#lldp run
+
+//Enable LLDP on specific interfaces (tx)
+R1#lldp transmit
+
+//Enable LLDP on a specific interfaqce (rx)
+R1#lldp recieve
+
+//Configure LLDP timer
+R1#lldp timer SECONDS
+
+//Configure LLDP holdtime
+R1#lldp holdtime seconds
+
+//Configure LLDP reinit timer
+R1#lldp reinit
+```
+
+show commands
+```
+//Shows LLDP configuration information
+R1(config)#show lldp
+
+//Shows statistics about frames
+R1(config)#show lldp traffic
+
+//Shows if LLDP are enabled on every interface 
+R1(config)#show lldp interface
+
+//Shows all neighbors 
+R1(config)#show lldp neighbors
+
+//Shows more detail for neighbors // shows device capabilities
+R1(config)#show lldp neighbors detail
+
+//Shows specific neighbor
+R1(config)#show lldp entry NAME
+```
