@@ -657,4 +657,75 @@ R2 is as follows:
 ```
 R1(config)#ntp server 10.1.1.1
 R1(config)#do show ntp associations
+R1(config)#do show ntp status
+```
+
+NTP Configuration even when there is no external server; 
+```
+// Uses default stratum level of 8 // will configure a loopback addresses (127.x.x.x)
+R1(config)#ntp master ?
+```
+
+```
+//ConfigureNTP symmetric active mode
+R2(config)#ntp peer IP-ADDRESS-OF-R3
+```
+
+```
+R3(config)#ntp peer IP-ADDRESS-OF-R2
+```
+
+NTP Authentication
+```
+//Enable NTP auth
+ntp authenciate
+//create the NTP auth key(s)
+ntp authentication-key KEY-NUM md5 KEY
+//specify which key is trusted
+ntp trusted-key KEY-NUM
+//speicfy which key to use for the server
+ntp server IP-ADDRESS key KEY-NUM
+```
+
+```
+R1(config)#ntp authenticate
+R1(config)#ntp authentication-key 1 md5 jeremysitlab
+R1(config)#ntp trusted-key 1
+-------------------
+R2(config)#ntp authenticate
+R2(config)#ntp authentication-key 1 md5 jeremysitlab
+R2(config)#ntp trusted-key 1
+R2(config)#ntp server 10.0.12.1 key 1
+R2(config)#ntp peer 10.0.23.2 key 1
+-------------------
+R3( config)#ntp authenticate
+R3(config)#ntp authentication-key 1 md5 jeremysitlab
+R3(config)#ntp trusted-key 1
+R3(config)#ntp server 10.0.12.1 key 1
+R2(config)#ntp peer 10.0.23.1 key 1
+```
+
+
+```
+!Basic Configuration Commands
+R1(config)# ntp server ip-address [prefer]
+R1(config)# ntp peer ip-address
+R1(config)# ntp update-calendar
+
+R1(config)# ntp master [stratum]
+R1(config)# ntp source interface
+
+!Basic Show Commands
+
+R1# show ntp associations
+R1# show ntp status
+
+! Basic Authentication Commands
+
+R1(config)# ntp authenticate
+R1(config)# ntp authentication-key key-number md5 key
+R1(config)# ntp trusted-key key-number
+
+R1(config)# ntp server ip-address key key-number
+R1(config)# ntp peer ip-address key key-number
 ```
