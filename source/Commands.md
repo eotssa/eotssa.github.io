@@ -729,3 +729,43 @@ R1(config)# ntp trusted-key key-number
 R1(config)# ntp server ip-address key key-number
 R1(config)# ntp peer ip-address key key-number
 ```
+
+## DNS
+Window DNS Commands
+
+```
+ipconfig /all 
+nslookup NAME
+ipconfig /displaydns
+ipconfig /flushdns
+ping ip-address -n NUMBER
+```
+
+Configuring R1 as a DNS server -and- client 
+```
+//Configures router to act as a DNS server
+R1(config)#ip dns server
+
+//Build a host table 
+R1(config)#ip host R1 192.168.0.1
+R1(config)#ip host PC1 192.168.0.101
+R1(config)#ip host PC2 192.168.0.102
+R1(config)#ip host PC3 192.168.0.103
+
+//Configure an external server. After checking its own server, it'll query the external DNS. 
+R1(config)#ip name-server 8.8.8.8
+
+//Configures R1 to act as a DNS client
+//Enables R1 to perform DNS queries; enabled by default. 
+R1(config)#ip domain lookup
+```
+
+```
+R1#show hosts
+```
+
+Set the domain name
+```
+//e.g., ping pc1 => ping pc1.NAME.COM
+R1(config)#ip domain name NAME.COM
+```
