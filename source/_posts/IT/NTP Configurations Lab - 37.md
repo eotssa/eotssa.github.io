@@ -252,6 +252,30 @@ R2(config)#ntp server 192.168.12.1 key 1
 
 I would normally configure a loopback interface 
 
+```
+R2#show ntp as
+
+address         ref clock       st   when     poll    reach  delay          offset            disp
+ ~192.168.12.1  .AUTH.          16   -        64      0      0.00           0.00              16000.00
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+```
+
+Hmm... doesn't look like it's syncing? I gave it adequate time as well. What's wrong? 
+
+Looks like I forgot to add key 1 as trusted in R1.
+
+```
+R1(config)#ntp trusted-key 1
+```
+
+R2 now looks good. 
+```
+R2#sh clock detail
+5:6:22.544 EST Wed Dec 30 2020
+Time source is NTP
+```
+
+
 5. Configure NTP to update the hardware calendars of R1, R2, and R3.
   *you can't view the calendar in Packet Tracer
 
