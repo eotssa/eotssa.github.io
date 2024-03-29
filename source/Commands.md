@@ -586,3 +586,75 @@ R1(config)#show lldp neighbors detail
 //Shows specific neighbor
 R1(config)#show lldp entry NAME
 ```
+
+## NTP
+
+```
+//Default timezone is UTC
+R1#show clock
+
+//asterisk * means time is not authoritative; does not consider accurate 
+R1#show clock detail
+
+//Manual time configuration
+R1#clock set ? 
+
+//Hardware clock
+R1#calendar set hh:mm:ss {day|month} {month|day} year
+
+//Synchronize calendar to clock
+R1#clock update-calendar
+
+//Sync clock to calendar
+R1#clock read-calendar
+
+
+//Configure timezone
+R1(config)#clock timezone NAME HOURS-OFFSET [MINUTES-OFFSET]
+
+//Daylight Savings Time (Summer Time)
+R1(config)#clock summer-time recurring NAME START END [OFFSET]
+R1(config)#clock summer-time EDT recurring 2 Sunday March 02:00 1 Sunday November 02:00
+```
+
+NTP Configuration, Syncing to Google's Time
+```WINDOWS
+nslookup time.google.com
+dns.google
+```
+
+```
+R1(config)#ntp server 216.239.35.0
+R1(config)#ntp server 216.239.35.4
+R1(config)#ntp server 216.239.35.8
+
+//can set prefer 
+R1(config)#ntp server 216.239.35.12 prefer
+
+//See all configured NTP servers; * is best server
+R1#show ntp associations
+
+//status
+R1#show ntp status
+
+//See clock information; NTP uses UTC timezone by default
+R1#show clock detail
+
+```
+
+NTP Configuration to a LAN device; R1 acts as a server for R2
+
+Configure R1 first
+```
+//Set R1's loopback interface (not required, but good practice)
+R1(config)#interface loopback0
+R1(config-if)#ip address 10.1.1.1 255.255.255.255
+R1(config-if)#exit
+R1(config)#ntp source loopback0
+```
+
+R2 is as follows:
+```
+R1(config)#ntp server 10.1.1.1
+R1(config)#do show ntp associations
+```
