@@ -847,3 +847,22 @@ R2(config-if)#do sh ip interface g0/1
 ```
 
 ![](images/Pasted%20image%2020240329222238.png)
+
+## SNMPv2c Configurations (N)
+```
+//Optional Information 
+R1(config)#snmp-server contact EMAIL/NUMBER/ETC
+R1(config)#snmp-server location STRING
+
+//Configure the SNMP community strings (passwords); ro = read only, rw = write only 
+R1(config)#snmp-server community Jeremy1 ro                 
+R1(config)#snmp-server community Jeremy2 rw                  
+                                                             
+
+//Specify address, NMS, version, and community (which dictates function)
+R1(config)#snmp-server host 192.168.1.1 version 2c Jeremy1
+
+//Specify traps; interface up or down traps, and config traps (notify)
+R1(config)#snmp-server enable traps snmp linkdown linkup
+R1(config)#snmp-server enable traps config
+```
