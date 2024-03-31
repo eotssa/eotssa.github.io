@@ -769,3 +769,81 @@ Set the domain name
 //e.g., ping pc1 => ping pc1.NAME.COM
 R1(config)#ip domain name NAME.COM
 ```
+
+## DHCP
+
+```
+ipconfig /release 
+
+// DHCP discover, DHCP Offer, DHCP Request, DHCP Ack (DORA)
+ipconfig /renew 
+```
+
+DHCP Sever Configuration in IOS
+```
+//Specify a range of addresses that won't be given to DHCP clients
+R1(config)#ip dhcp excluded-address 192.168.1.1 192.168.1.10
+
+//Create DHCP pool (subnet of address that can be assigned to DHCP clients)
+R1(config)#ip dhcp pool LAB_POOL 
+
+//Configure range of pools to be assigned 
+R1#(dhcp-config)#network ?
+	/nn or A.B.C.D Network mask or prefix length
+	<cr>
+R1(dhcp-config)#network 192.168.1.0/24
+
+//Configure the DNS server the client should use 
+R1(dhcp-config)#dns-server 8.8.8.8 
+
+//Configure domain name of the network; tells all DHCP clients that it's inside this domain
+R1(dhcp-config)#domain-name EXAMPLE.COM
+
+//Default gateway - tells clients to use this 
+R1(dhcp-config)#default-router 192.168.1.1 
+
+//lease DAYS HOURS MINUTES or lease infinite 
+R1(dhcp-config)#lease 0 5 30 
+```
+
+Show Configurations
+```
+R1#show ip dhcp binding
+```
+
+DHCP Replay Agent Configuration
+```
+//Configure the interface connected to the subnet of the client devices
+R1(config)#interface g0/1
+
+//Configure the IP address of the DHCP server as the 'helper' address (the actual address of the DHCP server) + ensure the relay agent has a route to the DHCP server 
+R1(config-if)#ip helper-address 192.168.10.10
+
+R1(config-if)#do show ip interface g0/1
+	GigabitEthernet0/1 is up, line protocol is up
+	Internet address is 192.168.1.1/24
+	Broadcast address is 255.255.255.255
+	Address determined by non-volatile memory
+	MTU is 1500 bytes
+	Helper address is 192.168.10.10      // CHECK HERE
+	
+[output omitted]
+```
+
+DHCP Client (Use of DHCP to Configure the IP address of its interfaces); rare
+```
+//Choose the interface
+R2(config)#interface g0/1
+
+//Enable it. That's it. 
+R2(config-if)#ip address dhcp
+
+R2(config-if)#do sh ip interface g0/1
+	GigabitEthernet0/1 is up, line protocol is up
+	Internet address is 192.168.10.1/24
+	Broadcast address is 255.255.255.255
+	Address determined by DHCP          // HERE 
+[output omitted]
+```
+
+![](images/Pasted%20image%2020240329222238.png)
