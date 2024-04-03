@@ -1017,9 +1017,9 @@ SW1(config)#crypto key generate rsa
 Configure SSH
 ```
 //Configure secret, username, and ACL (optional)
-SW1(config)#enable secret ccna
-SW1(config)#username jeremy secret ccna
-SW1(config)#access-list 1 permit host 192.168.2.1
+SW1(config)#enable secret PASSWORD
+SW1(config)#username NAME secret PASSWORD2
+SW1(config)#access-list 1 permit host IP-ADDRESS
 
 //optional, recommended
 SW1(config)#ip ssh version 2
@@ -1038,4 +1038,13 @@ SW1(config-line)#transport input ssh
 
 //Apply ACL to all VTY lines (not input or output)
 SW1(config-line)#access-class 1 in
+```
+
+Connect via SSH
+```
+ssh -l USERNAME IP-ADDRESS 
+
+OR
+
+ssh USERNAME@IP-ADDRESS
 ```

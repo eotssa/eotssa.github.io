@@ -1,5 +1,5 @@
 ---
-title: Mapping a Topology with CDP or LLDP - 36
+title: Mapping a Topology with CDP or LLDP
 date: 2024-03-28 18:18:16
 tags: 
 categories:
