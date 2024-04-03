@@ -1127,4 +1127,69 @@ R1#clear ip nat translations
 R1#show ip nat statistics
 ```
 
+### Dynamic NAT Configuration
+Configure Dynamic NAT
 
+```
+//Define the 'inside' interface(s) connected to the internal network
+R1(config)#int g0/1
+R1(config-if)#ip nat inside
+
+//Define the 'outside' interface(s) connected to the external network. 
+R1(config-if)#int g0/0
+R1(config-if)#ip nat outside
+R1(config-if)#exit
+
+//Define ACL for NAT; if not applied to an interface, it will NOT drop packets if no match. 
+R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
+
+//Define Pool of isnide global IP addresses
+R1(config)#ip nat pool POOL1 GLOBAL_IP_ADDRESS_START GLOBAL_IP_ADDRESS_END prefix-length {24, etc | netmask }
+
+//Map the ACL to the Pool
+R1(config)#ip nat inside source list 1 pool POOL1
+```
+
+### PAT (NAT Overload)
+
+Configure PAT (almost same as Dynamic NAT with 1 difference: `overload`)
+
+```
+//Define the 'inside' interface(s) connected to the internal network
+R1(config)#int g0/1
+R1(config-if)#ip nat inside
+
+//Define the 'outside' interface(s) connected to the external network. 
+R1(config-if)#int g0/0
+R1(config-if)#ip nat outside
+R1(config-if)#exit
+
+//Define ACL for NAT; if not applied to an interface, it will NOT drop packets if no match. 
+R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
+
+//Define Pool of isnide global IP addresses
+R1(config)#ip nat pool POOL1 GLOBAL_IP_ADDRESS_START GLOBAL_IP_ADDRESS_END prefix-length {24, etc | netmask }
+
+//Map the ACL to the Pool
+R1(config)#ip nat inside source list 1 pool POOL1 overload
+```
+
+More common way to configure PAT
+
+```
+//Define the 'inside' interface(s) connected to the internal network
+R1(config)#int g0/1
+R1(config-if)#ip nat inside
+
+//Define the 'outside' interface(s) connected to the external network. 
+R1(config-if)#int g0/0
+R1(config-if)#ip nat outside
+R1(config-if)#exit
+
+//Define ACL for NAT; if not applied to an interface, it will NOT drop packets if no match. 
+R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK(?)
+
+//Instead of specifying a pool and overload, just specify interface and overload 
+R1(config)#ip nat inside source list 1 interface INTERFACE-ID overload
+
+```
