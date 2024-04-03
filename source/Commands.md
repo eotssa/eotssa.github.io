@@ -1048,3 +1048,48 @@ OR
 
 ssh USERNAME@IP-ADDRESS
 ```
+
+## FTP and TFTP
+
+
+TFTP: Upgrading Cisco ISO
+
+```
+//Check version, see crytographic support, etc
+R1#show version
+
+//view contents of flash 
+R1#show flash 
+
+//How to copy file from TFTP
+R1#copy tftp: flash:
+Address or name of remote host []? ENTER THE TFTP SERVER IP
+Source filename []? ENTER NAME OF DESIRED FILE
+Destination filename []? Enter name you want //(default: same name as in server)
+
+R1(config)#boot system flash:NAME_OF_FILE  // default - use first IOS file it finds 
+R1(config)#exit
+R1#write memory               // SAVE CONFIGURATION
+R1#reload                     // restarts device
+R1#show version               // ensure version is correct, no issues
+R1#delete flash:FILE_PATH     // delete filepath
+
+```
+
+
+FTP: Copying Files 
+
+```
+//Configure username and password R1 will use when connecting to FTP server
+R1(config)#ip ftp username cisco
+
+R1(config)#ip ftp password cisco
+
+R1(config)#exit
+R1#copy ftp: flash:
+Address or name of remote host []? ENTER THE TFTP SERVER IP
+Source filename []? ENTER NAME OF DESIRED FILE
+Destination filename []? Enter name you want //(default: same name as in server)
+
+//Rest is same as TFTP
+```
