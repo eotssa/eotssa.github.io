@@ -968,4 +968,74 @@ SW1(config)#ip default-gateway 192.168.1.254           // if not in the same LAN
 ### Telnet Configuration
 
 ```
+//Required for telnet 
+SW1(config)#enable secret PASSWORD
+//Optional: 
+SW1(config)#username NAME secret PASSWORD
+
+//Optional: configure ACL to limit which devices can connect to VTY lines
+SW1(config)#access-list 1 permit host 192.168.2.1    
+
+//Telnet/SSH is configured on VTY lines; 16 lines available, so 16 users can be connected at once. 
+SW1(config)#line vty 0 15                //recommended so all lines have same config
+
+//typical access configuration
+SW1(config-line)#login local
+SW1(config-line)#exec-timeout 50
+
+//transport input ? -- specifies certain types of connections 
+SW1(config-line)#transport input telnet
+
+//Optional: apply ACL to VTY lines only *note the access-class*
+SW1(config-line)#access-class 1 in
+```
+
+
+### SSH
+
+Check SSH Support
+```
+// check ios image name for K9; NPE ISO images to countries with encryption restrictions
+show version 
+
+// will tell you if it's supported here
+show ip ssh
+```
+
+Generate RSA Keys
+- Must configure router host name and domain name. 
+```
+//First, configure the domain name has RSA keys require the FQDN (host + domain) to generate
+SW1(config)#ip domain name EXAMPLE.COM
+
+//Generate key (will be SW1.EXAMPLE.COM), choose size of the key (2048)
+SW1(config)#crypto key generate rsa
+//cryto key generate rsa modulus LENGTH // alternative 
+
+```
+
+Configure SSH
+```
+//Configure secret, username, and ACL (optional)
+SW1(config)#enable secret ccna
+SW1(config)#username jeremy secret ccna
+SW1(config)#access-list 1 permit host 192.168.2.1
+
+//optional, recommended
+SW1(config)#ip ssh version 2
+
+//Used to access all 16 VTY lines 
+SW1(config)#line vty 0 15
+
+//Only login local works (unlike Telnet)
+SW1(config-line)#login local
+
+//Configure timeout (optional)
+SW1(config-line)#exec-timeout 50
+
+//Limit the VTY line connection to SSH only, recommended. 
+SW1(config-line)#transport input ssh
+
+//Apply ACL to all VTY lines (not input or output)
+SW1(config-line)#access-class 1 in
 ```
