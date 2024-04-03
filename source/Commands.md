@@ -906,3 +906,66 @@ R1(config)#service timestamps log [datetime / uptime]
 //Enable sequence numbers
 R1(config)#service sequence-numbers
 ```
+
+
+## SSH, Console Line, Telnet
+
+Console Port Security - login 
+```
+R1(config)#line console 0
+R1(config-line)#password PASSWORD
+R1(config-line)#login                  // required to tell user to enter the configured pwd
+R1(config-line)#end
+R1#exit
+
+R1 con0 is now available
+Press RETURN to get started.
+
+User Access Verification
+Password:
+R1>
+```
+
+Console Port Security - login local
+
+```
+R1(config)#username NAME secret PASSWORD
+R1(config)#line console 0
+R1(config-line)#login local             // requires device to require a user and pwd to login. 
+R1(config-line)#end
+R1#exit
+
+R1 con0 is now available
+Press RETURN to get started.
+User Access Verification
+Username: NAME
+Password:
+R1>
+```
+
+Log the user out after X amount of inactivity
+```
+line con 0 
+exec-timeout MINUTE SECOND 
+```
+
+### Layer 2 Switch - IP management
+![](images/Pasted%20image%2020240402201939.png)
+
+Assign an IP address to an SVI to allow remote connections to the CLI of the switch. 
+Recall switches do not have a routing table, and are not routing IP aware. 
+```
+SW1(config)#interface vlan1
+SW1(config-if)#ip address 192.168.1.253 255.255.255.0
+SW1(config-if)#no shutdown
+
+SW1(config-if)#exit
+
+SW1(config)#ip default-gateway 192.168.1.254           // if not in the same LAN, send to a router 
+```
+
+
+### Telnet Configuration
+
+```
+```
