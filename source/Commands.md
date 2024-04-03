@@ -866,3 +866,43 @@ R1(config)#snmp-server host 192.168.1.1 version 2c Jeremy1
 R1(config)#snmp-server enable traps snmp linkdown linkup
 R1(config)#snmp-server enable traps config
 ```
+
+
+
+## Syslog (N)
+
+Enable logging on different systems
+```
+//configure logging into the console line (can use number or keyword (informational)) -- enables for gt 6
+R1(config)#logging console SEVERITY
+
+//configure logging to the vty lines
+R1(config)#logging monitor SEVERITY
+R1(config)#terminal monitor     // enables Syslog messages in SSH or Telnet; required per connection 
+
+//configure logging to the buffer
+R1(config)#logging buffered SIZE SEVERITY
+
+//configure logging to an external server // both commands are same
+R1(config)#logging SERVER-IP
+
+R1(config)#logging host SERVER-IP
+
+R1(config)#logging trap SEVERITY         // specifies the level of logging on external server
+```
+
+QOL Configurations
+```
+//prevents logs from truncating current typing
+R1(config)#line console 0
+R1(config-line)#logging sycnhronous
+```
+
+Service timestamps/Service sequence numbers
+```
+//Configure and enable the timestamp
+R1(config)#service timestamps log [datetime / uptime]
+
+//Enable sequence numbers
+R1(config)#service sequence-numbers
+```
