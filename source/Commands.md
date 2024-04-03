@@ -1093,3 +1093,38 @@ Destination filename []? Enter name you want //(default: same name as in server)
 
 //Rest is same as TFTP
 ```
+
+
+
+## NAT 
+
+### Static Nat 
+Static NATs are a 1 to 1 mapping. 
+```
+//Define the 'inside' interface(s) connected to the internal network
+R1(config)#int g0/1
+R1(config-if)#ip nat inside
+
+//Define the 'outside' interface(s) connected to the external network. 
+R1(config-if)#int g0/0
+R1(config-if)#ip nat outside
+R1(config-if)#exit
+
+//Configure the one-to-one IP address mappings; `ip nat inside sorce static INSIDE-LOCAL-IP INSIDE-GLOBAL-IP`
+R1(config)#ip nat inside source static INSIDE-LOCAL-IP INSIDE-GLOBAL-IP
+R1(config)#ip nat inside source static INSIDE-LOCAL-IP INSIDE-GLOBAL-IP
+R1(config)#exit
+```
+
+```
+//Show NAT translations
+R1#show ip nat translations 
+
+//Clear all NAT translations; only clears dynamic, not static
+R1#clear ip nat translations
+
+//
+R1#show ip nat statistics
+```
+
+
