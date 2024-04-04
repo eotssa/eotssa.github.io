@@ -623,6 +623,7 @@ nslookup time.google.com
 dns.google
 ```
 
+Configure NTP servers to connect
 ```
 R1(config)#ntp server 216.239.35.0
 R1(config)#ntp server 216.239.35.4
@@ -650,6 +651,8 @@ Configure R1 first
 R1(config)#interface loopback0
 R1(config-if)#ip address 10.1.1.1 255.255.255.255
 R1(config-if)#exit
+
+//Configure R1 as a server by using `ntp source
 R1(config)#ntp source loopback0
 ```
 
@@ -660,7 +663,7 @@ R1(config)#do show ntp associations
 R1(config)#do show ntp status
 ```
 
-NTP Configuration even when there is no external server; 
+NTP Configuration even when there is no external server; Set peers.
 ```
 // Uses default stratum level of 8 // will configure a loopback addresses (127.x.x.x)
 R1(config)#ntp master ?
