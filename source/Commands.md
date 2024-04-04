@@ -1144,7 +1144,7 @@ R1(config-if)#exit
 R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
 
 //Define Pool of isnide global IP addresses
-R1(config)#ip nat pool POOL1 GLOBAL_IP_ADDRESS_START GLOBAL_IP_ADDRESS_END prefix-length {24, etc | netmask }
+R1(config)#ip nat pool pool-name start-ip end-ip [prefix-length prefix-length | netmask subnet-mask]
 
 //Map the ACL to the Pool
 R1(config)#ip nat inside source list 1 pool POOL1
@@ -1168,7 +1168,7 @@ R1(config-if)#exit
 R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
 
 //Define Pool of isnide global IP addresses
-R1(config)#ip nat pool POOL1 GLOBAL_IP_ADDRESS_START GLOBAL_IP_ADDRESS_END prefix-length {24, etc | netmask }
+R1(config)#ip nat pool pool-name start-ip end-ip [prefix-length prefix-length | netmask subnet-mask]
 
 //Map the ACL to the Pool
 R1(config)#ip nat inside source list 1 pool POOL1 overload
@@ -1187,7 +1187,7 @@ R1(config-if)#ip nat outside
 R1(config-if)#exit
 
 //Define ACL for NAT; if not applied to an interface, it will NOT drop packets if no match. 
-R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK(?)
+R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
 
 //Instead of specifying a pool and overload, just specify interface and overload 
 R1(config)#ip nat inside source list 1 interface INTERFACE-ID overload
