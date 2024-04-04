@@ -888,7 +888,7 @@ R1(config)#logging buffered SIZE SEVERITY
 
 //configure logging to an external server // both commands are same
 R1(config)#logging SERVER-IP
-
+OR 
 R1(config)#logging host SERVER-IP
 
 R1(config)#logging trap SEVERITY         // specifies the level of logging on external server
@@ -930,7 +930,6 @@ R1>
 ```
 
 Console Port Security - login local
-
 ```
 R1(config)#username NAME secret PASSWORD
 R1(config)#line console 0
