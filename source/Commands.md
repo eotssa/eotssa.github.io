@@ -1080,7 +1080,6 @@ R1#delete flash:FILE_PATH     // delete filepath
 
 
 FTP: Copying Files 
-
 ```
 //Configure username and password R1 will use when connecting to FTP server
 R1(config)#ip ftp username cisco
@@ -1193,5 +1192,11 @@ R1(config)#access-list 1 permit IP-ADDRESS WILDCARD-MASK
 
 //Instead of specifying a pool and overload, just specify interface and overload 
 R1(config)#ip nat inside source list 1 interface INTERFACE-ID overload
+
+```
+
+## QoS | PoE and VoIP
+
+```
 
 ```
