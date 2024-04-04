@@ -1196,7 +1196,31 @@ R1(config)#ip nat inside source list 1 interface INTERFACE-ID overload
 ```
 
 ## QoS | PoE and VoIP
+![](images/Pasted%20image%2020240404161740.png)
+IP Phones / Voice VLAN to Enable 
+```
+SW1(config)#int g0/0
+SW1(config-if)#switchport mode access
+// Data traffic recieved by g0/0 will remian untagged. SW1 will use CDP to tell PH1 to tag PH1's traffic in VLAN 11
+SW1(config-if)#switchport access vlan 10          // data VLAN
+SW1(config-if)#switchport voice vlan 11           // voice VLAN
 
+// note* that g0/0 is still an access port; even if it contians 2 vlans
+SW1#show int g0/0 switchport         // can use to verify
+SW1#show interfaces trunk            // will not see g0/0
+SW1#show interfaces g0/0 trunk       // status will be not-trunking
 ```
 
+Power Policing for PSE to PD Devices
 ```
+//default settings: disable the port and send a Syslog if a PD draws too much power
+SW1#power inline police
+
+//same as `power inline police` ; interface will be put in error-disabled state, and can be re-enabled with shutdown/no shutdown
+SW1#power incline police action err-disable
+
+//command does not shutdown interface; just sends a syslog and restarts interface 
+SW1#power inline police acton log 
+```
+
+QoS
