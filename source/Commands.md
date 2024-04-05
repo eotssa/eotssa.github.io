@@ -1223,4 +1223,105 @@ SW1#power incline police action err-disable
 SW1#power inline police acton log 
 ```
 
-QoS
+QoS (N)
+
+Identify the special type of traffic for QoS.
+```
+//Create a class map 
+R1(config)#class-map HTTP_MAP
+R1(config-cmap)#match protocol ?
+  arp     IP ARP
+  bgp     Border Gateway Protocol
+  cdp     Cisco Discovery Protocol
+  dhcp    Dynamic Host Configuration
+  dns     Domain Name Server lookup
+  eigrp   Enhanced Interior Gateway Routing Protocol
+  ftp     File Transfer Protocol
+  gre     Generic Routing Encapsulation
+  h323    H323 Protocol
+  http    Hypertext Transfer Protocol
+  https   Secure Hypertext Transfer Protocol
+  icmp    ICMP
+  ip      IP
+  ipsec   IP Security Protocol (ESP/AH)
+  ipv6    IPV6
+  ntp     Network Time Protocol
+  ospf    Open Shortest Path First
+  pop3    Post Office Protocol
+  rip     Routing Information Protocol
+  rtp     Real Time Protocol
+  skinny  Skinny Call Control Protocol
+  smtp    Simple Mail Transfer Protocol
+
+R1(config-cmap)#match protocol http
+```
+
+Show commands 
+``` 
+//Class maps currently are "match-all" because we defined our our type. We can use 'match-all' or 'match-any' as needed
+R1(config)#do sh run | section class-map
+class-map match-all HTTPS_MAP
+ match protocol https
+class-map match-all HTTP_MAP
+ match protocol http
+class-map match-all ICMP_MAP
+ match protocol icmp
+```
+
+Specify the treatment for traffic 
+```
+//policy-map NAMED is applied to an interface 
+R1(config)#policy-map ?
+  WORD  policy-map name
+  type  type of the policy-map
+R1(config)#policy-map G0/0/0_OUT
+R1(config-pmap)#?
+  class  policy criteria
+  exit   Exit from policy-map configuration mode
+  no     Negate or set default values of a command
+
+//Then identify class-map that we configured
+R1(config-pmap)#class HTTPS_MAP
+R1(config-pmap-c)#?
+  bandwidth       Bandwidth
+  exit            Exit from class action configuration mode
+  no              Negate or set default values of a command
+  priority        Strict Scheduling Priority for this Class
+  queue-limit     Queue Max Threshold for Tail Drop
+  random-detect   Enable Random Early Detection as drop policy
+  service-policy  Configure Flow Next
+  set             Set QoS values
+  shape           Traffic Shaping
+R1(config-pmap-c)#set ip dscp ?
+  <0-63>   Differentiated services codepoint value
+  af11     Match packets with AF11 dscp (001010)
+  af12     Match packets with AF12 dscp (001100)
+  af13     Match packets with AF13 dscp (001110)
+  af21     Match packets with AF21 dscp (010010)
+  af22     Match packets with AF22 dscp (010100)
+  af23     Match packets with AF23 dscp (010110)
+  af31     Match packets with AF31 dscp (011010)
+  af32     Match packets with AF32 dscp (011100)
+  af33     Match packets with AF33 dscp (011110)
+  af41     Match packets with AF41 dscp (100010)
+  af42     Match packets with AF42 dscp (100100)
+  af43     Match packets with AF43 dscp (100110)
+  cs1      Match packets with CS1(precedence 1) dscp (001000)
+  cs2      Match packets with CS2(precedence 2) dscp (010000)
+  cs3      Match packets with CS3(precedence 3) dscp (011000)
+  cs4      Match packets with CS4(precedence 4) dscp (100000)
+  cs5      Match packets with CS5(precedence 5) dscp (101000)
+  cs6      Match packets with CS6(precedence 6) dscp (110000)
+  cs7      Match packets with CS7(precedence 7) dscp (111000)
+  default  Match packets with default dscp (000000)
+  ef       Match packets with EF dscp (101110)
+
+//Marks any HTTPS packet with DSCP with AF31
+R1(config-pmap-c)#set ip dscp af31
+R1(config-pmap-c)#priority ?
+  <8-2000000>  Kilo Bits per second
+  percent      % of total bandwidth
+
+//Sets our HTTPS traffic priority queue of at least 10% during times of congestion 
+R1(config-pmap-c)#priority percent 10
+```
