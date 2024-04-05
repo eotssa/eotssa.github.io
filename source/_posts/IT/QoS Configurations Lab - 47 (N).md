@@ -284,5 +284,17 @@ policy-map G0/0/0_OUT
 R1#
 ```
 
-Now apply it to G0/0/0. 
+Now apply it to G0/0/0 via `service-policy`
 
+```
+R1(config)#int g0/0/0
+R1(config-if)#service
+R1(config-if)#service-policy ?
+  input   Assign policy-map to the input of an interface
+  output  Assign policy-map to the output of an interface
+R1(config-if)#service-policy output G0/0/0_OUT
+```
+
+If we ping 10.0.0.100, the outbound PDU details in R1 should indicate DSCP:0x10, which is decimal 16. 
+
+This is correct because we configured ICMP to be DSCP: CS2 => 16
