@@ -1325,3 +1325,109 @@ R1(config-pmap-c)#priority ?
 //Sets our HTTPS traffic priority queue of at least 10% during times of congestion 
 R1(config-pmap-c)#priority percent 10
 ```
+
+## Port Security: Layer 2 (DHCP snooping, dynamic ARP inspection, port)
+
+![](images/Pasted%20image%2020240405203711.png)
+
+Enabling Port Security
+```
+//By default, most SW interfaces are 'dynamic auto'; need to configure to `mode {access | trunk}`
+SW1(config)#int g0/1
+SW1(config-if)#switchport mode {access | trunk}
+//Now port security can be enabled
+SW1(config-if)#switchport port-security            // first MAC address that interfacts with g0/1 is saved
+
+//Show
+SW1#show port-security int g0/1
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Shutdown               // default behavior 
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0001.9684.E019:1        
+Security Violation Count   : 0
+```
+
+Re-enabling a `Secure-down` status / err-disabled
+```
+SW1(config)#int g0/1
+SW1(config-if)#shutdown
+SW1(config-if)#no shutdown
+```
+
+Allowing automatic re-enable of Err-Disabled State (ErrDisable Recovery)
+```
+SW#show errdisable recovery
+ErrDisable Reason                                       Timer Status
+-----------------                                       ------------
+arp-inspection                                          Disabled
+bpduguard                                               Disabled
+dtrm                                                    Disabled
+fc                                                      Disabled
+hSRP                                                    Disabled
+lacp                                                    Disabled
+mac-address                                             Disabled
+ndp-inspection                                          Disabled
+pagp                                                    Disabled
+port-security                                           Disabled
+psc                                                     Disabled
+pvstn                                                   Disabled
+qos                                                     Disabled
+rootguard                                               Disabled
+secopt                                                  Disabled
+spanning-tree                                           Disabled
+udld                                                    Disabled
+unk-l2-flood                                            Disabled
+vlan                                                    Disabled
+[...]
+
+//Enable auto-recovery, but ensure to remove the device causing the issue first. 
+SW1(config)#errdisable recovery cause psecure-violation
+SW1(config)#errdisable recovery interval 180
+```
+
+Violation Modes for Unauthorized MAC address (Port-Security)
+1. Shutdown: err-disables interface; 1 syslog
+2. Restrict: discards all traffic from unauthorized MAC address; syslogs per traffic
+3. Protect: discards all traffic from unauthorized MAC address; no syslog
+```
+SW1(config-if)#switchport port-security
+//manually configure MAC address
+SW1(config-if)#switchport port-security mac-address MAC-ADDRESS
+//Enable restrict mode
+SW1(config-if)#switchport port-security violation {shutdown | restrict | protect}
+```
+
+Secure MAC Address Aging
+- By default, secure MAC addresses will not age out: (Aging Time: 0 minutes); 
+- Absolute: MAC address is removed after timer expires, but can be immediately relearned on a new frame
+- Inactivity: aging timer is reset every time a frame from the source MAC address is received 
+```
+SW1(config-if)#switchport port-security aging type {absolute | inactivity}
+```
+
+Static secure MAC addresses can be made to age out as follows:
+```
+SW1(config-if)#switchport port-security aging static
+```
+
+Show command
+```
+SW1#show port-security
+```
+
+Sticky Secure MAC Addresses
+```
+//Dynamically learned secure MAC addresses will be converted to 'sticky secure' and added to the running-config
+//Think of it as a way to configure secure MAC addresses without manually configuring them
+SW1(config-if)#switchport port-security mac-address sticky          
+//sticky secure will never age out, make sure to save running-config
+
+SW1(config)#show mac address-table secure
+```
