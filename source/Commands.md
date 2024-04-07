@@ -796,13 +796,13 @@ R1#(dhcp-config)#network ?
 	<cr>
 R1(dhcp-config)#network 192.168.1.0/24
 
-//Configure the DNS server the client should use 
+//Configure the DNS server the client should use            
 R1(dhcp-config)#dns-server 8.8.8.8 
 
 //Configure domain name of the network; tells all DHCP clients that it's inside this domain
 R1(dhcp-config)#domain-name EXAMPLE.COM
 
-//Default gateway - tells clients to use this 
+//Default gateway - tells clients to use this // DHCP poisioning, would define an malicious default gateway 
 R1(dhcp-config)#default-router 192.168.1.1 
 
 //lease DAYS HOURS MINUTES or lease infinite 
@@ -1328,6 +1328,7 @@ R1(config-pmap-c)#priority percent 10
 
 ## Port Security: Layer 2 (DHCP snooping, dynamic ARP inspection, port)
 
+### Port Security
 ![](images/Pasted%20image%2020240405203711.png)
 
 Enabling Port Security
@@ -1431,3 +1432,68 @@ SW1(config-if)#switchport port-security mac-address sticky
 
 SW1(config)#show mac address-table secure
 ```
+
+
+### DHCP Snooping
+![](images/Pasted%20image%2020240406121821.png)
+
+Messages from a DHCP server (OFFER, ACK, NAK) are discarded.
+
+In untrusted interfaces, messages from a DHCP client (DISCOVER or REQUEST messages) are forwarded only if the source MAC address in the Ethernet frame matches the CHADDR field within the DHCP message. (Source MAC Address (Ethernet) === CHADDR)
+Messages from a DHCP client (RELEASE or DECLINE messages) are forwarded only if the source IP address in the packet matches the entry in the DHCP Snooping Binding Table for the receiving interface.
+
+Enable DHCP Snooping
+```
+//Enable DHCP Snooping globally; 
+SW2(config)#ip dhcp snooping
+
+//MUST specify the VLAN for DHCP snooping
+SW2(config)#ip dhcp snooping vlan1
+SW2(config)#no ip dhcp snooping information option
+
+//specify trusted ports; by default all ports are untrusted
+SW2(config)#int g0/0
+SW1(config-if)#ip dhcp snooping trust
+```
+
+```
+//Enable DHCP Snooping globally; 
+SW1(config)#ip dhcp snooping
+
+//MUST specify the VLAN for DHCP snooping
+SW1(config)#ip dhcp snooping vlan1
+SW1(config)#no ip dhcp snooping information option
+
+//specify trusted ports; by default all ports are untrusted
+SW1(config)#int g0/0
+SW1(config-if)#ip dhcp snooping trusted
+```
+
+What is `no ip dhcp information option`?
+- **Option 82** is reserved for DHCP delay agents. 
+- By default, Cisco switches and routers will drop option 82 on untrusted ports (with DHCP Snooping). A switch's default settings will add "Option 82", so the following switch will drop the DISCOVER + OPTION 82 packet (if settings are default). 
+- The default options work well if the the switch is a layer 3 switch acting as a DHCP relay agent, which is not the case in the diagram.  
+
+Show command
+CLIENT: RELEASE/DECLINE messages will be checked with the DHCP Snooping Bind table; IP address and interface ID needs to match
+```
+SW1#show ip dhcp snooping binding
+MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  -----------------
+00:01:64:32:B9:22   192.168.1.10     86400       dhcp-snooping  1     FastEthernet0/1
+00:60:70:DB:6A:23   192.168.1.11     86400       dhcp-snooping  1     FastEthernet0/2
+00:0A:41:A6:B6:0E   192.168.1.12     86400       dhcp-snooping  1     FastEthernet0/3
+```
+
+DHCP Snooping Rate - Limiting
+```
+SW1(config)#int range g0/1 - 3
+
+//limits interface rate to 1 per second 
+SW1(config-if-range)#ip dhcp snooping limit rate X-PER-SEC
+
+//enable errdisable recovery for rate-limiting ; default is 5 minute (300 sec)
+SW1(config)#errdisable recovery cause dhcp-rate-limit
+```
+
+
