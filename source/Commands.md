@@ -1497,3 +1497,66 @@ SW1(config)#errdisable recovery cause dhcp-rate-limit
 ```
 
 
+### Dynamic ARP Inspection (DAI)
+
+![](images/Pasted%20image%2020240408105957.png)
+
+Enable DAI
+```
+//Enable DAI on specific VLAN(s)
+SW2(config)#ip arp inspection vlan VLAN-ID
+
+//Configure trusted ports for ARP
+SW2(config)#int range g0/0 - 1
+SW2(config-if-range)#ip arp inspection trust
+```
+
+```
+//Same configurations for SW1, with respective trusted ports
+SW1(config)#ip arp inspection vlan VLAN-ID
+
+//Configure trusted ports for ARP
+SW1(config)#int range g0/0
+SW1(config-if-range)#ip arp inspection trust
+```
+
+View Trust State, Rate, and Burst Intervals of each interface, configure errdisable actions
+```
+SW1#show ip arp inspection interfaces
+
+//rate-limiting (15/pps) is enabled on untrusted ports by default (unlike DHCP snooping, rate-limiting is diabled by default)
+//DAI allows "burst interval" (e.g., x packets per y seconds VS a simple x packets per sec)
+SW1(config)#int range g0/0 - 2
+SW1(config-if-range)#ip arp inspection limit rate 25 burst interval 2             // 25 packets per 2 seconds (optional: burst interval; default: 1)
+
+
+//Interfaces that exceed input rate limit are err-disabled. Re-enable as follows:
+1. shutdown => no shutdown //OR
+SW1(config)#errdisable recovery cause arp-inspection
+```
+
+DAI Optional Checks
+Default: DAI checks sender MAC and and IP addresses for matching entry in DHCP snooping binding table
+
+```
+//Additional Checks for DAI
+SW1(config)#ip arp inspection validate ?
+	dst-mac 
+	ip
+	src-mac
+
+//Enable all 3 validations (one will override another if not done this way)
+SW1(config)#ip arp inspection validate ip src-mac dst-mac
+```
+
+ARP ACLs (N)
+
+```
+//Static addresses do not have an entry in the dhcp snooping binding table. 
+//ACL must be configured for end-hosts like SRV1.
+SW2(config)#arp access-list ARP-ACL-1
+SW2(config-arp-nacl)#permit ip host 192.168.1.100 mac host 0c29.2f1e.7700
+//Apply the ACL; note* static ACL is not configured here; so will also check the snooping table b/c no implict deny
+SW2(config)#ip arp inspection filter ARP-ACL-1 vlan VLAN-ID
+
+```
