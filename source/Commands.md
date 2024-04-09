@@ -1560,3 +1560,54 @@ SW2(config-arp-nacl)#permit ip host 192.168.1.100 mac host 0c29.2f1e.7700
 SW2(config)#ip arp inspection filter ARP-ACL-1 vlan VLAN-ID
 
 ```
+
+## HSRP 
+
+```
+//Enter a VLAN first
+SW1(config)#int vlan VLAN-ID
+
+//Configure HSRP to version 2
+DSW1(config-if)#standby ?
+  <0-4095>  group number
+  ip        Enable HSRP and set the virtual IP address
+  ipv6      Enable HSRP IPv6
+  preempt   Overthrow lower priority Active routers
+  priority  Priority level
+  timers    Hello and hold timers
+  track     Priority Tracking
+  version   HSRP version
+DSW1(config-if)#standby version 2
+
+//Create a group (prefer to match VLAN, but not required), and assign a default gateway (??); think it's virtual IP
+DSW1(config-if)#standby ?
+  <0-4095>  group number
+  ip        Enable HSRP and set the virtual IP address
+  ipv6      Enable HSRP IPv6
+  preempt   Overthrow lower priority Active routers
+  priority  Priority level
+  timers    Hello and hold timers
+  track     Priority Tracking
+  version   HSRP version
+DSW1(config-if)#standby version 2
+DSW1(config-if)#standby 10 ?
+  ip        Enable HSRP and set the virtual IP address
+  ipv6      Enable HSRP IPv6
+  preempt   Overthrow lower priority Active routers
+  priority  Priority level
+  timers    Hello and hold timers
+  track     Priority Tracking
+DSW1(config-if)#standby 10 ip ?
+  A.B.C.D  Virtual IP address
+  <cr>
+DSW1(config-if)#standby 10 ip 10.0.10.254
+
+//Increase priority from default of 100 ; lower priority gets elected (in contrast, OSPF, higher is elected haha)
+DSW1(config-if)#standby 10 priority ?
+  <0-255>  Priority value
+DSW1(config-if)#standby 10 priority 105
+
+//Enable preempt 
+DSW1(config-if)#standby 10 preempt
+```
+
