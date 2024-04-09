@@ -1,5 +1,5 @@
 ---
-title: defaultPost
+title: STP & FHRP Synchronization
 date: 2024-04-08 22:55:58
 tags: 
 categories:
