@@ -265,7 +265,7 @@ The list contains item 1
 ```
 
 
-## Sorting Lists (`sort` vs `sorted`
+## Sorting Lists (`sort` vs `sorted`)
 
 To sort a list from smallest to greatest, you can use the `sort` method:
 

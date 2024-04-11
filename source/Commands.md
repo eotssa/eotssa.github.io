@@ -1611,3 +1611,70 @@ DSW1(config-if)#standby 10 priority 105
 DSW1(config-if)#standby 10 preempt
 ```
 
+## VRF-lite (N)
+![](images/Pasted%20image%2020240411120120.png)
+
+Without the use of VRF, two interfaces on the same router cannot be in the same subnet
+```
+SPR1(config)# interface g0/0
+SPR1(config-if)# ip address 192.168.1.1 255.255.255.252
+SPR1(config-if)# no shutdown
+
+SPR1(config-if)# interface g0/1
+SPR1(config-if)# ip address 192.168.11.1 255.255.255.252
+SPR1(config-if)# no shutdown
+
+SPR1(config-if)# interface g0/2
+SPR1(config-if)# ip address 192.168.1.1 255.255.255.252
+% 192.168.1.0 overlaps with GigabitEthernet0/0
+
+SPR1(config-if)# ip address 192.168.1.2 255.255.255.252
+% 192.168.1.0 overlaps with GigabitEthernet0/0
+```
+
+With VRF
+
+Create VRF
+1. Create VRFS: `ip vrf NAME`
+2. Assign interfaces to VRFs: `ip vrf forwarding NAME`
+```
+SPR1(config)#ip vrf CUSTOMER1
+SPR1(config-vrf)#ip vrf CUSTOMER2
+SPR1(config-vrf)# do show ip vrf 
+
+SPR1(config-vrf)# interface g0/0
+SPR1(config-if)# ip vrf forwarding CUSTOMERS
+//VRFs remove IP-addresses already configured; so re-configure as needed
+% Interface GigabitEthernet0/0 IPv4 disabled and address(es) removed due to enabling VRF CUSTOMER1
+SPR1(config-if)# ip address 192.168.1.1 255.255.255.252
+
+SPR1(config-if)# interface g0/1                                              
+SPR1(config-if)# ip vrf forwarding CUSTOMER1
+% Interface GigabitEthernet0/1 IPv4 disabled and address(es) removed due to enabling VRF CUSTOMER1
+SPR1(config-if)# ip address 192.168.11.1 255.255.255.252
+
+//WORKS NOW--even if in the same subnet 
+SPR1(config-if)# interface g0/2
+SPR1(config-if)# ip vrf forwarding CUSTOMER2
+SPR1(config-if)# ip address 192.168.1.1 255.255.255.252
+SPR1(config-if)# no shutdown
+SPR1(config-if)# interface g0/3
+SPR1(config-if)# ip vrf forwarding CUSTOMER2
+
+SPR1(config-if)# ip address 192.168.12.1 255.255.255.252
+SPR1(config-if)# no shutdown
+```
+
+Show command
+
+Global routing table will not show VRF; fix as follows:
+```
+show ip route vrf NAME
+```
+
+Ping Commands
+Normal pings follow the global routing table; fix as follows:
+```
+ping vrf NAME IP-ADDRESS
+```
+
