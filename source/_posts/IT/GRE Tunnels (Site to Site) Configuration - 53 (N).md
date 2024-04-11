@@ -288,3 +288,27 @@ C       200.0.0.0/30 is directly connected, GigabitEthernet0/0/0
 L       200.0.0.2/32 is directly connected, GigabitEthernet0/0/0
 S*   0.0.0.0/0 [1/0] via 200.0.0.1
 ```
+
+
+
+Try the pings again.
+
+```
+C:\>ping 10.0.2.100
+
+Pinging 10.0.2.100 with 32 bytes of data:
+
+Request timed out.
+Reply from 10.0.2.100: bytes=32 time<1ms TTL=126
+Reply from 10.0.2.100: bytes=32 time<1ms TTL=126
+Reply from 10.0.2.100: bytes=32 time<1ms TTL=126
+
+Ping statistics for 10.0.2.100:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+```
+
+Works. 
