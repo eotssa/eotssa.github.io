@@ -5,7 +5,6 @@ categories:
 date: 2024-01-31 13:38:54
 tags:
 ---
-
 ## Implementing a Stack with a Generic Linked List
 
 ```C++
