@@ -58,6 +58,40 @@ Router(config)#service password-encryption PASSWORD
 //Uses Cisco Type 5 (MD5); preferred; takes precedence over `enable password`
 Router(config)#enable secret PASSWORD
 ```
+
+## Ethernet LAN Switching - 6
+
+Show MAC address table
+```
+SW1#show mac address-table
+
+Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+ 1      00e0.fc99.21f7    DYNAMIC     Fa0/1
+ 1      00d0.ba89.3f56    DYNAMIC     Fa0/2
+ 10     00a2.e599.40f0    DYNAMIC     Fa0/5
+ 10     00e0.fc99.21f7    STATIC      Fa0/6
+ 20     00af.573e.237b    DYNAMIC     Fa0/10
+ 20     001d.eafe.33ac    DYNAMIC     Fa0/11
+ 100    0025.bae5.76cf    DYNAMIC     Fa0/17
+
+Total Mac Addresses for this criterion: 7
+```
+
+Clear MAC addresses
+```
+//Clears all dynamic MAC addresses
+clear mac address-table dynamic 
+
+//Clear specific mac-addresses
+clear mac address-table dynamic address MAC-ADDRESS
+
+//Clear mac entries for a specific interface
+clear mac address-table dynamic interface INTERFACE-ID
+```
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
