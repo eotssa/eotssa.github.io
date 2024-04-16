@@ -92,6 +92,20 @@ clear mac address-table dynamic address MAC-ADDRESS
 //Clear mac entries for a specific interface
 clear mac address-table dynamic interface INTERFACE-ID
 ```
+
+## IPv4 Addressing (Assigning IPv4 Addresses)
+
+Show command for each interface; routers are administratively down by default
+```
+R1#show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  administratively down down
+GigabitEthernet0/1     unassigned      YES unset  administratively down down
+GigabitEthernet0/2     unassigned      YES unset  administratively down down
+GigabitEthernet0/3     unassigned      YES unset  administratively down down
+R1#
+
+```
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
