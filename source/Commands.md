@@ -1,3 +1,5 @@
+
+
 ## `show` commands
 
 Router
@@ -33,6 +35,29 @@ show interfaces status
 
 ```
 
+
+## CLI Passwords, Generic Commands - 4
+Enable password for privilege EXEC mode 
+```
+//case-sensitive password; enable for prev EXEC mode; visible in running-conf
+Router(config)#enable password PASSWORD 
+```
+
+Copy configurations from RAM to NVRAM
+```
+Router(config)#write
+Router(config)#write memory
+Router(config)#copy running-config startup-config
+```
+
+Enable password-encryption 
+```
+//Command will encrypt passwords such that its obscured in running-config; Uses CISCO Type 7
+Router(config)#service password-encryption PASSWORD
+
+//Uses Cisco Type 5 (MD5); preferred; takes precedence over `enable password`
+Router(config)#enable secret PASSWORD
+```
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
