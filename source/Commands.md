@@ -97,6 +97,7 @@ clear mac address-table dynamic interface INTERFACE-ID
 
 Show command for each interface; routers are administratively down by default
 ```
+//Status = layer 1 (physical) ; Protocol = layer 2 status 
 R1#show ip interface brief
 Interface              IP-Address      OK? Method Status                Protocol
 GigabitEthernet0/0     unassigned      YES unset  administratively down down
@@ -104,8 +105,171 @@ GigabitEthernet0/1     unassigned      YES unset  administratively down down
 GigabitEthernet0/2     unassigned      YES unset  administratively down down
 GigabitEthernet0/3     unassigned      YES unset  administratively down down
 R1#
+```
+
+Show a specific interface
+```
+//Shows detailed information of interface
+R1#show interfaces INTERFACE-ID
+
+//e.g.,
+R1#show interfaces g0/0
+GigabitEthernet0/0 is up, line protocol is up 
+  Hardware is iGbE, address is 0c1b.8444.f000 (bia 0c1b.8444.f000)
+  Internet address is 10.255.255.254/8
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Auto Duplex, Auto Speed, link type is auto, media type is RJ45
+  output flow-control is unsupported, input flow-control is unsupported
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input 00:00:06, output 00:00:05, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue: 0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+  167 packets input, 30159 bytes, 0 no buffer
+     Received 0 broadcasts (0 IP multicasts)
+     0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 watchdog, 0 multicast, 0 pause input
+  350 packets output, 39097 bytes, 0 underruns
+     0 output errors, 0 collisions, 2 interface resets
+     15 unknown protocol drops
+     0 babbles, 0 late collision, 0 deferred
+     1 lost carrier, 0 no carrier, 0 pause output
+     0 output buffer failures, 0 output buffers swapped out
+```
+
+Configure an IP Address
+```
+R1(config-if)#ip address 10.255.255.254 ?
+	A.B.C.D  IP subnet mask
+
+R1(config-if)#ip address 10.255.255.254 255.0.0.0
+R1(config-if)#no shutdown
+R1(config-if)#
+*Dec 7 08:29:08.937: %LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up
+*Dec 7 08:29:09.938: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+R1(config-if)#
 
 ```
+
+Configure a description per interface
+```
+R1(config)#int INTERFACE-ID
+R1(config-if)#description DESCRIPTION
+```
+
+Show the descriptions configured on each interface
+```
+R1#show interfaces description 
+
+R1#show interfaces description
+Interface     Status         Protocol Description
+Gi0/0         up             up       
+Gi0/1         up             up       
+Gi0/2         up             up       
+Gi0/3         admin down     down     
+```
+
+## Switch Interfaces (9)
+
+Show command 
+```
+SW1#show ip int brief 
+
+//SWs are up/up by default if they are connected to another device
+//Furthermore, down/down is not the same as administratively down (which are due to a shutdown command)
+SW1#sh ip int br
+Interface              IP-Address      OK? Method Status                Protocol
+Vlan1                  unassigned      YES unset  up                    up
+FastEthernet0/1        unassigned      YES unset  up                    up
+FastEthernet0/2        unassigned      YES unset  up                    up
+FastEthernet0/3        unassigned      YES unset  up                    up
+FastEthernet0/4        unassigned      YES unset  up                    up
+FastEthernet0/5        unassigned      YES unset  down                  down
+FastEthernet0/6        unassigned      YES unset  down                  down
+FastEthernet0/7        unassigned      YES unset  down                  down
+FastEthernet0/8        unassigned      YES unset  down                  down
+FastEthernet0/9        unassigned      YES unset  down                  down
+FastEthernet0/10       unassigned      YES unset  down                  down
+FastEthernet0/11       unassigned      YES unset  down                  down
+FastEthernet0/12       unassigned      YES unset  down                  down
+
+```
+
+Another show command
+```
+SW1#show interfaces status
+Port    Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                      connected    1          a-full  a-100 10/100BaseTX
+Fa0/2                      connected    trunk      a-full  a-100 10/100BaseTX
+Fa0/3                      connected    1          a-full  a-100 10/100BaseTX
+Fa0/4                      connected    1          a-full  a-100 10/100BaseTX
+Fa0/5                      notconnect   1          auto    auto  10/100BaseTX
+Fa0/6                      notconnect   1          auto    auto  10/100BaseTX
+Fa0/7                      notconnect   1          auto    auto  10/100BaseTX
+Fa0/8                      notconnect   1          auto    auto  10/100BaseTX
+Fa0/9                      notconnect   1          auto    auto  10/100BaseTX
+Fa0/10                     notconnect   1          auto    auto  10/100BaseTX
+Fa0/11                     notconnect   1          auto    auto  10/100BaseTX
+Fa0/12                     notconnect   1          auto    auto  10/100BaseTX
+
+```
+
+Another show command; more detailed. 
+```
+SW1#show interfaces
+FastEthernet0/1 is up, line protocol is up
+  Hardware is Fast Ethernet, address is 000c.2110.5542 (bia 000c.2110.5542)
+SW1#show interfaces f0/1
+FastEthernet0/1 is up, line protocol is up
+  Hardware is Fast Ethernet, address is 000c.2110.5542 (bia 000c.2110.5542)
+  Description: ## to R1 ##
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec,
+  reliability 255/255, txload 1/255, rxload 1/255
+  Full-duplex, 100Mb/s
+  Encapsulation ARPA, loopback not set
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input 02:29:44, output never, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue :0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+  269 packets input, 71059 bytes, 0 no buffer
+     Received 6 broadcasts, 0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     7290 packets output, 429075 bytes, 0 underruns
+     0 output errors, 3 interface resets
+     0 output buffer failures, 0 output buffers swapped out
+
+```
+
+Typically, auto-negotiation works fine.
+Here's how to configure the duplex and speed anyways.
+```
+SW1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+SW1(config)#int f0/1
+SW1(config-if)#speed ?
+  10     Force 10 Mbps operation
+  100    Force 100 Mbps operation
+  auto   Enable AUTO speed configuration
+SW1(config-if)#speed 100
+SW1(config-if)#duplex ?
+  auto   Enable AUTO duplex configuration
+  full   Force full duplex operation
+  half   Force half duplex operation
+SW1(config-if)#duplex full
+```
+
+
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
