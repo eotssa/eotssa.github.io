@@ -1,5 +1,5 @@
 ---
-title: defaultPost
+title: Eotssa's CCNA Guide Notes (Compiled)
 date: 2024-04-16 15:17:14
 tags: 
 categories:
