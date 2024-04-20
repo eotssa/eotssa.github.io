@@ -269,7 +269,285 @@ SW1(config-if)#duplex ?
 SW1(config-if)#duplex full
 ```
 
+## Routing (Connected and Local Routes)
 
+Show routes; 
+Connected and local routes are automatically added for an interface configured with an IP address. 
+```
+//Connected routes are for a specific network
+//A local route is for the "host (R1)" itself. 
+R1#show ip route 
+
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is not set
+
+	192.168.1.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.1.0/24 is directly connected, GigabitEthernet0/2
+L       192.168.1.1/32 is directly connected, GigabitEthernet0/2
+	192.168.12.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.12.0/24 is directly connected, GigabitEthernet0/1
+L       192.168.12.1/32 is directly connected, GigabitEthernet0/1
+	192.168.13.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.13.0/24 is directly connected, GigabitEthernet0/0
+L       192.168.13.1/32 is directly connected, GigabitEthernet0/0
+```
+
+Create a route to a network; ensure two way reachability
+```
+//Configure a route using the next-hop
+R1(config)#ip route IP-ADDRESS NETMASK NEXT-HOP
+
+//Configure a route using an exit-interface ; displays "directly connected"; relies on PROXY ARP
+R1(config)#ip route IP-ADDRESS NETMASK EXIT-INTERFACE
+
+//Specify both exit-interface and next-hop
+R1(config)#ip route IP-ADDRESS NETMASK EXIT-INTERFACE NEXT-HOP
+```
+
+Configure a default route 
+```
+//Default route is a route to 0.0.0.0/0
+R1(config)#ip route 0.0.0.0 0.0.0.0 {[EXIT-INTERFACE] | [NEXT HOP]}
+```
+
+## Subnetting
+
+CIDR Notation Class C
+
+| Dotted Decimal  | CIDR Notation | Host bits |                | Usable Hosts    |
+| --------------- | ------------- | --------- | -------------- | --------------- |
+| 255.255.255.0   | /24           | 8         | x.x.x.00000000 | 2^8 - 2 = 254   |
+| 255.255.255.128 | /25           | 7         | x.x.x.10000000 | 2^7 - 2 = 126   |
+| 255.255.255.192 | /26           | 6         | x.x.x.11000000 | 2^6 - 2 = 62    |
+| 255.255.255.224 | /27           | 5         | x.x.x.11100000 | 2^5 - 2 = 30    |
+| 255.255.255.240 | /28           | 4         | x.x.x.11110000 | 2^4 - 2 = 14    |
+| 255.255.255.248 | /29           | 3         | x.x.x.11111000 | 2^3 - 2 = 6     |
+| 255.255.255.252 | /30           | 2         | x.x.x.11111100 | 2^2 - 2 = 2     |
+| 255.255.255.254 | /31           | 1         | x.x.x.11111110 | 2^1 - 2 = 0 (2) |
+| 255.255.255.255 | /32           | 0         | x.x.x.11111111 | 0 (*1*)         |
+|                 |               |           |                |                 |
+
+For a **point-to-point connection**, it is possible to use a `/31` mask, even though there are no host bits, we can assign the network address and the broadcast address to our `two` hosts specifically. 
+In reality, a `/30` subnet mask would be used for a point-to-point. 
+
+### Subnetting Question 1 (Dividing Subnets)
+
+**There are four switches, SW1 to SW4, each requiring accommodation for 45 hosts and connected to a central router R1. The task is to subnet the given 192.168.1.0/24 network appropriately.** 
+**Divide the 192.168.1.0/24 network into four subnets that can accommodate the number of hosts required.**
+
+1. Determine the number of networks required. 
+	1. 45 + 2 = 47
+	2. 47 * 4 = 188 (well within the range of a class C subnet which has 256 subnets)
+
+2. How to calculate the subnets we need to make? 
+	1. /30 gives us 2^2 - 2 = 4  usable addresses
+	2. /29 gives us 2^2 - 2 = 6  usable addresses
+	3. /28 gives us 2^4 - 2 = 14 usable addresses
+	4. /27 gives us 2^5 - 2 = 30 usable addresses
+	5. /26 gives us 2^6 - 2 = 62 usable addresses  -- this provides us more than we need. 
+3. Now calculate each subnet
+	- Subnet 1: 192.168.1.0 - 192.168.1.63, where
+		- 192.168.1.0  = network addresses
+		- 192.168.1.63 = broadcast address
+		- 192.168.1.1  = first usable 
+		- 192.168.1.62 = last usable
+	- Subnet 2: 192.168.1.64 - 192.168.1.127 (**can simply look at the last bit in the network to determine the going range**)
+		- If we were to do it "manually"...:
+			- 192.168.1.64 = 11000000.10101000.00000001.[01(000000)] = network address
+			- 11000000.10101000.00000001.[01(000000)] => x.x.x.[01(111111)] = x.x.x.127
+	- Subnet 3: 192.168.1.128 - 192.168.1.191
+	- Subnet 4: 192.168.1.192 - 192.168.1.255
+
+### Subnetting Question 2 (Dividing Subnets)
+
+**Divide the 192.168.255.0/24 network into five equal-sized subnets.**
+1. 5 subnets are required. 
+	- /26 is 6 host bits. 2^6 = 64; 64 * 5 = 320, which is well over allocated class C host range.
+	- /27 is 5 host bits. 2^5 = 32; 32 * 5 = 160, which is within range.
+Next, calculate each subnet. -- can easily use the network range bit, which is +32. 
+1. 192.168.255.0 - 192.168.255.31 ()
+2. 192.168.255.32 - 192.168.255.63 *IMPORTANT!, it's not .64!!!!!!!!*
+3. 192.168.255.64 - 192.168.255.95
+4. 192.168.255.96 - 192.168.255.127
+5. 192.168.255.128 - 192.168.255.159
+
+### Subnetting Question 3 (Which subnet does this belong in?)
+
+~~**What subnet does host 192.168.5.57/27 belong to?**
+~- `/27` indicates 3 'borrowed bits' from x.x.x.001(0000), the `5th bit` is 32; so increments of 32. ~
+~- 0 -> 32 -> 64, so 192.168.5.57 belongs in the 192.168.5.32/27 subnet (2nd subnet)~
+
+A more 'formal way' to do this is as follows:
+1. x.x.x.(001)(11001) = x.x.x.57
+2. Change all the host bits back to 0 => x.x.x.(001)00000 => x.x.x.32 
+
+### Subnetting Question 4 (Which subnet does this belong in?)
+
+~~**What subnet does host 192.168.29.219/29 belong to?**~
+~- `/29` => x.x.x.00001000 => `4th bit` is 16; so increments of 16. ~
+~- 160, 176, 192, 208, 224, 240~
+~- So `219` is between 208 and 224, so the subnet ID is `192.168.29.208/29`. ~~
+
+The more formal way is converting `.219` into binary (given that this is a class C address)
+- x.x.x.11011011 => `/29` indicates `5 borrowed bits` and `3 host bits` => x.x.x.(11011)(011)
+- Now set the host bits to 0 => x.x.x.(11011)000 => x.x.x.208
+
+### Subnetting Class B Networks Question 1
+
+**Create 80 subnets with the 172.16.0.0/16 network. What prefix length should be used?**
+- The same methods apply to class B as if they were class A, except we begin at the 3rd octet.
+
+- `xxxxxxxx.xxxxxxxx.00000000.00000000 /16`
+- `xxxxxxxx.xxxxxxxx.10000000.00000000 /17` // 2 subnets
+- `xxxxxxxx.xxxxxxxx.11000000.00000000 /18` // 4 subnets
+- `xxxxxxxx.xxxxxxxx.11100000.00000000 /19` // 8 subnets
+- `xxxxxxxx.xxxxxxxx.11110000.00000000 /20` // 16 subnets
+- `xxxxxxxx.xxxxxxxx.11111000.00000000 /21` // 32 subnets
+- `xxxxxxxx.xxxxxxxx.11111100.00000000 /22` // 64 subnets
+- `xxxxxxxx.xxxxxxxx.11111110.00000000 /23` // 128 subnets
+- `xxxxxxxx.xxxxxxxx.11111111.00000000 /24` // 256 subnets
+- `xxxxxxxx.xxxxxxxx.11111111.10000000 /25` // 512 subnets
+
+- Answer: The prefix length should be /23. 
+
+### Subnetting Class B Networks Question 2
+
+**Create 500 subnets with the 172.22.0.0/16 network. What prefix length should be used?**
+
+- `xxxxxxxx.xxxxxxxx.00000000.00000000 /16`
+- `xxxxxxxx.xxxxxxxx.10000000.00000000 /17` // 2 subnets
+- `xxxxxxxx.xxxxxxxx.11000000.00000000 /18` // 4 subnets
+- `xxxxxxxx.xxxxxxxx.11100000.00000000 /19` // 8 subnets
+- `xxxxxxxx.xxxxxxxx.11110000.00000000 /20` // 16 subnets
+- `xxxxxxxx.xxxxxxxx.11111000.00000000 /21` // 32 subnets
+- `xxxxxxxx.xxxxxxxx.11111100.00000000 /22` // 64 subnets
+- `xxxxxxxx.xxxxxxxx.11111110.00000000 /23` // 128 subnets
+- `xxxxxxxx.xxxxxxxx.11111111.00000000 /24` // 256 subnets
+- `xxxxxxxx.xxxxxxxx.11111111.10000000 /25` // 512 subnets
+
+- Answer: Use /25 prefix length. 
+
+### Subnetting Class B Network Question 3
+
+You have been given the 172.18.0.0/16 network. Your company requires 250 subnets with the same number of hosts per subnet. What prefix length should you use? 
+
+8 borrowed bits = 256, which is the closest to meeting the requirement.
+
+x.x.(11111111).00000000 => 16 + 8 = /24 prefix length
+
+### Subnetting Class B Network Question 4
+
+**What subnet does host 172.25.217.192/21 belong to?**
+- Same concept as class A, except now we include in the class B (3rd) octet. 
+- Convert to dotted decimal: x.x.217.192 => x.x.11011001.11000000 => x.x.(11011)(001.11000000)
+- Convert all host bits to 0: x.x.(11011)000.00000000 => **x.x.216.0/21 subnet**, which is the same as 172.25.216.0/21
+
+### More Subnetting Questions
+
+#### Question 1: You have been given 172.30.0.0/16 network. Company requires 100 subnets with at least 500 hosts per subnet. What prefix length should be used?
+- Right off the bat, Class C subnets are out of the question. The smallest subnet 2 will likely support only 128 - 2 = 126 hosts.
+- Class B subnets should be used here.
+- given the 100 subnet requirement...it should be... /16 (0), /17 (2), ... 7 borrowed bits... so /23 should be used.
+	- 9 hosts bits allows for 2^9 - 2 = 510 usable addresses.
+
+#### Question 2: What subnet does host 172.21.111.201/20 belong to?
+
+	- 64 + 32 = 96 
+	- 96 + 8 = 104
+	- 104 + 4 = 108
+	- 108 + 2 = 110
+	- 110 + 1 = 111
+
+Given /20 for a class B subnet, this means 4 borrowed bits, so...
+x.x.01101111.xxxxxxxx => I can skip finding the binary form of 201 because /20 is isolated within the 3rd octet. 
+
+x.x.(0110)1111.xxxxxxxx => x.x.(0110)0000.xxxxxxxx => x.x.96.xxxxxxxx
+
+Subnet ID: 172.21.96.0/20
+
+#### Question 3: What is the broadcast address of the network 192.168.91.78/26?
+
+x.x.x.01001100 => x.x.x.(01)001100 => broadcast is all 1's for host bits => x.x.x.(01)111111 => 192.168.91.127/26
+
+Another way I did it is: 
+
+```
+Class B, so...
+- xxxxxxxx.xxxxxxxx.01011011.xxxxxxxx
+- /26 is borrowing 10 bits... would need to calculate the last octet in this case as well
+- xxxxxxxx.xxxxxxxx.01011011.01001110
+- So first 10 bits would be... 
+- xxxxxxxx.xxxxxxxx.(01011011.01)001110
+- xxxxxxxx.xxxxxxxx.91.64/26 (this would be the subnet)
+- Hence, the broadcast address will be the last address of this subnet... **which I have no idea how to calculate.** 
+- I assume it'd be - xxxxxxxx.xxxxxxxx.(01011011.01)(111111)
+	- So 192.168.91.127/26 
+```
+#### You divide the 172.16.0.0/16 network into 4 subnets of equal size. Identify the NETWORK and BROADCAST addresses of the 2nd subnet.
+
+| Prefix Length | Number of Subnets | Number of Hosts per Subnet | Total Number of Hosts... |
+| ------------- | ----------------- | -------------------------- | ------------------------ |
+| /17           | 2                 | 32766                      | 32768                    |
+| /18           | 4                 | 16382                      | 16384                    |
+| /19           | 8                 | 8190                       | 8192                     |
+| /20           | 16                | 4094                       | 4096                     |
+| /21           | 32                | 2046                       | 2048                     |
+| /22           | 64                | 1022                       | 1024                     |
+| /23           | 128               | 510                        | 512                      |
+| /24           | 256               | 254                        | 256                      |
+| /25           | 512               | 126                        | 128                      |
+| /26           | 1024              | 62                         | 64                       |
+| /27           | 2048              | 30                         | 32                       |
+| /28           | 4096              | 14                         | 16                       |
+| /29           | 8192              | 6                          | 8                        |
+| /30           | 16384             | 2                          | 4                        |
+| /31           | 32768             | 0 (2)                      | 2                        |
+| /32           | 65536             | 0 (1)                      | 1                        |
+
+4 subnets? Should be 2 borrowed bits (which is equal to 4 subnets).
+Therefore, it's `/18` prefix. 
+
+x.x.(00)xxxxxx.xxxxxx (notice that the 2 borrowed bits, 00, 01, 10, 11, -- are the only possible options)
+The 2nd subnet would be 01, which is x.x.(01)xxxxxx.xxxxxx. 
+
+Network address is 172.16.64.0. 
+The broadcast address would be all 1's in host bits. So, x.x.x(01)111111.11111111 = 172.16.127.255 (?)
+
+#### You divide the 172.30.0.0/16 network into subnets of 1000 hosts each. How many subnets are you able to make? ---!!!!!!!!!!
+
+If we don't have access to the chart, 
+
+```
+- Even if we don't know it, we can start at /32.
+- /32 = 0 (1)
+- /31 = 0 (2)
+- /30 = 4 (4 addresses, 2 hosts)
+- /29 = 8
+- ... 16, 32, 64, 128, 256, 512, 
+- /22 = 1024 - 2 = 1022 hosts... (10 borrowed bits FROM THE RIGHT TO LEFT)
+- /22 in subnets is... 6 bits so... 2 (/17) , 4, 8, 16, 32, 64 (/22)
+- Answer: 64 subnets. (because 6 borrowed bits)
+```
+
+Actually, we can just do it normally. 
+
+2^n - 2 = 1000~ ? , where n = HOST bits (not network bits). Need about 10 host bits. 
+2^1 - 2 = 1024 - 2 = 1022; 
+
+Okay.
+
+x.x.x.xxxxxx(xx.xxxxxxxx) 
+
+So, if the prefix is `/22`, then the amount of subnets is therefore 2,4,6...64 subnets.
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
@@ -292,6 +570,7 @@ R1(config-if)# ip address IP-ADDRESS SUBNET-MASK
 - Introduces switch virtual interfaces (SVI). 
 - Each PC should be configured to use the SVI (not the router) as their gateway address.
 - In addition to SVI, we can also configure switch interfaces to act like router interfaces. 
+
 
 ### Point-to-Point Link for Switch and Router
 
