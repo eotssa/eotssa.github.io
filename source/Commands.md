@@ -492,7 +492,7 @@ Class B, so...
 - I assume it'd be - xxxxxxxx.xxxxxxxx.(01011011.01)(111111)
 	- So 192.168.91.127/26 
 ```
-#### You divide the 172.16.0.0/16 network into 4 subnets of equal size. Identify the NETWORK and BROADCAST addresses of the 2nd subnet.
+#### Question 4: You divide the 172.16.0.0/16 network into 4 subnets of equal size. Identify the NETWORK and BROADCAST addresses of the 2nd subnet.
 
 | Prefix Length | Number of Subnets | Number of Hosts per Subnet | Total Number of Hosts... |
 | ------------- | ----------------- | -------------------------- | ------------------------ |
@@ -543,11 +543,40 @@ Actually, we can just do it normally.
 2^n - 2 = 1000~ ? , where n = HOST bits (not network bits). Need about 10 host bits. 
 2^1 - 2 = 1024 - 2 = 1022; 
 
-Okay.
+Okay. We're left with 6 borrowed bits.
 
-x.x.x.xxxxxx(xx.xxxxxxxx) 
+x.x.x.(xxxxxx)(xx.xxxxxxxx) 
 
 So, if the prefix is `/22`, then the amount of subnets is therefore 2,4,6...64 subnets.
+
+### Subnetting Class A Networks
+
+#### Question 1: "You have been given the 10.0.0.0/8 network. You must create 2000 subnets which will be distributed to various enterprises. What prefix length must you use? How many host addresses (usable addresses) will be in each subnet?"
+
+1. Let's see how many network bits we need to create 2000 subnets. 
+	1. 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048 => 11!
+2. x.(xxxxxxxx.xxx)xxxxx.xxxxxxxx  = `/19` is the prefix length. 
+3. There are 13 host bits remaining. So 2^13 - 2 = 8192 - 2 = 8190 host.
+
+#### Question 2:  
+PC1 has an IP address of 10.217.182.223/11.
+Identify the following for PC1's subnet:
+1) Network address:
+2) Broadcast address:
+3) First usable address:
+4) Last usable address:
+5) Number of host (usable) addresses:"
+
+x.11011001.xxxxxxxx.xxxxxxxxx ; given the /11 subnet, we don't technically need the rest. 
+x.(110)11001.xxxxxxxx.xxxxxxxxx ; /11 is 3 borrowed bits. 
+1. Network address: x.(110)00000.00000000.00000000 => 10.192.0.0/11
+2. Broadcast address: x.(110)11111.11111111.11111111 => 10.223.255.255/11
+3. First usable: 10.192.0.1
+4. Last usable address: 10.223.255.254 
+5. Number of host (usable addresses): 21 host bits => 2^21 - 2 = 2,097,150 hosts
+
+## VLSM
+https://youtu.be/z-JqCedc9EI?si=6K9ICCv7dc0nZpqK&t=632
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
