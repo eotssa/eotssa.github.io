@@ -576,7 +576,91 @@ x.(110)11001.xxxxxxxx.xxxxxxxxx ; /11 is 3 borrowed bits.
 5. Number of host (usable addresses): 21 host bits => 2^21 - 2 = 2,097,150 hosts
 
 ## VLSM
-https://youtu.be/z-JqCedc9EI?si=6K9ICCv7dc0nZpqK&t=632
+1. Assign the largest subnet a the start of the address space.
+2. Assign the 2nd largest after. 
+3. Repeat until largest to smallest.
+
+Given `192.168.1.0/24` use VLSM to create 5 subnets for all hosts. 
+
+Tokyo LAN A (110) -> Toronto LAN B (45)-> Toronto LAN A (29) -> Tokyo LAN B (8) -> P2P (1)
+
+Tokyo LAN A: 
+```
+110 hosts, means 2,4,8,16,32,64,128, which is 7 host bits; leaving us with 1 network bit in the /24 network. 
+A /25 prefix length is used. 
+Network address is 192.168.1.0/25. 
+
+Broadcast address is as follows: x.x.x.(0)0000000 => x.x.x.(0)1111111 => x.x.x.127 => 192.168.1.127/25
+
+Network address: 192.168.1.0/25
+Broadcast address: 192.168.1.127/25
+First usable address 192.168.1.1
+Last usable address: 192.168.1.126
+Total number of usable host addresses: 2^7 - 2 = 126
+```
+
+Toronto LAN B
+```
+45 hosts means 2,4,8,16,32,64, which is 6 host bits; leaving us with 2 network bits in the /24 network.
+A /26 prefix length is used. 
+
+The network address is the address after the previous subnet's broadcast address: 192.168.1.128/26
+
+Broadcast address is as follows: x.x.x.(10)000000 => x.x.x.(10)111111 => .191
+
+Network address: 192.168.1.128/26
+Broadcast address: 192.168.1.191/26
+First usable address 192.168.1.129/26
+Last usable address: 192.168.1.190/26
+Total number of usable host addresses: 2^6 - 2 = 62
+```
+
+Toronto LAN A
+```
+29 hosts means 2,4,8,18,32, which is 5 host bits; leaving us with 3 network bits in the /24 network.
+A /27 prefix length is used.
+
+The network address is the address after the previous subnet's broadcast address: 192.168.1.192/27
+
+Broadcast address is as follows: x.x.x.(110)00000 => x.x.x.(110)11111 => .223
+
+Network address: 192.168.1.192/27
+Broadcast address: 192.168.1.223/27
+First usable address 192.168.1.193/27
+Last usable address: 192.168.1.222/27
+Total number of usable host addresses: 2^5 - 2 = 30
+```
+
+Tokyo LAN B
+```
+8 hosts means 2,4,8,16, which is 4 host bits; leaving us with 4 network bits in the /24 network. 
+A /28 prefix is used. 
+
+The network address is the address after the previous subnet's broadcast address: 192.168.1.224/28
+
+Broadcast address is as follows: x.x.x.(1110)0000 => x.x.x.(1110)1111 => .239
+
+Network address: 192.168.1.224/28
+Broadcast address: 192.168.1.239/28
+First usable address 192.168.1.225/28
+Last usable address: 192.168.1.238/28
+Total number of usable host addresses: 2^4 - 2 = 14
+```
+
+P2P Between R1 and R2
+```
+P2P connections should use a /30 network, which leaves us with 2 host bits.
+
+The network address is the address after the previous subnet's broadcast address: 192.168.1.240/30
+
+The broadcast address is x.x.x.(111100)00 => x.x.x.(111100)11 => .243
+
+Network address: 192.168.1.240/30
+Broadcast address: 192.168.1.243/30
+First usable address 192.168.1.241/30
+Last usable address: 192.168.1.242/30
+Total number of usable host addresses: 2^2 - 2 = 2
+```
 ## Native VLAN on a Router (ROAS)
 
 Method 1: For sub-interfaces
