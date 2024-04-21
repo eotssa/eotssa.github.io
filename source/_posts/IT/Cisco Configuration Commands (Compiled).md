@@ -1,3 +1,10 @@
+---
+title: Cisco Configuration Commands (Compiled)
+date: 2024-04-20 23:34:33
+tags: 
+categories:
+  - IT
+---
 
 
 ## `show` commands

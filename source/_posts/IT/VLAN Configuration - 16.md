@@ -1,5 +1,5 @@
 ---
-title: VLAN - Packet Tracer
+title: VLAN Configuration - 1
 date: 2024-03-05 00:47:11
 tags: 
 categories:
