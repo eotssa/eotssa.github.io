@@ -849,12 +849,16 @@ interface GigabitEthernet0/0.30
 - Each PC should be configured to use the SVI (not the router) as their gateway address.
 - In addition to SVI, we can also configure switch interfaces to act like router interfaces. 
 
+Multilayer switches are the preferred method of inter-VLAN routing in a busy network.
+In ROAS, end points were configured to use the router as the default gateway. Instead, configure the default-gateway to be the switch virtual interface (SVI).
 
+Then what about routing traffic to the internet not meant for any VLAN? 
+- We can configure IP addresses between the multilayer switch and router. Then create a default route in the routing table (like a router). 
 ### Point-to-Point Link for Switch and Router
 
-Router Configuration for Point-to-Point
+Swap a sub-interface trunk router with a  a multilayer switch Point-to-Point configuration
 ```
-// disable router's ROAS configuration if available. 
+// disable router's ROAS configuration if configured. 
 // for example
 R1(config)#no interface g0/0.10
 R1(config)#no interface g0/0.20
@@ -865,19 +869,21 @@ R1(config)#default interface INTERFACE
 ```
 
 ```
+//Configure a regular IP address as normal for a P2P
 R1(config)#interface g0/0
 R1(config-if)#ip address IP-ADDRESS SUBNET-MASK 
 ```
 
-Switch Configuration for Point-to-Point
+Multilayer Switch Configuration for Point-to-Point; enable multilayer switch to handle inter-VLAN routing
 - Here, we enable `ip routing` on a switch for layer 3 functionality, and also change a switch port to a "routed port (router port)"
 ```
+//If already configured, reset
 SW2(config)#default interface INTERFACE-ID
 
 // enables Layer 3 routing on the switch ; DO NOT FORGET
 SW2(config)#ip routing
 
-// configures the interface as a "routed port" instead of a switch port
+// configures the interface as a "routed port" instead of a switch port;  
 SW2(config)#interface INTERFACE-ID
 SW2(config-if)#no switchport
 
