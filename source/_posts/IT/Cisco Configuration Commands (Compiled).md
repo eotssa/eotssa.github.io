@@ -794,25 +794,56 @@ Gi0/0       10,30
 SW1(config-if)#
 ```
 
-## Native VLAN on a Router (ROAS)
+## Router on a Stick (ROAS)
+
+Inter-VLAN routing is achieved via packet routes that are sent to the switch, then routed to a router. The router identifies the encapsulation (dot1q/ISL) tag via the VID, then routes it to the sub-interfaces as if they were individual interfaces. 
 
 Enter sub-interface configuration mode
 Method 1: For sub-interfaces
 ```
+//Remember that router intefaces are shutdown by default; enable via `no shutdown` in the base interface
+
 R1(config)#int g0/0.10                   // sub-interface does NOT have to match the VLAN number, but it's helpful
 R1(config-subif)#encapsulation dot1q VLAN-ID  // frames arriving with VLAN-ID matching will be sent to g0/0.10
 R1(config-subif)#ip address IP-ADDRESS SUBNET-MASK             // usually the default-gateway for end hosts
 ```
 
-Method 2: Simple configuration; configure the IP address for the native VLAN on the router's physical interface 
+## Native VLAN Configurations on the Router
+
+Method 1: Configuring a Native VLAN on a sub-interface (assuming the IP address is already configured)
+The configuration below achieves the goal that packets that are destined for VLAN 10 will not be tagged with the dot1q frame in the ethernet frame. Assuming that switches are configured with the same native VLAN, untagged frames will be routed to their native configured VLAN; achieves efficiency, but security issue. 
 ```
-// If sub-interface is enabled, delete
+R1(config)#int g0/0.10
+R1(config-subif)#encapsulation dot1q 10 native
+R1(config-subif)#
+```
+
+Method 2: The configuration here already assumes that we set up sub-interfaces with encapsulation and dot1q. 
+So, we simply change the sub-interface (and its respective VLAN) to a regular interface and IP address/gateway. 
+```
 R1(config)#no interface g0/0.10
-
 R1(config)#interface g0/0
-R1(config-if)# ip address IP-ADDRESS SUBNET-MASK
-```
+R1(config-if)#ip address 192.168.1.62 255.255.255.192
+R1(config-if)#
 
+-Configure the IP address for the native VLAN on the router’s physical interface (the encapsulation dot1q vlan-id command is not necessary)
+
+!
+interface GigabitEthernet0/0
+ ip address 192.168.1.62 255.255.255.192
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.1.126 255.255.255.192
+!
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.1.190 255.255.255.192
+!
+```
 ## Multilayer Switches (Layer 3)
 - Introduces switch virtual interfaces (SVI). 
 - Each PC should be configured to use the SVI (not the router) as their gateway address.
