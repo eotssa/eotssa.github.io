@@ -844,6 +844,7 @@ interface GigabitEthernet0/0.30
  ip address 192.168.1.190 255.255.255.192
 !
 ```
+
 ## Multilayer Switches (Layer 3)
 - Introduces switch virtual interfaces (SVI). 
 - Each PC should be configured to use the SVI (not the router) as their gateway address.
@@ -854,7 +855,7 @@ In ROAS, end points were configured to use the router as the default gateway. In
 
 Then what about routing traffic to the internet not meant for any VLAN? 
 - We can configure IP addresses between the multilayer switch and router. Then create a default route in the routing table (like a router). 
-### Point-to-Point Link for Switch and Router
+### Multilayer Switch Configuration for Point-to-Point; Point-to-Point Link for Switch and Router
 
 Swap a sub-interface trunk router with a  a multilayer switch Point-to-Point configuration
 ```
@@ -889,6 +890,20 @@ SW2(config-if)#no switchport
 
 // now we can configure an IP address on the interface like a regular router interface 
 SW2(config-if)#ip address IP-ADDRESS SUBNET-MASK
+
+
+SW2(config-if)#do show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up
+GigabitEthernet0/2     unassigned      YES unset  up                    up
+GigabitEthernet0/3     unassigned      YES unset  up                    up
+GigabitEthernet0/1     192.168.1.193   YES manual up                    up
+GigabitEthernet1/0     unassigned      YES unset  up                    up
+GigabitEthernet1/1     unassigned      YES unset  up                    up
+GigabitEthernet1/2     unassigned      YES unset  up                    up
+GigabitEthernet1/3     unassigned      YES unset  up                    up
+GigabitEthernet2/0     unassigned      YES unset  up                    up
+GigabitEthernet2/1     unassigned      YES unset  up                    up
 ```
 
 - Configure a default route so that traffic meant for the internet is sent to the router (given that SW and R are P2P)
@@ -896,8 +911,8 @@ SW2(config-if)#ip address IP-ADDRESS SUBNET-MASK
 SW2(config)#ip route 0.0.0.0 0.0.0.0 NEXT-HOP
 ```
 
-
-### SVI Configuration 
+### Now, Configure SVI Configuration 
+SVI's here are used for default gateways, much like a router. So instead of sub-interfaces in routers, switches can just create SVIs. 
 
 ```
 // creates SVI for VLAN 10 // SVI's are shutdown by default; to enable use 'no shutdown'
@@ -913,6 +928,8 @@ SW2(config)#interface vlan 30
 SW2(config-if)#ip address IP-ADDRESS SUBNET-MASK
 SW2(config-if)#no shutdown
 ```
+
+Conditions for SVI to be up/up
 1. The VLAN must exist on the switch. SVI's do not automatically create a VLAN on the switch. 
 2. The switch must have at least one access port in the VLAN up/up state, AND/OR one trunk port that allows the VLAN that is in an up/up state. 
 3. The VLAN must not be shutdown. 
@@ -920,7 +937,56 @@ SW2(config-if)#no shutdown
 
 
 
-## DTP/VTP
+## DTP/VTP : should be disabled (N)
+
+**DTP will not form a trunk with a router, PC, etc. Switchports here will be in access mode by default.** 
+```
+SW2(config-if)#switchport mode ?
+  access       Set trunking mode to ACCESS unconditionally
+  dot1q-tunnel set trunking mode to TUNNEL unconditionally
+  dynamic      Set trunking mode to dynamically negotiate access or trunk mode
+  private-vlan Set private-vlan mode
+  trunk        Set trunking mode to TRUNK unconditionally
+
+SW2(config-if)#switchport mode dynamic ?
+  auto       Set trunking mode dynamic negotiation parameter to AUTO
+  desirable  Set trunking mode dynamic negotiation parameter to DESIRABLE
+
+```
+
+DTP will auto-negotiate encapsulation mode for ISL (first) or 802.1Q (if available)
+
+```
+SW1(config-if)#switchport mode dynamic desirable
+SW1(config-if)#do show interfaces g0/0 switchport
+Name: Gi0/0
+Switchport: Enabled
+Administrative Mode: dynamic desirable
+Operational Mode: trunk
+Administrative Trunking Encapsulation: negotiate
+Operational Trunking Encapsulation: isl
+Negotiation of Trunking: On
+--------------------------------------------------------------------------------------------
+SW2(config-if)#switchport mode dynamic desirable
+SW2(config-if)#do show interfaces g0/0 switchport
+Name: Gi0/0
+Switchport: Enabled
+Administrative Mode: dynamic desirable
+Operational Mode: trunk
+Administrative Trunking Encapsulation: negotiate
+Operational Trunking Encapsulation: isl
+Negotiation of Trunking: On
+
+```
+
+```
+//disable auto-negotiation as follows: 
+switchport nonegotiate
+
+OR 
+
+switchport mode access 
+```
 
 Switched
 ```
