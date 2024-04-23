@@ -1045,7 +1045,7 @@ Show
 show vtp status 
 ```
 
-## STP
+## STP (Analyzing STP)
 
 - Hello BDPU's are sent by forwarding states; it indicates to the receiving interface that the connected device is a switch; since routers, PCs, (etc), do not send Hello BDPUs. 
 	- Interfaces that do not receive BPDU's can safely go into forwarding mode. 
@@ -1070,7 +1070,7 @@ show vtp status
 - When a switch is powered on, it assumes root bridge; a lower bridge ID (superior BPDU) will force it give up its position.
 
 
-### Spanning Tree Protocol
+### Spanning Tree Protocol Determination
 1) One switch is elected as the root bridge. All ports on the root bridge are **designated ports** (forwarding state). Root bridge selection:
 1: Lowest bridge ID
 
@@ -1082,24 +1082,80 @@ Root port selection:
 
 3) Each remaining collision domain will select ONE interface to be a designated port (forwarding state). The other port in the collision domain will be non-designated (blocking)
 Designated port selection:
-1: Interface on switch with lowest root cost
+1: Interface on switch with lowest root cost *** compare the routes
 2: Interface on switch with lowest bridge ID
 
+---
+
+Show commands
 ```
-show spanning-tree ?
+SW3#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    24577
+             Address     00E0.F9E6.44A5
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24577  (priority 24576 sys-id-ext 1)
+             Address     00E0.F9E6.44A5
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/3            Desg FWD 19        128.3    P2p
+Fa0/1            Desg FWD 19        128.1    P2p
+Fa0/2            Desg FWD 19        128.2    P2p
+Gi0/1            Desg FWD 4         128.25   P2p
+
+SW3#show spanning-tree ?
+  active             Report on active interfaces only
+  detail             Detailed information
+  inconsistentports  Show inconsistent ports
+  interface          Spanning Tree interface status and configuration
+  summary            Summary of port states
+  vlan               VLAN Switch Spanning Trees
+  <cr>
+```
+
+```
+// To see the total "cost" (root path), use:
+SW3#show spanning-tree detail
 ```
 
 
+## Spanning Tree - 2
+- STP is enabled by default, but we can still configure root switches and such. 
+
+
+A port can move from the non-designated to listening to learning state in a total of 50 seconds by default. 
+- 20 seconds (2x10 (hello timer))
+- 15 seconds listening
+- 15 seconds learning 
+
+Port fast can be enabled on end-hosts. The process of forming a layer 2 loop only occurs with other switches. End-hosts have no risk of forming loops, so enabling portfast subverts the listening and learning process normally required. 
+- Warning: one of which indicates that portfast should be enabled on a port with a single host.
+- Warning: must be an access port; since trunk ports are normally reserved for more than one. 
 ```
-SW(config-if)#spanning-tree portfast
+//Assuming an END-HOST
+SW1(config)#interface g0/2
+SW1(config-if)#spanning-tree portfast
+%Warning: portfast should only be enabled on ports connected to a single host. Connecting hubs, concentrators, switches, bridges, etc... to this interface when portfast is enabled, can cause temporary bridging loops. Use with CAUTION
+
+%Portfast has been configured on GigabitEthernet0/2 but will only have effect when the interface is in a non-trunking mode.
+SW1(config-if)#
 ```
 
+
+Since spanning-tree only works on access ports, we can enable portfast on all access ports as follows: 
 ```
 //enables spanning-tree on all access ports, but not trunk ports
 SW1(config)#spanning-tree portfast default
-
 ```
 
+What if Portfast is enabled, but an unwitting employee plugs in another switch? 
+- BDPU Guard: since end hosts do not send BPDU messages, if an interface with portfast is enabled receives a BPDU, then the interface is shutdown. 
 ```
 //BPDU guard for interface-specific
 SW(config-if)#spanning-tree bpuguard enable
