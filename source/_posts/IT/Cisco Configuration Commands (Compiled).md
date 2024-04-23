@@ -18,7 +18,7 @@ show ip interface brief
 show ip route
 show interfaces status
 show vlan brief
-show interfaces INTERFACE-ID switchport 
+show interfaces INTERFACE-ID switchport    // shows administrative and operational mode
 
 show vtp status 
 
@@ -939,6 +939,7 @@ Conditions for SVI to be up/up
 
 ## DTP/VTP : should be disabled (N)
 
+### DTP
 **DTP will not form a trunk with a router, PC, etc. Switchports here will be in access mode by default.** 
 ```
 SW2(config-if)#switchport mode ?
@@ -976,9 +977,10 @@ Operational Mode: trunk
 Administrative Trunking Encapsulation: negotiate
 Operational Trunking Encapsulation: isl
 Negotiation of Trunking: On
-
 ```
 
+
+Disable auto-negotiate 
 ```
 //disable auto-negotiation as follows: 
 switchport nonegotiate
@@ -988,16 +990,43 @@ OR
 switchport mode access 
 ```
 
-Switched
+
+### VTP
+
+- VTP is a virtual LAN trunking protocol used to shared VLAN information between devices; switches act as central VTP servers that advertise their VLAN databases. (VTP does not assign vlans to interfaces )
+- VTP is designed for large networks, but it's not recommended. 
 ```
-switchport mode dynamic
-switchport mode dynamic auto
-switchport nonegotiate
-switchport mode access 
+SW1#show vtp status
+VTP Version capable             : 1 to 3
+VTP version running             : 1
+VTP Domain Name                 : 
+VTP Pruning Mode                : Disabled
+VTP Traps Generation            : Disabled
+Device ID                       : c0c9.f956.1300
+Configuration last modified by 0.0.0.0 at 0-0-00 00:00:00
+Local updater ID is 0.0.0.0 (no valid interface found)
+
+Feature VLAN:
+VTP Operating Mode              : Server
+Maximum VLANs supported locally : 1005                     // VTPv1/v2 do not support extended VLAn range (1006-4094)
+Number of existing VLANs        : 5
+Configuration Revision          : 0
+MD5 digest                      : 0x57 0xCD 0x40 0x65 0x63 0x59 0x47 0xBD
+                                  0x56 0x9D 0xA4 0x3E 0xA5 0x69 0x35 0xBC
+
 ```
 
+- Cisco switches operate VTP server mode by default 
+- VTP servers and clients will sync with each other with the highest revision number (if in the same domain)
+- VTP Transparent does not participate in the VTP domain (does not sync VLAN database)
+	- Transparent mode forwards other VTP advertisements, but will not send its own database advertisements. 
+- VTP Client mode cannot create VLANs
+- How to reset revision domain? Change domain name to an unused, or change VTP mode to transparent. 
+- VTPv1/v2 do not support extended VLAN range (1006-4094)
 
 ```
+//COMMANDS
+vtp mode server 
 vtp mode client
 vtp mode transparent
 vtp domain NAME
@@ -1011,8 +1040,36 @@ vtp version NUMBER(1/2/3)
 sh int f0/1 switchport // checks specific interfaces for dtp/vtp
 ```
 
+Show
+```
+show vtp status 
+```
 
 ## STP
+
+- Hello BDPU's are sent by forwarding states; it indicates to the receiving interface that the connected device is a switch; since routers, PCs, (etc), do not send Hello BDPUs. 
+	- Interfaces that do not receive BPDU's can safely go into forwarding mode. 
+- Originally, a bridge ID is the bridge priority (32768) + MAC address.
+	- Bridge priority became => bridge priority + extended system ID (VLAN ID)
+		- Why add VLAN ID? ; Cisco switches use **PVST**, which runs a separate STP instance in each VLAN, so difference interfaces can be forwarding/blocking. 
+	- Why is the bridge priority 32768? 16 bits for bridge priority => most significant bit set to 1.
+		- But actually, since VLAN ID default is 1; it's 32768 + 1 = 32769
+	- You can only change the bridge ID by 4096? Why? Since extended system ID cannot change (VLAN ID). The 4th bit of the far most 16th bit is 4096.
+
+| Bridge Priority | 32768 | 16384 | 8192 | 4096 |
+| --------------- | ----- | ----- | ---- | ---- |
+| Binary Value    | 0     | 1     | 1    | 1    |
+
+| Extended System ID (VLAN ID) | 2048 | 1024 | 512 | 256 | 128 | 64  | 32  | 16  | 8   | 4   | 2   | 1   |
+| ---------------------------- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Binary Value                 | 0    | 0    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   |
+
+- In 802.1D, all interfaces on the root bridge are designated ports. 
+- When a switch is powered on, it assumes root bridge; a lower bridge ID (superior BPDU) will force it give up its position.
+
+The calculation below the table shows how to get the decimal value from the binary:
+
+= 28673 (16384 + 8192 + 4096 + 1)
 
 ```
 show spanning-tree ?
