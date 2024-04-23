@@ -1064,12 +1064,26 @@ show vtp status
 | ---------------------------- | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Binary Value                 | 0    | 0    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   |
 
+28673 (16384 + 8192 + 4096 + 1)
+
 - In 802.1D, all interfaces on the root bridge are designated ports. 
 - When a switch is powered on, it assumes root bridge; a lower bridge ID (superior BPDU) will force it give up its position.
 
-The calculation below the table shows how to get the decimal value from the binary:
 
-= 28673 (16384 + 8192 + 4096 + 1)
+### Spanning Tree Protocol
+1) One switch is elected as the root bridge. All ports on the root bridge are **designated ports** (forwarding state). Root bridge selection:
+1: Lowest bridge ID
+
+2) Each remaining switch will select ONE of its interfaces to be its **root port** (forwarding state). Ports across from the root port are always **designated** ports.
+Root port selection:
+1: Lowest root cost
+2: Lowest neighbor bridge ID
+3: Lowest neighbor port ID
+
+3) Each remaining collision domain will select ONE interface to be a designated port (forwarding state). The other port in the collision domain will be non-designated (blocking)
+Designated port selection:
+1: Interface on switch with lowest root cost
+2: Interface on switch with lowest bridge ID
 
 ```
 show spanning-tree ?
