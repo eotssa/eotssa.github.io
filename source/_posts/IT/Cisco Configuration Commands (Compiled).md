@@ -1155,7 +1155,7 @@ SW1(config)#spanning-tree portfast default
 ```
 
 What if Portfast is enabled, but an unwitting employee plugs in another switch? 
-- BDPU Guard: since end hosts do not send BPDU messages, if an interface with portfast is enabled receives a BPDU, then the interface is shutdown. 
+- **BDPU Guard**: since end hosts do not send BPDU messages, if an interface with portfast is enabled receives a BPDU, then the interface is shutdown. 
 ```
 //BPDU guard for interface-specific
 SW(config-if)#spanning-tree bpuguard enable
@@ -1168,32 +1168,49 @@ SW1(config)#spanning-tree portfast bpduguard default
 //to renable the switch, do shutdown then no shutdown -- 
 ```
 
+Other spanning-tree optionals
+```(N)
+Root Guard
+If you enable root guard on an interface, even if it receives a superior BPDU (lower bridge ID) on that interface, the switch will not accept the new switch as the root bridge. The interface will be disabled.
+
+Loop Guard
+If you enable loop guard on an interface, even if the interface stops receiving BPDUs, it will not start forwarding. The interface will be disabled.
+```
+
+
+Configure the spanning-tree mode
 ```
 SW1(config)#spanning-tree mode ?
 	mst 
-	pvst // classic spanning tree with p-
+	pvst // classic spanning tree with cisco's perVLAN addition
 	rapid-pvst // improved pvst // modern and most switches run 
 ```
 
-
+Manually configure the root bridge; 
+Useful for STP-Load Balancing amongst different VLANs
 ```
-//configure Root bridge
+//configure Root bridge // sets to priority 24576 (or 4096 less than the lowest)
 SW1(config)#spanning-tree vlan VLAN-NUMBER root primary
 
+// set 2ndary root priority  // sets priority to 28672
+SW1(config)#spanning-tree vlan VLAN-NUMBER root secondary
+```
+
+Show command
+```
 //show info
 SW1(config)#do show spanning-tree
-
-// set 2ndary root priority
-SW1(config)#spanning-tree vlan VLAN-NUMBER root secondary
-
 ```
+
+Configuring Spanning-Tree Port Settings
+
 
 ```STP Port Settings
 SW1(config)#spanning-tree vlan 1 ?
-	cost
-	port-priority
-
+	cost               // can configure the spanning-tree cost
+	port-priority    // first half of the port-ID, which is the final tie breaker for root port
 ```
+
 
 
 ## EtherChannel Load Balancing
