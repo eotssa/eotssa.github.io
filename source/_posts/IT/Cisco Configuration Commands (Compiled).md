@@ -1223,6 +1223,8 @@ SW1(config)#spanning-tree vlan 1 ?
 
 ## RSTP (Rapid PVST+) (Kinda the same thing)
 
+### About RSTP
+
 Cisco’s summary:
 “RSTP is not a timer-based spanning tree algorithm like 802.1D. Therefore, RSTP offers an improvement over the 30 seconds or more that 802.1D takes to move a link to forwarding. The heart of the protocol is a new bridge-bridge handshake mechanism, which allows ports to move directly to forwarding.”
 
@@ -1241,6 +1243,41 @@ Table comparing the Spanning Tree Protocol (STP) costs to the Rapid Spanning Tre
 | 10 Gbps  | 2        | 2,000     |
 | 100 Gbps | X        | 200       |
 | 1 Tbps   | X        | 20        |
+|          |          |           |
+
+The blocking and disabled state from STP 802.1D is now combined into the "discarding" state
+
+| STP Port State | Send/Receive BPDUs | Frame forwarding (regular traffic) | MAC address learning | Stable/Transitional |
+| -------------- | ------------------ | ---------------------------------- | -------------------- | ------------------- |
+| Discarding     | NO/YES             | NO                                 | NO                   | Stable              |
+| Learning       | YES/YES            | NO                                 | YES                  | Transitional        |
+| Forwarding     | YES/YES            | YES                                | YES                  | Stable              |
+
+- The root port role remains unchanged in RSTP.
+  → The port that is closest to the root bridge becomes the root port for the switch.
+  → The root bridge is the only switch that doesn’t have a root port.
+
+- The designated port role remains unchanged in RSTP.
+  → The port on a segment (collision domain) that sends the best BPDU is that segment’s designated port (only one per segment)
+
+- The non-designated port role is split into two separate roles in RSTP:
+  - the alternate port role
+  - the backup port role
+
+What is an alternate port?
+- A port that can become the root port in case of failure.
+What is a backup port?
+- A port that can become a designated port. 
+- A backup port receives a superior BPDU from ANOTHER interface on the SAME switch. So, like in a hub--often won't encounter. 
+- The lowest port ID is selected as the designated port. 
+
+What is uplink fast? (N)
+- The alternate port is a discarding (blocked) port (like in STP). 
+- Its appointment is the same as designating block ports in regular STP. 
+- However, alternate ports have the ability to become the root port if its own switch's root port fails. (This is an optional feature of STP, but automatically incorporated in RSTP)
+What is backbone fast? 
+- Basically, speeds up the response to indirect network link failures in Spanning Tree Protocol, allowing the network to recover faster without waiting for the usual timers to expire.
+
 ## EtherChannel Load Balancing
 
 ![](images/Pasted%20image%2020240312015856.png)
