@@ -1278,6 +1278,26 @@ What is uplink fast? (N)
 What is backbone fast? 
 - Basically, speeds up the response to indirect network link failures in Spanning Tree Protocol, allowing the network to recover faster without waiting for the usual timers to expire.
 
+Other:
+- Rapid PVST is compatible with Classic STP with the same interfaces connected to a switch running classic STP
+- Classic STP Protocol Identifier: 0
+- RSTP Protocol Identifier: 2
+
+- Classic STP BPDU Flags: only 2 
+- RSTP BPDU Flags: all 8 are used 
+
+- Classic STP: only root bridge originated BPDUs, and other switches forward BPDU recieved.
+- RSTP: ALL switches originate and send their own BPDUs from designated ports. 
+
+- Classic STP: ages much slower; waits 10 hello intervals (20 seconds)
+- RSTP: considers a neighbor lost if it misses 3 BPDUs (6 seconds); then flushes all learned MAC addresses on that interface. 
+
+
+RSTP Link Types
+- Edge: a port that is connected to end host; moves directly to forwarding without negotiation (like portfast in classic STP)
+	- In fact, you configure an edge-port by simply enabling portfast: `SW1(config-if)# spanning-tree portfast`
+- Point-to-point: a direct connection between switches
+- Shared: a connection to a hub; must operate in half-duplex (not used)
 ## EtherChannel Load Balancing
 
 ![](images/Pasted%20image%2020240312015856.png)
