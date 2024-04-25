@@ -1069,6 +1069,13 @@ show vtp status
 - In 802.1D, all interfaces on the root bridge are designated ports. 
 - When a switch is powered on, it assumes root bridge; a lower bridge ID (superior BPDU) will force it give up its position.
 
+| STP Port State | Send/Receive BPDUs | Frame forwarding (regular traffic) | MAC address learning | Stable/Transitional |
+| -------------- | ------------------ | ---------------------------------- | -------------------- | ------------------- |
+| Blocking       | NO/YES             | NO                                 | NO                   | Stable              |
+| Listening      | YES/YES            | NO                                 | NO                   | Transitional        |
+| Learning       | YES/YES            | NO                                 | YES                  | Transitional        |
+| Forwarding     | YES/YES            | YES                                | YES                  | Stable              |
+| Disabled       | NO/NO              | NO                                 | NO                   | Stable              |
 
 ### Spanning Tree Protocol Determination
 1) One switch is elected as the root bridge. All ports on the root bridge are **designated ports** (forwarding state). Root bridge selection:
@@ -1168,7 +1175,7 @@ SW1(config)#spanning-tree portfast bpduguard default
 //to renable the switch, do shutdown then no shutdown -- 
 ```
 
-Other spanning-tree optionals
+Other spanning-tree optional
 ```(N)
 Root Guard
 If you enable root guard on an interface, even if it receives a superior BPDU (lower bridge ID) on that interface, the switch will not accept the new switch as the root bridge. The interface will be disabled.
@@ -1204,15 +1211,36 @@ SW1(config)#do show spanning-tree
 
 Configuring Spanning-Tree Port Settings
 
-
 ```STP Port Settings
 SW1(config)#spanning-tree vlan 1 ?
 	cost               // can configure the spanning-tree cost
-	port-priority    // first half of the port-ID, which is the final tie breaker for root port
+	port-priority      // first half of the port-ID, the final tie breaker for root port
+
+//For instance, STP port ID 0x8002; STP port priority = 128 (0x80)
+//Recall that port-priority is the LAST tiebreaker. 
+//(Root cost) -> (NEIGHBOR bridge ID) -> (Port priority)
 ```
 
+## RSTP (Rapid PVST+) (Kinda the same thing)
 
+Cisco’s summary:
+“RSTP is not a timer-based spanning tree algorithm like 802.1D. Therefore, RSTP offers an improvement over the 30 seconds or more that 802.1D takes to move a link to forwarding. The heart of the protocol is a new bridge-bridge handshake mechanism, which allows ports to move directly to forwarding.”
 
+- RSTP serves the same purpose as STP. 
+- RSTP elects a root bridge with the same STP rules (802.1D)
+- RSTP elects a root PORT with the same STP rules (802.1D)
+- RSTP elects the designated ports with the same STP rules (802.1D)
+
+Table comparing the Spanning Tree Protocol (STP) costs to the Rapid Spanning Tree Protocol (RSTP) costs based on network speed:
+
+| Speed    | STP Cost | RSTP Cost |
+| -------- | -------- | --------- |
+| 10 Mbps  | 100      | 2,000,000 |
+| 100 Mbps | 19       | 200,000   |
+| 1 Gbps   | 4        | 20,000    |
+| 10 Gbps  | 2        | 2,000     |
+| 100 Gbps | X        | 200       |
+| 1 Tbps   | X        | 20        |
 ## EtherChannel Load Balancing
 
 ![](images/Pasted%20image%2020240312015856.png)
