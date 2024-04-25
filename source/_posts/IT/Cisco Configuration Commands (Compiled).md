@@ -1298,6 +1298,12 @@ RSTP Link Types
 	- In fact, you configure an edge-port by simply enabling portfast: `SW1(config-if)# spanning-tree portfast`
 - Point-to-point: a direct connection between switches
 - Shared: a connection to a hub; must operate in half-duplex (not used)
+
+### RSTP Determination
+https://youtu.be/EpazNsLlPps?si=U0PKiRISExD9HF2r&t=2272
+
+
+
 ## EtherChannel Load Balancing
 
 ![](images/Pasted%20image%2020240312015856.png)
