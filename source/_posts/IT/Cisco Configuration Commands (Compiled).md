@@ -1376,12 +1376,12 @@ For Static:
 - on + on = etherchannel 
 - no other configurations or variations (e.g., on + desirable) will work
 
+Configure an interface to be part of an EtherChannel
 channel-groups MUST match on the SAME switch, but can vary on different switches... 
 ```
 //Configure the necessary interfaces; preferred method since configs MUST match 
 ASW1(config)#interface range g0/0 - 3
 
-//NEW KEYWORD: channel-group  ; channel-groups MUST match on the SAME switch, but can vary on different switches... 
 ASW1(config-if-range)#channel-group 1 mode ?
   active    Enable LACP unconditionally
   auto      Enable PAgP only if a PAgP device is detected
