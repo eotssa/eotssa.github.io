@@ -1322,7 +1322,7 @@ EtherChannel Load-Balancing Addresses Used Per-Protocol:
 
 ```
 
-Types of load-balancing 
+Types of load-balancing criteria  
 ```
 ASW1(config)#port-channel load-balance ?
   dst-ip       Dst IP Addr
@@ -1351,8 +1351,131 @@ EtherChannel Load-Balancing Addresses Used Per-Protocol:
 And to view load-balance... it's `etherchannel`...*
 
 
+Creating EtherChannels (PAgP / LACP) (N)
+- PAgP (Port aggregation Protocol); Cisco proprietary
+	- Dynamically negotiates the creation and maintenance of EtherChannel
+- LACP (Link Aggregation Control Protocol)
+	- Industry standard (IEEE 802.3ad)
+	- Dynamically negotiates the creation and maintenance of EtherChannel
+- Static EtherChannel Configurations
+	- No automatic forming of etherchannels; usually avoided* but has its use. 
 
+Up to 8 interfaces can be active (LACP allows for 16, but only 8 active and 8 standby)
 
+For PAgP: 
+- auto + auto = no EtherChannel
+- desirable + auto = EtherChannel
+- desirable + desirable = EtherChannel
+
+For LACP:
+- passive + passive = no EtherChannel
+- active + passive = EtherChannel
+- active + active = EtherChannel
+
+For Static:
+- on + on = etherchannel 
+- no other configurations or variations (e.g., on + desirable) will work
+
+channel-groups MUST match on the SAME switch, but can vary on different switches... 
+```
+//Configure the necessary interfaces; preferred method since configs MUST match 
+ASW1(config)#interface range g0/0 - 3
+
+//NEW KEYWORD: channel-group  ; channel-groups MUST match on the SAME switch, but can vary on different switches... 
+ASW1(config-if-range)#channel-group 1 mode ?
+  active    Enable LACP unconditionally
+  auto      Enable PAgP only if a PAgP device is detected
+  desirable Enable PAgP unconditionally
+  on        Enable Etherchannel only
+  passive   Enable LACP only if a LACP device is detected
+ASW1(config-if-range)#channel-group 1 mode desirable
+Creating a port-channel interface Port-channel 1
+```
+
+Configure the protocol itself; 
+- The command is not very useful as configuring the `desirable/auto` or `active/passive` will set the protocol, but here it is.
+
+```
+ASW1(config-if-range)#channel-protocol ?
+  lacp  Prepare interface for LACP protocol
+  pagp  Prepare interface for PAgP protocol
+ASW1(config-if-range)#channel-protocol lacp   //CONFIGURED TO LACP; so must use active/passive
+ASW1(config-if-range)#channel-group 1 mode desirable
+Command rejected (Channel protocol mismatch for interface Gi0/0 in group 1): the interface can not be added to the channel group
+
+% Range command terminated because it failed on GigabitEthernet0/0
+ASW1(config-if-range)#channel-group 1 mode on
+Command rejected (Channel protocol mismatch for interface Gi0/0 in group 1): the interface can not be added to the channel group
+
+% Range command terminated because it failed on GigabitEthernet0/0
+ASW1(config-if-range)#channel-group 1 mode active
+Creating a port-channel interface Port-channel 1
+
+ASW1(config-if-range)#
+```
+
+Now that you've created and logically grouped interfaces into an etherchannel, we can configure the etherchannel itself: (ensure configurations are the same on both devices)
+
+```
+ASW1(config)#interface port-channel 1
+ASW1(config-if)#switchport trunk encapsulation dot1q
+ASW1(config-if)#switchport mode trunk
+ASW1(config-if)#do show interfaces trunk
+
+Port      Mode         Encapsulation  Status        Native vlan
+Po1       on           802.1q         trunking      1
+
+Port      Vlans allowed on trunk
+Po1       1-4094
+
+Port      Vlans allowed and active in management domain
+Po1       1
+
+Port      Vlans in spanning tree forwarding state and not pruned
+Po1       none
+```
+
+Notice that the port-channel configuration for the etherchannel is applied to ALL applicable interfaces within that etherchannel/port-channel group.
+
+```
+interface Port-channel
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+interface GigabitEthernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+ channel-protocol lacp
+ channel-group 1 mode active
+
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+ channel-protocol lacp
+ channel-group 1 mode active
+
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+ channel-protocol lacp
+ channel-group 1 mode active
+
+interface GigabitEthernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+ channel-protocol lacp
+ channel-group 1 mode active
+!
+
+```
 ## OSPF
 ```
 show ip ospf interface brief 
