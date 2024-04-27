@@ -1476,6 +1476,83 @@ interface GigabitEthernet0/3
 !
 
 ```
+
+EtherChannel Troubleshooting:
+- Member interfaces must have matching duplex, speed, switchport mode (access/trunk), and same allowed VLANs/same native VLANs (for trunk interfaces)
+
+Another Useful Show Command
+```
+ASW1#show etherchannel summary
+Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+
+        M - not in use, minimum links not met
+        m - not in use, port not aggregated due to minimum links not met
+        u - unsuitable for bundling
+        w - waiting to be aggregated
+        d - default port
+
+        A - formed by Auto LAG
+
+Number of channel-groups in use: 1
+Number of aggregators:           1
+
+Group Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------
+1      Po1(SU)       LACP        Gi0/0(P)    Gi0/1(P)    Gi0/2(P)    Gi0/3(P)
+
+```
+
+### Layer 3 Multi-Switches and EtherChannels
+- Routed ports are layer 3, and therefore do not forward layer 2 broadcasts. So no spanning-tree is even required.
+- This is done so that traffic is load-balanced. 
+
+Configure a Layer 3 EtherChannel
+```
+ASW1(config)#int range g0/0 - 3
+ASW1(config-if-range)#no switchport          // also applies to the port-channel
+ASW1(config-if-range)#channel-group 1 mode active
+Creating a port-channel interface Port-channel 1
+```
+
+Since we want all links to act as a single logical link, the ip-address should be configured on the port-channel interface. 
+
+```
+ASW1(config-if-range)#int po1
+ASW1(config-if)#ip address 10.0.0.1 255.255.255.252
+ASW1(config-if)#
+```
+
+Show command; should be good
+```
+ASW1(config-if)#do sh etherch sum
+Flags: D - down       P - bundled in port-channel
+       I - stand-alone s - suspended
+       H - Hot-standby (LACP only)
+       R - Layer3     S - Layer2
+       U - in use     N - not in use, no aggregation
+       f - failed to allocate aggregator
+
+       M - not in use, minimum links not met
+       m - not in use, port not aggregated due to minimum links not met
+       u - unsuitable for bundling
+       w - waiting to be aggregated
+       d - default port
+
+       A - formed by Auto LAG
+
+Number of channel-groups in use: 1
+Number of aggregators: 1
+
+Group Port-channel Protocol    Ports
+------ -------------- --------- -------------------------------
+1      Po1(RU)        LACP      Gi0/0(P)    Gi0/1(P)    Gi0/2(P)
+                                Gi0/3(P)
+```
+
 ## OSPF
 ```
 show ip ospf interface brief 
