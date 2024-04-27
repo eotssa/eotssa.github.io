@@ -1304,9 +1304,52 @@ https://youtu.be/EpazNsLlPps?si=U0PKiRISExD9HF2r&t=2272
 
 
 
-## EtherChannel Load Balancing
+## EtherChannel (Port Channel / LAG) and  Load Balancing
 
-![](images/Pasted%20image%2020240312015856.png)
+- Adding extra links to an access-layer switch doesn't help. Why? Spanning-tree protocol will disable interfaces. 
+- To solve this problem, we can group interfaces logically into a single interface to behave as if it is a single link but with better throughput.
+- EtherChannel load balances based on 'flows'; basically, the same "interface" will be used for the same connection. 
+
+Check load-balancing
+```
+ASW1#show etherchannel load-balance
+EtherChannel Load-Balancing Configuration:
+  src-dst-ip                      // currently load-balances based on this
+EtherChannel Load-Balancing Addresses Used Per-Protocol:
+  Non-IP:  Source XOR Destination MAC address             // frames don't have IP-addresses
+  IPv4:    Source XOR Destination IP address
+  IPv6:    Source XOR Destination IP address
+
+```
+
+Types of load-balancing 
+```
+ASW1(config)#port-channel load-balance ?
+  dst-ip       Dst IP Addr
+  dst-mac      Dst Mac Addr
+  src-dst-ip   Src XOR Dst IP Addr
+  src-dst-mac  Src XOR Dst Mac Addr
+  src-ip       Src IP Addr
+  src-mac      Src Mac Addr
+```
+
+Configure load-balancing 
+```
+ASW1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+ASW1(config)#port-channel load-balance src-dst-mac
+ASW1(config)#do show etherchannel load-balance
+EtherChannel Load-Balancing Configuration:
+  src-dst-mac
+EtherChannel Load-Balancing Addresses Used Per-Protocol:
+  Non-IP:  Source XOR Destination MAC address
+  IPv4:    Source XOR Destination MAC address
+  IPv6:    Source XOR Destination MAC address
+```
+
+*Take note that to configure load-balance; use `port-channel`
+And to view load-balance... it's `etherchannel`...*
+
 
 
 
