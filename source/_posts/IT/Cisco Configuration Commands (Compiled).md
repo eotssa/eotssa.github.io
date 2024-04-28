@@ -1553,6 +1553,8 @@ Group Port-channel Protocol    Ports
                                 Gi0/3(P)
 ```
 
+## Dynamic Routing - 24
+
 ## OSPF
 ```
 show ip ospf interface brief 
