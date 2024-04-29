@@ -22,6 +22,7 @@ show interfaces INTERFACE-ID switchport    // shows administrative and operation
 
 show vtp status 
 
+//Used for RIP, EIGRP, OSPF
 show ip protocols 
 show ip protocols brief (?)
 
@@ -1555,7 +1556,19 @@ Group Port-channel Protocol    Ports
 
 ## Dynamic Routing - 24
 
-
+| Route protocol/type | AD  |
+| ------------------- | --- |
+| Directly connected  | 0   |
+| Static              | 1   |
+| External BGP (eBGP) | 20  |
+| EIGRP               | 90  |
+| IGRP                | 100 |
+| OSPF                | 110 |
+| IS-IS               | 115 |
+| RIP                 | 120 |
+| EIGRP (external)    | 170 |
+| Internal BGP (iBGP) | 200 |
+| Unusable route      | 255 |
 
 Change the AD of a routing protocol 
 ```
@@ -1568,13 +1581,129 @@ R1(config)#ip route IP-ADDRESS SUBNET-MASK NEXT-HOP AD-DISTANCE-METRIC
 
 //Floating Static Routes
 - Configure a static route with an AD that is higher than the routing protocol's AD
+- Static routes will not show up if another route has a higher AD
 ```
 
 ```
 
 ```
+
+## RIP and EIGRP - 25
+
+### RIP
+- Routing Information Protocol (industry standard)
+- Distance vector IGP (uses routing-by-rumor logic to learn/share routes)
+- Uses hop count as its metric. One router = one hop (bandwidth is irrelevant!)
+- The maximum hop count is 15 (anything more than that is considered unreachable)
+- Has three versions:
+  - RIP v1 and RIP v2, used for IPv4
+  - RIPng (RIP Next Generation), used for IPv6
+- Uses two message types:
+  - Request: To ask RIP-enabled neighbor routers to send their routing table
+  - Response: To send the local router’s routing table to neighboring routers
+- By default, RIP-enabled routers will share their routing table every 30 seconds
+
+- RIP v1:
+  - only advertises classful addresses (Class A, Class B, Class C)
+  - doesn’t support VLSM, CIDR
+  - doesn’t include subnet mask information in advertisements (Response messages)
+    - 10.1.1.0/24 will become 10.0.0.0 (Class A address, so assumed to be /8)
+    - 172.16.192.0/18 will become 172.16.0.0 (Class B address, so assumed to be /16)
+    - 192.168.1.4/30 will become 192.168.1.0 (Class C address, so assumed to be /24)
+  - messages are broadcast to 255.255.255.255
+
+- RIP v2:
+  - supports VLSM, CIDR
+  - includes subnet mask information in advertisements
+  - messages are multicast to 224.0.0.9
+#### RIP Configuration (N)
+
+```
+R1(config)#router rip
+
+//always enable version 2
+R1(config-router)#version 2
+
+//classful is on by default, so disable it here to allow subnetting (different from network command below)
+R1(config-router)#no auto-summary
+
+//classful; specify the different networks; network mask is not required because (10.0.12.0 => 10.0.0.0)
+R1(config-router)#network 10.0.0.0            // assumes 10.0.0.0/8
+R1(config-router)#network 172.16.0.0          // assumes /16 (due to 172)
+```
+
+The **network command** doesn't tell the router which networks to advertise. It tells the router which interfaces to activate RIP on, and then the router will advertise the network prefix of those interfaces (which is NOT the prefix in the network command).
+
+Even if a network command enables an interface, if the interface has no neighbors, no new adjacencies are formed. It's best to disable unnecessary traffic as these interfaces will continuously send RIP advertisements. 
+
+Passive-interface
+```
+//Disables the interface from sending RIP advertisements out of specified interface; but will still allow the interface to be advertised to its RIP neighbors via other interfaces. 
+R1(config-router)#passive-interface INT-ID
+```
+
+Configure a default route into RIP and then SHARE the default route to neighbors
+```
+//Configure default route
+R1(config)#ip route 0.0.0.0 0.0.0.0 {?}
+
+R1(config)#router rip
+R1(config-router)#default-information originate
+```
+
+Show command 
+```
+//Used for RIP, EIGRP, OSPF
+show ip protocols 
+show ip protocols brief (?)
+
+//
+R1#show ip protocols
+*** IP Routing is NSF aware ***
+
+Routing Protocol is "rip"
+Outgoing update filter list for all interfaces is not set
+Incoming update filter list for all interfaces is not set
+Sending updates every 30 seconds, next due in 28 seconds
+Invalid after 180 seconds, hold down 180, flushed after 240
+Redistributing: rip
+Default version control: send version 2, receive version 2
+    Interface           Send  Recv  Triggered RIP  Key-chain
+    GigabitEthernet0/0  2     2     
+    GigabitEthernet1/0  2     2     
+Automatic network summarization is not in effect
+Maximum path: 4
+Routing for Networks:
+    10.0.0.0
+    172.16.0.0
+Passive Interface(s):
+    GigabitEthernet2/0
+Routing Information Sources:
+    Gateway           Distance  Last Update
+    10.0.12.2        120       00:00:21
+    10.0.13.2        120       00:00:06
+Distance: (default is 120)
+```
+
+Change the maximum paths (same for RIP, EIGRP, OSPF)
+```
+R1(config-router)#maximum-paths <1-32>
+```
+
+Change AD; if for some reason you want RIP to have a higher priority (lower AD) (same for RIP, EIGRP, OSPF)
+```
+R1(config-router)#distance ?
+  <1-255>  Administrative distance
+R1(config-router)#distance 85
+```
+
+
+### EIGRP
+
+https://youtu.be/N8PiZDld6Zc?si=73EE8KSHKVcbQMk9&t=1110
 
 ## OSPF
+
 ```
 show ip ospf interface brief 
 
