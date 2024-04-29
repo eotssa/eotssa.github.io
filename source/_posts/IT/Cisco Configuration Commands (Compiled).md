@@ -1555,6 +1555,25 @@ Group Port-channel Protocol    Ports
 
 ## Dynamic Routing - 24
 
+
+
+Change the AD of a routing protocol 
+```
+?
+```
+
+Change the AD of a static route 
+```
+R1(config)#ip route IP-ADDRESS SUBNET-MASK NEXT-HOP AD-DISTANCE-METRIC
+
+//Floating Static Routes
+- Configure a static route with an AD that is higher than the routing protocol's AD
+```
+
+```
+
+```
+
 ## OSPF
 ```
 show ip ospf interface brief 
