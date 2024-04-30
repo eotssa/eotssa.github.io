@@ -1698,9 +1698,176 @@ R1(config-router)#distance 85
 ```
 
 
-### EIGRP
+### EIGRP: Enchanced Interior Gateway Routing Protocol
+- Cisco properity, semi open source, faster than RIP, no hop-count limit of 15 (RIP), and multicast address 224.0.0.10
+- EIGRP is the only IGP that performs **unequal-cost load balancing)**
+	- (But by default, performs ECMP load-lancing over 4 paths like RIP)
 
-https://youtu.be/N8PiZDld6Zc?si=73EE8KSHKVcbQMk9&t=1110
+
+EIGRP Configuration
+```
+R1(config)#router eigrp AS-NUMBER
+R1(config-router)#no auto-summary
+R1(config-router)#passive-interface g2/0
+
+//network command is classful by default
+R1(config-router)#network 10.0.0.0
+
+//however, can specify the WILDCARD MASK
+R1(config-router)#network 172.16.1.0 0.0.0.15
+```
+The **AS (Autonomous System) number must match between routers**, or they will not form an adjacency and share route information.
+
+Auto-summary might be enabled or disabled by default, depending on the router/IOS version. If it’s enabled, disable it.
+
+The network command will assume a classful address if you don’t specify the mask.
+#### Wildcard Mask (Inverted Subnet Mask)
+* A wildcard mask is basically an ‘inverted’ subnet mask.
+* All 1s in the subnet mask are 0 in the equivalent wildcard mask. All 0s in the subnet mask are 1 in the equivalent wildcard mask.
+
+```
+11111111.11111111.11111111 .00000000         // subnet mask for /16
+255 . 255 . 255 . 0
+
+00000000.00000000 .00000000 .11111111        // wildcard mask for /16
+0 . 0 . 0 . 255
+```
+
+/28
+```
+11111111.11111111.11111111 .11110000         // subnet mask for /28
+255 . 255 . 255 . 240
+
+00000000.00000000 .00000000 .00001111       // wildcard mask for /28
+0 . 0 . 0 . 15
+```
+
+/25
+```
+11111111.11111111.11111111 .10000000         // subnet mask for /25
+255 . 255 . 255 . 128
+
+00000000.00000000 .00000000 .01111111      // wildcard mask for /25
+0 . 0 . 0 . 127
+```
+
+/14
+```
+11111111.11111100.00000000.00000000         // subnet mask for /14
+255 . 252 . 0 . 0
+
+00000000.00000011 .11111111 .11111111      // wildcard mask for /14
+0 . 3 . 255 . 255
+```
+
+/19
+```
+11111111.11111111.11100000.00000000         // subnet mask for /19
+255 . 252 . 224 . 0
+
+00000000.00000000 .00011111 .11111111      // wildcard mask for /19
+0 . 3 . 31 . 255
+```
+
+Shortcut method: subtract each octet of the subnet task from 255. 
+
+Wildcark Masks are used as follows:
+- '0' in the wildcard mask = must match
+- '1' in the wildcard mask = do not have to match
+
+For example:
+```
+EIGRP network command:
+10101100 . 00010000 . 00000001 . 00000000
+Network: 172 . 16 . 1 . 0
+
+Wildcard Mask: 0.0.0.15 => 0.0.0.00001111
+```
+This means that the first 28 bits MUST match.
+
+So does 172.16.1.14 match? Yes
+```
+(10101100 . 00010000 . 00000001 . 0000)1110
+172 . 16 . 1 . 14
+```
+As you can see, the first 28 bits match the original network command.
+
+
+
+```
+R1#show ip protocols
+*** IP Routing is NSF aware ***
+
+Routing Protocol is "eigrp 1"
+	Outgoing update filter list for all interfaces is not set
+	Incoming update filter list for all interfaces is not set
+	Default networks flagged in outgoing updates
+	Default networks accepted from incoming updates
+	EIGRP-IPv4 Protocol for AS(1)
+		Metric weight K1=1, K2=0, K3=1, K4=0, K5=0
+		NSF-aware route hold timer is 240
+		Router-ID: 172.16.1.14
+		Topology : "0" (base)
+			Active Timer: 3 min
+			Distance: internal 90 external 170
+			Maximum path: 4
+			Maximum hopcount 100
+			Maximum metric variance 1
+
+Automatic Summarization: disabled
+Maximum path: 4
+Routing for Networks:
+	10.0.0.0
+	172.16.1.0/28
+Passive Interface(s):
+	GigabitEthernet2/0
+Routing Information Sources:
+	Gateway         Distance    Last Update
+	10.0.12.2       90          00:00:23
+	10.0.13.2       90          00:00:23
+Distance: internal 90 external 170
+```
+
+First, EIGRP metric is determined via interface bandwidth and delay by default indicated by:
+```
+		Metric weight K1=1, K2=0, K3=1, K4=0, K5=0
+```
+
+The bandwidth of the slowest link + sum of delay values of all the link in the paths. 
+
+Second, the router ID shown just serves as a unique identifier for each router participating in EIGRP routing domain. It looks like an IP-address but it's not, and that's simply because of the way it was derived. 
+```
+		Router-ID: 172.16.1.14
+```
+The router ID order of priority is as follows:
+1. Manual Configuration
+2. Highest IP address on a loopback interface
+3. Highest IP address on a physical interface (ANY)
+Or we can manually set the router ID as follows:
+```
+R1(config-router)#eigrp router-id ?
+  A.B.C.D  EIGRP Router-ID in IP address format
+
+R1(config-router)#eigrp router-id 1.1.1.1
+```
+
+Lastly, notice the maximum paths, auto-summarization, network routes, configured passive-interfaces, and administrative distance values (AD)
+```
+Automatic Summarization: disabled
+Maximum path: 4
+Routing for Networks:
+	10.0.0.0
+	172.16.1.0/28
+Passive Interface(s):
+	GigabitEthernet2/0
+Routing Information Sources:
+	Gateway         Distance    Last Update
+	10.0.12.2       90          00:00:23
+	10.0.13.2       90          00:00:23
+Distance: internal 90 external 170
+```
+
+Finally, EIGRP is indicated by "D" in `show ip routes`, not "E"
 
 ## OSPF
 
