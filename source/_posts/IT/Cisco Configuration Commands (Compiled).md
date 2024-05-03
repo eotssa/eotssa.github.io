@@ -1588,7 +1588,7 @@ R1(config)#ip route IP-ADDRESS SUBNET-MASK NEXT-HOP AD-DISTANCE-METRIC
 
 ```
 
-## RIP and EIGRP - 25
+## RIP and EIGRP - 25 (Configurations - (N))
 
 ### RIP
 - Routing Information Protocol (industry standard)
@@ -1895,6 +1895,74 @@ D    192.168.3.0/24 [90/3072] via 10.0.12.2, 00:11:09, GigabitEthernet0/0
 D    192.168.3.0/25 is summarized, 1 subnets
 D    192.168.3.0/24 [90/3072] via 10.0.13.2, 00:11:09, GigabitEthernet1/0
 D    192.168.4.0/30 [90/3072] via 10.0.13.2, 00:11:09, GigabitEthernet1/0
+
+```
+
+## EIGRIP Configurations (N); Info (Y)
+
+
+- Feasible Distance = This router’s metric value to the route’s destination.
+- Reported Distance (aka Advertised Distance) = The neighbor’s metric value to the route’s destination.
+- Successor = the route with the lowest metric to the destination (the best route)
+- Feasible Successor = an alternate route to the destination (not the best route) which meets the feasibility condition
+
+EIGRP maximum metric variance is 1, which means it cannot perform unequal-cost load-balancing given two routes with varying `feasible distances`.
+
+Routes MUST meet the feasible "successibility" requirements for unequal-cost load-balancing: a route is considered a `feasible successor` if its REPORTED DISTANCE is lower than the SUCCESSOR route's FEASIBLE DISTANCE
+```
+R1#show ip protocols
+Routing Protocol is "eigrp 100"
+Outgoing update filter list for all interfaces is not set
+Incoming update filter list for all interfaces is not set
+Default networks flagged in outgoing updates
+Default networks accepted from incoming updates
+EIGRP metric weight K1=1, K2=0, K3=1, K4=0, K5=0
+EIGRP maximum hopcount 100
+EIGRP maximum metric variance 1
+
+//Will not load balance; note this is NOT showing AD
+P 192.168.4.0/24, 1 successors, FD is 28672
+via 10.0.12.2 [28672/28416], GigabitEthernet0/0
+via 10.0.13.2 [30976/28416], FastEthernet1/0
+
+//Will now load-balance despite the slight variance in feasible distances. 
+R1(config-router)#variance ?
+  <1-128> Metric variance Multiplier
+R1(config-router)#variance 2
+```
+
+### Generalized Steps for EIGRP Configurations
+
+```
+//Configure EIGRP by specifying the autonomous system number; all routers must share the same AS number
+Router(config)# router eigrp [AS number]
+
+//Advertise networks
+Router(config-router)# network [network-address] [wildcard-mask]
+//Maybe(?) set up lookback interfaces to advertise 
+...
+
+//Configure EIGRP Router ID (Optional)
+Router(config-router)# eigrp router-id [IP address]
+
+//Fine-tune EIGRP settings
+//Variance
+Router(config-router)# variance [multiplier]
+
+//Passive-interfaces
+Router(config-router)# passive-interface [interface-name]
+
+//Timers
+Router(config-router)# timers hello [time in seconds] hold [time in seconds]
+
+
+//Adjust metrics (advanced)
+Router(config-router)# metric weights 0 [K1] [K2] [K3] [K4] [K5]
+
+//Verify Configs
+Router# show ip eigrp neighbors
+Router# show ip eigrp topology
+Router# show ip route eigrp
 
 ```
 ## OSPF
