@@ -1965,7 +1965,47 @@ Router# show ip eigrp topology
 Router# show ip route eigrp
 
 ```
-## OSPF
+## OSPF Part 1
+
+OSFP is a "link-state" routing protocol, which creates a complete map of the network; and every device has the same database of routing information stored. 
+
+Generalized OSPF Configurations
+```
+//Process IDs are locally significant, and unlike EIGRP do not require the numbers to be the same
+Router(config)# router ospf [process-id]
+
+//Set a Router ID (Optional: Recommended); might require a 'clear'
+Router(config-router)# router-id [IP-address]
+Router(config-router)# clear ip ospf process     // NOT recommended on a live network
+
+//Advertise network; area 0 is best practice for single-area
+Router(config-router)# network [network-address] [wildcard-mask] area [area-id]
+
+//Advertise default-routes; assuming a default route is set up
+Router(config-router)# default-information originate       // this router will become a ASBR
+
+//Adjust Reference Bandwidth 
+Router(config-router)# auto-cost reference-bandwidth [bandwidth in Mbps]
+
+//Passive Interface
+Router(config-router)# passive-interface [interface-name]
+
+//Like EIGRP, can configure maximum paths and distance (AD value)
+Router(config-router)# maximum-paths [number]
+Router(config-if)# ip ospf cost [cost-value]
+
+
+//Verify Configurations
+Router# show ip protocols
+Router# show ip ospf neighbor
+Router# show ip ospf interface
+Router# show ip route ospf
+Router# show ip ospf database
+
+```
+
+-------------
+
 
 ```
 show ip ospf interface brief 
