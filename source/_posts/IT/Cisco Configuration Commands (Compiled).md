@@ -2075,7 +2075,9 @@ R1(config-if)#ip mtu <68-1500>
 R1(config-if)# 
 ```
 
-## Enable OSPF Directly on an Interface without using the Network Command
+### Enable OSPF Directly on an Interface without using the Network Command
+
+
 
 ```
 R1(config)#int INT-ID
@@ -2098,7 +2100,41 @@ R1(config-if)#show ocntrollers INTERFACE-ID
 R1(config-if)#clock rate BITS-PER-SEC
 ```
 
+## OSPF - 3
 
+https://www.youtube.com/watch?v=3ew26ujkiDI&list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ&index=53
+### DR/BDR Selection
+- The DR/BDR election order of priority:
+  1. Highest OSPF interface priority
+  2. Highest OSPF Router ID
+
+- ‘First place’ becomes the DR for the subnet, ‘second place’ becomes the BDR
+- Default OSPF priority is 1 on all interfaces; so likely router ID will be used unless otherwise configured. 
+	- The router ID itself has its own selection; manual configuration -> loopback -> physical IP 
+
+Change the OSFP interface priority to affect DR/BDR Selection
+```
+R2(config)#int g0/0
+R2(config-if)#ip ospf priority ?
+  <0-255> Priority
+R2(config-if)#ip ospf priority 255
+```
+DR/BDR is **non-preemptive**, which means DR/BDR will keep their roles unless OSPF is reset (not recommended), or the interface fails/resets. 
+
+
+
+  → When the DR goes down, the BDR becomes the new DR. Then an election is held for the next BDR.
+
+  → DROthers will only move to the FULL state with the DR and BDR. The neighbor state with other DROthers will be 2-way.
+
+Change the network type:
+```
+R1(config-if)#ip ospf network ?
+  broadcast       Specify OSPF broadcast multi-access network
+  non-broadcast   Specify OSPF NBMA network
+  point-to-multipoint Specify OSPF point-to-multipoint network
+  point-to-point  Specify OSPF point-to-point network
+```
 ## IPv6 Routing
 
 Configure IPv6 on Router Interfaces
