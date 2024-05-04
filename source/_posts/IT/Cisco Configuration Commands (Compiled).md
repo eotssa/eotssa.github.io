@@ -1984,20 +1984,28 @@ Router(config-router)# network [network-address] [wildcard-mask] area [area-id]
 //Advertise default-routes; assuming a default route is set up
 Router(config-router)# default-information originate       // this router will become a ASBR
 
-//Adjust Reference Bandwidth 
-Router(config-router)# auto-cost reference-bandwidth [bandwidth in Mbps]
-
 //Passive Interface
 Router(config-router)# passive-interface [interface-name]
+//You can also enable passive-interfaces on ALL interfaces, and then select the non-passive ones
+Router(config-router)# no passive-interface INT-ID
 
 //Like EIGRP, can configure maximum paths and distance (AD value)
 Router(config-router)# maximum-paths [number]
+
+//Adjust Reference Bandwidth; should be the same accross the entire OSPF network
+Router(config-router)# auto-cost reference-bandwidth [bandwidth in Mbps]
+
+//Configure cost on an interface; which takes priority over the auto-calculated cost 
 Router(config-if)# ip ospf cost [cost-value]
+//OR, change the bandwidth, which changes the cost; bandwidth =/= SPEED ; NOT recommended
+Router(config-if)# bandwidth [kbps]
+
 
 
 //Verify Configurations
 Router# show ip protocols
 Router# show ip ospf neighbor
+Router# show ip ospf brief
 Router# show ip ospf interface
 Router# show ip route ospf
 Router# show ip ospf database
@@ -2006,65 +2014,33 @@ Router# show ip ospf database
 
 -------------
 
+## OSPF - 2
 
-```
-show ip ospf interface brief 
+### Neighbor States
 
-show ip ospf int INTERFACE-ID
+### OSPF Neighbor Discovery and Formation
+- **Hello Packets**: OSPF routers send Hello packets to the multicast address 224.0.0.5 on an Ethernet network. These packets are used to discover and maintain adjacency with other OSPF routers.
+- **Neighbor States**: OSPF routers go through several states as they establish and maintain a full adjacency:
+  - **Down**: Initial state, no information has been received on this interface.
+  - **Init**: Router has detected a Hello packet from a neighbor, but two-way communication has not yet been established.
+  - **2-Way**: Bidirectional communication is established. OSPF routers decide whether to become fully adjacent based on criteria such as the router ID, area ID, and network type.
+  - **ExStart**: Routers establish a master-slave relationship and determine the sequence number for exchanging OSPF link-state databases.
+  - **Exchange**: Routers exchange database descriptor packets summarizing their link-state databases.
+  - **Loading**: Routers request more detailed information about any entries in the link-state database that are newer or missing.
+  - **Full**: Routers have full knowledge of each other’s routing information and the adjacency is complete.
 
-//checks neighbors for adj
-show ip ospf neighbor
-```
+### Criteria for Forming Neighbors
+- **Matching Hello and Dead Intervals**: Routers must agree on the Hello and Dead intervals to form a neighbor relationship.
+- **Same Subnet**: Routers must be on the same subnet to communicate OSPF messages.
+- **Area ID**: Routers must belong to the same OSPF area on a particular interface.
+- **Authentication**: If OSPF authentication is configured, the authentication type and credentials must match.
 
-```
-R2# configure terminal
-R2(config)# router ospf 1
-R2(config-router)# network 192.168.12.0 0.0.0.3 area 0 
-R2(config-router)# exit
-R2(config)# interface s0/0/0
-R2(config-if)# ip ospf 1 area 0
-```
+### Maintenance of OSPF Neighbors
+- **Timers**: OSPF uses several timers to manage neighbor relationships and ensure the network's stability:
+  - **Hello Timer**: Determines how frequently Hello packets are sent.
+  - **Dead Timer**: Specifies how long a router waits without receiving a Hello packet before declaring the neighbor down.
 
-```CHANGING COST
-// changes the cost of OSFP ; default reference bandwidth cost: 100
-// configure all routers to have the same osfp reference-bandwidth 
-R1(config-router)#auto-cost reference-bandwidth <1-4294967 (Mbps)>
-
-//change specific interface cost, takes precedence over auto-cost
-R1(config-router)#ip ospf cost <1-65535>
-
-//change specific interface cost via bandwidth command (NOT RECOMMENDED)
-R1(config-router)#bandwidth ?
-R1(config-router)#bandwidth <NUM kilobits/sec>
-```
-
-```
-//activate osfp on an interface without the `network` command
-R1(config-if)#ip ospf PROCESS-ID area AREA-ID
-
-//configure all interfaces to be passive-intefaces
-R1(config-if)#router ospf PROCESS-ID
-//then select certain interfaces to enable
-R1(config-if)#no passive-interace INTERFACE-ID
-```
-
-![](images/Pasted%20image%2020240318163715.png)
-```
-//Change interface priority for DR/DBR designation
-R1(config)#int g0/0
-R1(config-if)#ip ospf priority <0-255>
-
-//configure the OSPF network type
-R1(config-if)#ip ospf network ?
-	broadcast
-	non-broadcast
-	point-to-multipoint
-	point-to-point
-```
-
-![](images/Pasted%20image%2020240318212830.png)
-
-### OSPF Neighbor Requirements
+#### OSPF Neighbor Requirements
 1. Area Numbers must match
 2. Interfaces must be in the same subnet
 3. OSPF process must not be shutdown
@@ -2099,6 +2075,14 @@ R1(config-if)#ip mtu <68-1500>
 R1(config-if)# 
 ```
 
+## Enable OSPF Directly on an Interface without using the Network Command
+
+```
+R1(config)#int INT-ID
+R1(config-if)#ip ospf 1 area 0
+```
+
+---
 
 
 Serial Interface's
