@@ -2135,6 +2135,112 @@ R1(config-if)#ip ospf network ?
   point-to-multipoint Specify OSPF point-to-multipoint network
   point-to-point  Specify OSPF point-to-point network
 ```
+
+## FHRP (HSRP) Configuration (N)
+
+
+The role of FHRP is to automatically swap the default gateway of end hosts to a new default gateway if the route does down. 
+
+When FHRP is configured, a virtual IP address and a virtual MAC address is used. 
+- Routers with FHRP will negotiate via Hello messages for Active/Standby, then if router goes down, the standby/backup will become the new Active, and only the switches MAC address table needs to be updated via gratuitous ARP replies. 
+
+FHRPs are also non-preemptive, but can be changed. 
+
+In short:
+
+- A virtual IP is configured on the two routers, and a virtual MAC is generated for the virtual IP (each FHRP uses a different format for the virtual MAC).
+- An active router and a standby router are elected. (different FHRPs use different terms)
+- End hosts in the network are configured to use the virtual IP as their default gateway.
+- The active router replies to ARP requests using the virtual MAC address, so traffic destined for other networks will be sent to it.
+- If the active router fails, the standby becomes the next active router. The new active router will send gratuitous ARP messages so that switches will update their MAC address tables. It now functions as the default gateway.
+- If the old active router comes back online, by default it won’t take back its role as the active router. It will become the standby router.
+- You can configure ‘preemption’, so that the old active router does take back its old role.
+
+### HSRP
+- Cisco proprietary.
+- An active and standby router are elected.
+- There are two versions: version 1 and version 2.
+  - Version 2 adds IPv6 support and increases the number of groups that can be configured.
+- Multicast IPv4 address:
+  - v1 = 224.0.0.2
+  - v2 = 224.0.0.102
+- Virtual MAC address:
+  - v1 = 0000.0c07.acXX (XX = HSRP group number)
+  - v2 = 0000.0c9f.fXXX (XXX = HSRP group number)
+- In a situation with multiple subnets/VLANs, you can configure a different active router in each subnet/VLAN to load balance.
+### VRRP
+- Open standard
+- A master and backup router are elected.
+- Multicast IPv4 address: 224.0.0.18
+- Virtual MAC address: 0000.5e00.01XX (XX = VRRP group number)
+- In a situation with multiple subnets/VLANs, you can configure a different master router in each subnet/VLAN to load balance.
+### GLBP
+- Cisco proprietary
+- Load balances among multiple routers within a single subnet
+- An AVG (Active Virtual Gateway) is elected.
+- Up to four AVFs (Active Virtual Forwarders) are assigned by the AVG (the AVG itself can be an AVF, too)
+- Each AVF acts as the default gateway for a portion of the hosts in the subnet.
+- Multicast IPv4 address: 224.0.0.102
+- Virtual MAC address: 0007.b400.XXYY (XX = GLBP group number, YY = AVF number)
+
+### HSRP Configuration (N)
+
+How is the active router determined?
+1. Highest priority - default 100
+2. Highest IP address 
+
+```
+R1(config-if)#standby ?
+  <0-255>         group number
+  authentication  Authentication
+  bfd             Enable HSRP BFD
+  ip              HSRP IPv4 virtual IP
+  ipv6            HSRP IPv6 virtual IP
+  mac-address     Virtual MAC address
+  name            Redundancy name string
+  preempt         Overthrow lower priority Active routers
+  priority        Priority level
+  timers          Hello and hold timers
+  track           Priority tracking
+
+R1(config-if)#standby version 2
+R1(config-if)#standby ?
+  <0-4095>        group number
+  authentication  Authentication
+  bfd             Enable HSRP BFD
+
+//Group number MUST match 
+R1(config-if)#standby 1 ?
+  authentication  Authentication
+  follow          Name of HSRP group to follow
+  ip              Enable HSRP IPv4 and set the virtual IP address
+  ipv6            Enable HSRP IPv6
+  mac-address     Virtual MAC address
+  name            Redundancy name string
+  preempt         Overthrow lower priority Active routers
+  priority        Priority level
+  timers          Hello and hold timers
+  track           Priority tracking
+
+R1(config-if)#standby 1 ip 172.16.0.254              // Configure the VIRTUAL IP
+R1(config-if)#
+R1(config-if)#standby 1 priority ?
+  <0-255> Priority value
+R1(config-if)#standby 1 priority 200
+R1(config-if)#
+R1(config-if)#standby 1 preempt         // If on, if the old active comes back, then it'll take back
+R1(config-if)#
+```
+
+Do the same configurations for the other redundant router, including version, same virtual IP. \
+
+```
+Basic HSRP Configuration
+R1(config-if)# standby version 2
+R1(config-if)# standby group-number ip virtual-ip
+R1(config-if)# standby group-number priority priority
+R1(config-if)# standby group-number preempt
+```
 ## IPv6 Routing
 
 Configure IPv6 on Router Interfaces
