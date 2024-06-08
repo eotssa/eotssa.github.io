@@ -4,7 +4,8 @@ date: 2024-06-08 12:13:44
 tags:
   - Python
 ---
-This project was inspired because part of my daily task involved managing printers as a non-admin. We simply ping the printer, head into the GUI, and then grab the relevant status information based on the printer model number and brand. 
+The program simply ping the printer, head into the web GUI, and then grab the relevant status information based on the printer model number and brand. 
+
 
 We define schemas in a folder called `configs` that contains JSON data. 
 For instance, for a printer `Brother DCP-L2540DW`, I'd have a `Brother DCP-L2540DW.json` file with the following:
