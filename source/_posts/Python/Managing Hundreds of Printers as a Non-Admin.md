@@ -9,7 +9,7 @@ This project was inspired because part of my daily task involved managing printe
 We define schemas in a folder called `configs` that contains JSON data. 
 For instance, for a printer `Brother DCP-L2540DW`, I'd have a `Brother DCP-L2540DW.json` file with the following:
 
-```
+```Python
 {
   "printer_name": "Brother DCP-L2540DW",
   "default_url": "http://192.168.0.33/",
@@ -51,8 +51,7 @@ I chose this format because config files are easily scalable.
 
 The code generates a report of all printer error statuses. If no new error statuses are parsed, then the printer will simply return `no error`
 
-
-```
+```Python
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -63,7 +62,6 @@ from jsonschema import validate, ValidationError
 
 logging.basicConfig(level=logging.INFO)
 
-# Define a base schema
 BASE_SCHEMA = {
     "type": "object",
     "properties": {
@@ -74,7 +72,6 @@ BASE_SCHEMA = {
     "required": ["printer_name", "default_url", "info_url"]
 }
 
-# Define schema extensions for Brother printers
 BROTHER_SCHEMA = {
     "type": "object",
     "properties": {
@@ -297,7 +294,6 @@ class BrotherHL_L2350DW(Printer):
 PRINTER_TYPE_SCHEMAS = {
     "Brother DCP-L2540DW": BROTHER_SCHEMA,
     "Brother HL-L2350DW": BROTHER_SCHEMA
-    # Add more printer-specific schemas here
 }
 
 def validate_config(config, schema):
