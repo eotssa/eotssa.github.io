@@ -19,6 +19,7 @@ nav:
   C++: /categories/CPlusPlus/
   Python: /categories/Python/
   IT: /categories/IT/
+  Biological Sciences: /categories/Biological Sciences/
   archives: /archives/
   ChromeScope: https://www.chromescope.net
 
@@ -46,7 +47,7 @@ tags_overview: false
 #   - post_count: whether to show only the x most recent posts.
 #   - sort_updated: sort posts by last modification date instead of creation date.
 posts_overview:
-  show_all_posts: false
+  show_all_posts: true
   post_count: 20
   sort_updated: false
 
@@ -62,7 +63,7 @@ archive:
 # Options:
 #   - show_updated: show the last modification date.
 post:
-  show_updated: false
+  show_updated: true
 
 # Customize the copyright years
 # Note: if start_year/end_year not provided, will use current year.
@@ -173,12 +174,12 @@ google_analytics:
 # Fill in your Baidu Analytics tracking ID to enable Baidu Analytics.
 baidu_analytics:
   enabled: false
-  id: 2e6da3c375c8a87f5b664cea6d4cb29c
+  id:
 
 # Fill in your Cloudflare Analytics tracking ID to enable Cloudflare Analytics.
 cloudflare_analytics:
   enabled: false
-  id: 0dabb6e21848405483a237e6a7b6ed04
+  id:
 
 # Fill in your Umami Analytics tracking ID to enable Umami Analytics.
 umami_analytics:
