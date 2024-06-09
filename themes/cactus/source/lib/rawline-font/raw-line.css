@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Raw Line';
+  src: url('raw-line-regular.woff2') format('woff2'),
+    url('raw-line-regular.woff') format('woff'),
+    url('raw-line-regular.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raw Line';
+  src: url('raw-line-bold.woff2') format('woff2'),
+    url('raw-line-bold.woff') format('woff'),
+    url('raw-line-bold.ttf') format('truetype');
+  font-weight: bold;
+  font-display: swap;
+}
