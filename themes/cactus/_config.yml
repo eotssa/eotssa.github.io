@@ -128,7 +128,7 @@ favicon:
 colorscheme: dark
 
 # Maximal width of the page in rem units.
-page_width: 74
+page_width: 64
 
 ##############################################################################
 # Miscellaneous
