@@ -1,3 +1,10 @@
+---
+title: Microsoft Stuff
+date: 2024-06-24 23:25:37
+tags: 
+categories:
+  - IT
+---
 Refer to the official Microsoft Documentation here: https://github.com/MicrosoftDocs/PowerShell-Docs/blob/main/reference/5.1/Microsoft.PowerShell.Management/Get-HotFix.md
 
 Specifically, here for batch scans: 
