@@ -1,8 +1,6 @@
-This website is created using a Node.js framework called Hexo. 
+Website is created using a Node.js framework called Hexo. 
 
-Here, I write about things that I have learned, interests, and skills that I want to share. 
-
-The site is automatically deployed using Github Actions. 
+Site is automatically deployed using Github Actions. 
 
 ```
 name: Pages
