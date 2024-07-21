@@ -1,8 +1,7 @@
 ---
-title: Spell Checker Using Difflib
-categories:
-  - Python
-date: 2024-02-24 23:11:42
+title: Filter Emails by Date and Time
+categories: 
+date: 2024-07-21
 tags:
   - Python
 ---
