@@ -139,3 +139,13 @@ Weeks
 =B2 + C2
 
 ```
+
+## VLOOKUPs
+
+```
+=VLOOKUP(A2, Sheet2!A:B, 2, FALSE)
+```
+
+```
+=IFERROR(VLOOKUP(A2, Sheet2!A:B, 2, FALSE), "No Match")
+```
