@@ -1,377 +1,360 @@
 ---
-title: Testing...
+title: Testing.......
 categories: 
-date: 2024-07-28
+date: 2024-07-31
 tags:
 ---
-Excel > VBA Editor > - - Check `Adobe Acrobat xx.0 Type Library` (where xx is your version number).
+## Generate Dynamic Paths
 
 ```
-Sub ExtractPDFFormData()
+=HYPERLINK("C:\Documents\Inventory\Active\" & IF(ISBLANK([@[Date Taken]]), YEAR(TODAY()), YEAR([@[Date Taken]])) & "\" & [@[Size]] & "\" & LEFT([@[Card Number]], FIND(",", [@[Card Number]] & ",")-1), "Open Folder")
+```
+
+#### Using relative path
+```
+=HYPERLINK("Active\" & IF(ISBLANK([@[Date Taken]]), YEAR(TODAY()), YEAR([@[Date Taken]])) & "\" & [@[Size]] & "\" & LEFT([@[Card Number]], FIND(",", [@[Card Number]] & ",")-1), "Open Folder")
+
+```
+
+# PDF to Excel; Just for Cards
+
+```
+Sub ExtractPDFDataToExcel()
     Dim AcroApp As Object
     Dim AcroAVDoc As Object
     Dim AcroPDDoc As Object
     Dim AcroForm As Object
-    Dim Field As Object
-    Dim FieldName As String
-    Dim FieldValue As String
-    Dim FilePath As String
-    Dim i As Integer
+    Dim fso As Object
+    Dim folder As Object
+    Dim file As Object
+    Dim pdfFilePath As String
+    Dim Requester As String
+    Dim Size As String
+    Dim CardNumber As String
+    Dim DateTaken As String
+    Dim CaseName As String
+    Dim Reason As String
+    Dim Returnable As String
+    Dim QTY As Integer
+    Dim cardNumbers() As String
+    Dim nextRow As Long
     
-    ' Path to the PDF file
-    FilePath = "C:\path\to\your\file.pdf"
+    ' Define the folder path
+    Dim folderPath As String
+    folderPath = "C:\Users\wilso\Desktop\One_Only"
     
-    ' Create Acrobat application object
-    Set AcroApp = CreateObject("AcroExch.App")
+    ' Create FileSystemObject
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set folder = fso.GetFolder(folderPath)
     
-    ' Create AVDoc object
-    Set AcroAVDoc = CreateObject("AcroExch.AVDoc")
+    ' Find the first PDF file in the folder
+    pdfFilePath = ""
+    For Each file In folder.Files
+        If LCase(fso.GetExtensionName(file.Name)) = "pdf" Then
+            pdfFilePath = file.Path
+            Exit For
+        End If
+    Next file
     
-    ' Open the PDF file
-    If AcroAVDoc.Open(FilePath, "") = True Then
-        ' Set the PDDoc object
-        Set AcroPDDoc = AcroAVDoc.GetPDDoc
-        
-        ' Get the form fields
-        Set AcroForm = AcroPDDoc.GetJSObject
-        
-        ' List of field names
-        Dim FieldNames As Variant
-        FieldNames = Array("FirstName", "LastName", "Email", "PhoneNumber")
-        
-        ' Loop through each field name
-        For i = LBound(FieldNames) To UBound(FieldNames)
-            FieldName = FieldNames(i)
-            FieldValue = AcroForm.getField(FieldName).value
-            
-            ' Write the field value to Excel (e.g., Column A for field names, Column B for field values)
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 1).Value = FieldName
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 2).Value = FieldValue
-        Next i
-        
-        ' Close the PDF file
-        AcroAVDoc.Close True
-    Else
-        MsgBox "Failed to open the PDF file.", vbExclamation
-    End If
-    
-    ' Close Acrobat application
-    AcroApp.Exit
-    Set AcroAVDoc = Nothing
-    Set AcroPDDoc = Nothing
-    Set AcroApp = Nothing
-End Sub
-
-```
-
-- **FilePath:** Replace `"C:\path\to\your\file.pdf"` with the path to your PDF file.
-- **AcroExch.App and AcroExch.AVDoc:** These objects are used to interact with Adobe Acrobat.
-- **AcroPDDoc:** This object represents the PDF document.
-- **AcroHiliteList:** This object is used to extract text from the PDF.
-- The script loops through each page of the PDF, extracts the text, and writes it to the first column of an Excel sheet.
-
-## 1. - The script will look for any PDF file in the specified folder and process it regardless of its name.
-
-- **Place your PDF file in this folder. Ensure only one PDF file is in the folder at a time for this script to work correctly.**
-
-```
-Sub ExtractPDFFormData()
-    Dim AcroApp As Object
-    Dim AcroAVDoc As Object
-    Dim AcroPDDoc As Object
-    Dim AcroForm As Object
-    Dim FieldName As String
-    Dim FieldValue As String
-    Dim FolderPath As String
-    Dim FilePath As String
-    Dim FileName As String
-    Dim i As Integer
-    Dim FieldNames As Variant
-
-    ' Folder where the PDF file will be placed
-    FolderPath = "C:\PDFtoExcel\"
-
-    ' Get the first PDF file in the folder
-    FileName = Dir(FolderPath & "*.pdf")
-
-    ' Check if there is a PDF file in the folder
-    If FileName = "" Then
-        MsgBox "No PDF file found in the folder.", vbExclamation
+    ' Check if a PDF file was found
+    If pdfFilePath = "" Then
+        MsgBox "No PDF files found in the folder."
         Exit Sub
     End If
-
-    ' Full path to the PDF file
-    FilePath = FolderPath & FileName
-
+    
     ' Create Acrobat application object
     Set AcroApp = CreateObject("AcroExch.App")
-
-    ' Create AVDoc object
     Set AcroAVDoc = CreateObject("AcroExch.AVDoc")
-
+    
     ' Open the PDF file
-    If AcroAVDoc.Open(FilePath, "") = True Then
-        ' Set the PDDoc object
+    If AcroAVDoc.Open(pdfFilePath, "") Then
         Set AcroPDDoc = AcroAVDoc.GetPDDoc
-
-        ' Get the form fields
         Set AcroForm = AcroPDDoc.GetJSObject
-
-        ' List of field names (customize this according to your PDF form)
-        FieldNames = Array("FirstName", "LastName", "Email", "PhoneNumber")
-
-        ' Loop through each field name
-        For i = LBound(FieldNames) To UBound(FieldNames)
-            FieldName = FieldNames(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Write the field value to Excel (e.g., Column A for field names, Column B for field values)
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 1).Value = FieldName
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 2).Value = FieldValue
-        Next i
-
+        
+        ' Extract field values
+        On Error GoTo ErrorHandler
+        
+        ' Initialize fields to empty strings
+        Requester = ""
+        Size = ""
+        CardNumber = ""
+        DateTaken = ""
+        CaseName = ""
+        Reason = ""
+        Returnable = ""
+        QTY = 0
+        
+        ' Check and extract each field value safely
+        Requester = GetPDFFieldValue(AcroForm, "First Name") & " " & GetPDFFieldValue(AcroForm, "Last Name")
+        Size = GetPDFFieldValue(AcroForm, "Size1")
+        CardNumber = GetPDFFieldValue(AcroForm, "DOJ Card NoRow1")
+        DateTaken = GetPDFFieldValue(AcroForm, "Date Property Issued")
+        CaseName = GetPDFFieldValue(AcroForm, "Case NameUSAO No")
+        Reason = GetPDFFieldValue(AcroForm, "Reason")
+        Returnable = GetPDFFieldValue(AcroForm, "Returnable")
+        
+        ' Calculate QTY
+        If CardNumber <> "" Then
+            cardNumbers = Split(CardNumber, ",")
+            QTY = UBound(cardNumbers) + 1
+        Else
+            QTY = 0
+        End If
+        
+        ' Find the next available row
+        With ThisWorkbook.Sheets("Sheet1")
+            nextRow = .Cells(.Rows.Count, 1).End(xlUp).Row + 1
+        End With
+        
+        ' Write to Excel
+        With ThisWorkbook.Sheets("Sheet1")
+            .Cells(nextRow, 1).Value = Requester
+            .Cells(nextRow, 2).Value = Size
+            .Cells(nextRow, 3).Value = CardNumber
+            .Cells(nextRow, 4).Value = DateTaken ' Only DateTaken is Date Property Issued
+            .Cells(nextRow, 5).Value = "" ' Follow-Up Date left blank
+            .Cells(nextRow, 6).Value = "" ' Date Returned left blank
+            .Cells(nextRow, 7).Value = CaseName
+            .Cells(nextRow, 8).Value = Reason
+            .Cells(nextRow, 9).Value = Returnable
+            .Cells(nextRow, 10).Value = "" ' Encryption Password left blank
+            .Cells(nextRow, 11).Value = QTY
+        End With
+        
         ' Close the PDF file
         AcroAVDoc.Close True
     Else
-        MsgBox "Failed to open the PDF file.", vbExclamation
+        MsgBox "Failed to open the PDF file."
     End If
-
-    ' Close Acrobat application
+    
+    ' Cleanup
     AcroApp.Exit
-    Set AcroAVDoc = Nothing
+    Set AcroForm = Nothing
     Set AcroPDDoc = Nothing
+    Set AcroAVDoc = Nothing
     Set AcroApp = Nothing
+    Set fso = Nothing
+    Set folder = Nothing
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "An error occurred: " & Err.Description
+    If Not AcroAVDoc Is Nothing Then AcroAVDoc.Close True
+    If Not AcroApp Is Nothing Then AcroApp.Exit
+    Set AcroForm = Nothing
+    Set AcroPDDoc = Nothing
+    Set AcroAVDoc = Nothing
+    Set AcroApp = Nothing
+    Set fso = Nothing
+    Set folder = Nothing
 End Sub
 
+Function GetPDFFieldValue(AcroForm As Object, fieldName As String) As String
+    On Error Resume Next
+    Dim fieldValue As String
+    fieldValue = AcroForm.GetField(fieldName).Value
+    If Err.Number <> 0 Then
+        fieldValue = ""
+        Debug.Print "Field '" & fieldName & "' not found."
+    End If
+    On Error GoTo 0
+    GetPDFFieldValue = fieldValue
+End Function
+
+
 ```
 
----
 
+## Normalizing for Size Sheets
 
-CHECKBOXES
 
 ```
-Sub ExtractPDFFormData()
+Sub ExtractPDFDataToExcel()
     Dim AcroApp As Object
     Dim AcroAVDoc As Object
     Dim AcroPDDoc As Object
     Dim AcroForm As Object
-    Dim FieldName As String
-    Dim FieldValue As String
-    Dim FolderPath As String
-    Dim FilePath As String
-    Dim FileName As String
-    Dim i As Integer
-    Dim FieldNames As Variant
-    Dim CheckBoxNames As Variant
-    Dim LastRow As Integer
-
-    ' Folder where the PDF file will be placed
-    FolderPath = "C:\PDFtoExcel\"
-
-    ' Get the first PDF file in the folder
-    FileName = Dir(FolderPath & "*.pdf")
-
-    ' Check if there is a PDF file in the folder
-    If FileName = "" Then
-        MsgBox "No PDF file found in the folder.", vbExclamation
+    Dim fso As Object
+    Dim folder As Object
+    Dim file As Object
+    Dim pdfFilePath As String
+    Dim Requester As String
+    Dim size As String
+    Dim CardNumber As String
+    Dim DateTaken As String
+    Dim CaseName As String
+    Dim Reason As String
+    Dim Returnable As String
+    Dim QTY As Integer
+    Dim cardNumbers() As String
+    Dim nextRow As Long
+    Dim ws As Worksheet
+    
+    ' Define the folder path
+    Dim folderPath As String
+    folderPath = "C:\Users\wilso\Desktop\One_Only"
+    
+    ' Create FileSystemObject
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set folder = fso.GetFolder(folderPath)
+    
+    ' Find the first PDF file in the folder
+    pdfFilePath = ""
+    For Each file In folder.Files
+        If LCase(fso.GetExtensionName(file.Name)) = "pdf" Then
+            pdfFilePath = file.Path
+            Exit For
+        End If
+    Next file
+    
+    ' Check if a PDF file was found
+    If pdfFilePath = "" Then
+        MsgBox "No PDF files found in the folder."
         Exit Sub
     End If
-
-    ' Full path to the PDF file
-    FilePath = FolderPath & FileName
-
+    
     ' Create Acrobat application object
     Set AcroApp = CreateObject("AcroExch.App")
-
-    ' Create AVDoc object
     Set AcroAVDoc = CreateObject("AcroExch.AVDoc")
-
+    
     ' Open the PDF file
-    If AcroAVDoc.Open(FilePath, "") = True Then
-        ' Set the PDDoc object
+    If AcroAVDoc.Open(pdfFilePath, "") Then
         Set AcroPDDoc = AcroAVDoc.GetPDDoc
-
-        ' Get the form fields
         Set AcroForm = AcroPDDoc.GetJSObject
-
-        ' List of field names (customize this according to your PDF form)
-        FieldNames = Array("FirstName", "LastName", "Email", "PhoneNumber")
-
-        ' List of checkbox field names
-        CheckBoxNames = Array("CheckA", "CheckB", "CheckC")
-
-        ' Loop through each field name
-        For i = LBound(FieldNames) To UBound(FieldNames)
-            FieldName = FieldNames(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Write the field value to Excel (e.g., Column A for field names, Column B for field values)
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 1).Value = FieldName
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 2).Value = FieldValue
-        Next i
-
-        ' Find the last row to start writing checkboxes
-        LastRow = UBound(FieldNames) + 2
-
-        ' Loop through each checkbox field name
-        For i = LBound(CheckBoxNames) To UBound(CheckBoxNames)
-            FieldName = CheckBoxNames(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Determine if the checkbox is checked or not
-            If FieldValue = "Yes" Then
-                ' Write the checkbox name to Excel if it is checked
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 1).Value = FieldName
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 2).Value = "Checked"
-                LastRow = LastRow + 1
-            End If
-        Next i
-
+        
+        ' Extract field values
+        On Error GoTo ErrorHandler
+        
+        ' Initialize fields to empty strings
+        Requester = ""
+        size = ""
+        CardNumber = ""
+        DateTaken = ""
+        CaseName = ""
+        Reason = ""
+        Returnable = ""
+        QTY = 0
+        
+        ' Check and extract each field value safely
+        Requester = GetPDFFieldValue(AcroForm, "First Name") & " " & GetPDFFieldValue(AcroForm, "Last Name")
+        size = NormalizeSize(GetPDFFieldValue(AcroForm, "Size1"))
+        CardNumber = GetPDFFieldValue(AcroForm, "DOJ Card NoRow1")
+        DateTaken = GetPDFFieldValue(AcroForm, "Date Property Issued")
+        CaseName = GetPDFFieldValue(AcroForm, "Case NameUSAO No")
+        Reason = GetPDFFieldValue(AcroForm, "Reason")
+        Returnable = GetPDFFieldValue(AcroForm, "Returnable")
+        
+        ' Calculate QTY
+        If CardNumber <> "" Then
+            cardNumbers = Split(CardNumber, ",")
+            QTY = UBound(cardNumbers) + 1
+        Else
+            QTY = 0
+        End If
+        
+        ' Determine the correct sheet based on Size
+        Set ws = GetWorksheetBySize(size)
+        If ws Is Nothing Then
+            MsgBox "No worksheet found for size: " & size
+            GoTo Cleanup
+        End If
+        
+        ' Find the next available row
+        nextRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row + 1
+        
+        ' Write to the correct sheet
+        With ws
+            .Cells(nextRow, 1).Value = Requester
+            .Cells(nextRow, 2).Value = size
+            .Cells(nextRow, 3).Value = CardNumber
+            .Cells(nextRow, 4).Value = DateTaken ' Only DateTaken is Date Property Issued
+            .Cells(nextRow, 5).Value = "" ' Follow-Up Date left blank
+            .Cells(nextRow, 6).Value = "" ' Date Returned left blank
+            .Cells(nextRow, 7).Value = CaseName
+            .Cells(nextRow, 8).Value = Reason
+            .Cells(nextRow, 9).Value = Returnable
+            .Cells(nextRow, 10).Value = "" ' Encryption Password left blank
+            .Cells(nextRow, 11).Value = QTY
+        End With
+        
         ' Close the PDF file
         AcroAVDoc.Close True
     Else
-        MsgBox "Failed to open the PDF file.", vbExclamation
+        MsgBox "Failed to open the PDF file."
     End If
-
-    ' Close Acrobat application
+    
+Cleanup:
+    ' Cleanup
     AcroApp.Exit
-    Set AcroAVDoc = Nothing
+    Set AcroForm = Nothing
     Set AcroPDDoc = Nothing
+    Set AcroAVDoc = Nothing
     Set AcroApp = Nothing
+    Set fso = Nothing
+    Set folder = Nothing
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "An error occurred: " & Err.Description
+    If Not AcroAVDoc Is Nothing Then AcroAVDoc.Close True
+    If Not AcroApp Is Nothing Then AcroApp.Exit
+    Set AcroForm = Nothing
+    Set AcroPDDoc = Nothing
+    Set AcroAVDoc = Nothing
+    Set AcroApp = Nothing
+    Set fso = Nothing
+    Set folder = Nothing
 End Sub
 
-```
-
----
-
-TWO separate sections of checkboxes
-
-```
-Sub ExtractPDFFormData()
-    Dim AcroApp As Object
-    Dim AcroAVDoc As Object
-    Dim AcroPDDoc As Object
-    Dim AcroForm As Object
-    Dim FieldName As String
-    Dim FieldValue As String
-    Dim FolderPath As String
-    Dim FilePath As String
-    Dim FileName As String
-    Dim i As Integer
-    Dim FieldNames As Variant
-    Dim CheckBoxNamesSection1 As Variant
-    Dim CheckBoxNamesSection2 As Variant
-    Dim LastRow As Integer
-
-    ' Folder where the PDF file will be placed
-    FolderPath = "C:\PDFtoExcel\"
-
-    ' Get the first PDF file in the folder
-    FileName = Dir(FolderPath & "*.pdf")
-
-    ' Check if there is a PDF file in the folder
-    If FileName = "" Then
-        MsgBox "No PDF file found in the folder.", vbExclamation
-        Exit Sub
+Function GetPDFFieldValue(AcroForm As Object, fieldName As String) As String
+    On Error Resume Next
+    Dim fieldValue As String
+    fieldValue = AcroForm.GetField(fieldName).Value
+    If Err.Number <> 0 Then
+        fieldValue = ""
+        Debug.Print "Field '" & fieldName & "' not found."
     End If
+    On Error GoTo 0
+    GetPDFFieldValue = fieldValue
+End Function
 
-    ' Full path to the PDF file
-    FilePath = FolderPath & FileName
+Function NormalizeSize(size As String) As String
+    Dim sizeWithoutSpaces As String
+    sizeWithoutSpaces = Replace(size, " ", "")
+    
+    Select Case sizeWithoutSpaces
+        Case "16GB"
+            NormalizeSize = "16 GB"
+        Case "32GB"
+            NormalizeSize = "32 GB"
+        Case "64GB"
+            NormalizeSize = "64 GB"
+        ' Add more cases as needed
+        Case Else
+            NormalizeSize = size ' Return the original size if no match found
+    End Select
+End Function
 
-    ' Create Acrobat application object
-    Set AcroApp = CreateObject("AcroExch.App")
+Function GetWorksheetBySize(size As String) As Worksheet
+    Dim ws As Worksheet
+    On Error Resume Next
+    Select Case size
+        Case "16 GB"
+            Set ws = ThisWorkbook.Sheets("16 GB USB Cards")
+        Case "32 GB"
+            Set ws = ThisWorkbook.Sheets("32 GB USB Cards")
+        Case "64 GB"
+            Set ws = ThisWorkbook.Sheets("64 GB USB Cards")
+        Case "128 GB"
+            Set ws = ThisWorkbook.Sheets("128 GB USB Cards")
+        Case "256 GB"
+            Set ws = ThisWorkbook.Sheets("256 GB USB Cards")
+        Case Else
+            Set ws = Nothing
+    End Select
+    On Error GoTo 0
+    Set GetWorksheetBySize = ws
+End Function
 
-    ' Create AVDoc object
-    Set AcroAVDoc = CreateObject("AcroExch.AVDoc")
-
-    ' Open the PDF file
-    If AcroAVDoc.Open(FilePath, "") = True Then
-        ' Set the PDDoc object
-        Set AcroPDDoc = AcroAVDoc.GetPDDoc
-
-        ' Get the form fields
-        Set AcroForm = AcroPDDoc.GetJSObject
-
-        ' List of field names (customize this according to your PDF form)
-        FieldNames = Array("FirstName", "LastName", "Email", "PhoneNumber")
-
-        ' List of checkbox field names for Section 1
-        CheckBoxNamesSection1 = Array("CheckA1", "CheckB1", "CheckC1")
-
-        ' List of checkbox field names for Section 2
-        CheckBoxNamesSection2 = Array("CheckA2", "CheckB2", "CheckC2")
-
-        ' Loop through each field name
-        For i = LBound(FieldNames) To UBound(FieldNames)
-            FieldName = FieldNames(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Write the field value to Excel (e.g., Column A for field names, Column B for field values)
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 1).Value = FieldName
-            ThisWorkbook.Sheets("Sheet1").Cells(i + 1, 2).Value = FieldValue
-        Next i
-
-        ' Find the last row to start writing checkboxes
-        LastRow = UBound(FieldNames) + 2
-
-        ' Loop through each checkbox field name in Section 1
-        For i = LBound(CheckBoxNamesSection1) To UBound(CheckBoxNamesSection1)
-            FieldName = CheckBoxNamesSection1(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Determine if the checkbox is checked or not
-            If FieldValue = "Yes" Then
-                ' Write the checkbox name to Excel if it is checked
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 1).Value = FieldName
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 2).Value = "Checked"
-                LastRow = LastRow + 1
-            End If
-        Next i
-
-        ' Add a blank row to separate sections
-        LastRow = LastRow + 1
-
-        ' Loop through each checkbox field name in Section 2
-        For i = LBound(CheckBoxNamesSection2) To UBound(CheckBoxNamesSection2)
-            FieldName = CheckBoxNamesSection2(i)
-            FieldValue = AcroForm.getField(FieldName).value
-
-            ' Determine if the checkbox is checked or not
-            If FieldValue = "Yes" Then
-                ' Write the checkbox name to Excel if it is checked
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 1).Value = FieldName
-                ThisWorkbook.Sheets("Sheet1").Cells(LastRow, 2).Value = "Checked"
-                LastRow = LastRow + 1
-            End If
-        Next i
-
-        ' Close the PDF file
-        AcroAVDoc.Close True
-    Else
-        MsgBox "Failed to open the PDF file.", vbExclamation
-    End If
-
-    ' Close Acrobat application
-    AcroApp.Exit
-    Set AcroAVDoc = Nothing
-    Set AcroPDDoc = Nothing
-    Set AcroApp = Nothing
-End Sub
 
 ```
-
-
-### Explanation:
-
-- **CheckBoxNamesSection1:** Array containing the names of checkboxes in the first section.
-- **CheckBoxNamesSection2:** Array containing the names of checkboxes in the second section.
-- **Writing Checkbox Status to Excel:** The script writes the checkbox names to Excel if they are checked. It separates the two sections with a blank row for clarity.
-
-### Steps to Use:
-
-1. **Identify Checkbox Field Names:** Ensure you know the exact names of the checkbox fields in each section of your PDF.
-2. **Update Field Names:** Update `FieldNames`, `CheckBoxNamesSection1`, and `CheckBoxNamesSection2` arrays with the appropriate field names from your PDF.
-3. **Run the VBA Script:** The script will extract data from both text fields and checkboxes in both sections, and then write the information to the specified cells in the Excel sheet.
-
-By following these steps, the script will handle checkboxes in multiple sections of your PDF form and ensure the extracted data accurately reflects in your Excel sheet, with a clear separation between the sections.
