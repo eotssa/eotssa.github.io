@@ -17,6 +17,14 @@ tags:
 
 ```
 
+#### IF WE OPT TO USE 1 SHEET ONLY
+```
+=IF(ISBLANK([@[Date Taken]]), "NA", 
+IF([@[Type]] = "USB", 
+HYPERLINK("Active\" & YEAR([@[Date Taken]]) & "\" & [@[Size]] & "\" & LEFT([@[Card Number/Serial Number]], FIND(",", [@[Card Number/Serial Number]] & ",")-1), "Open Folder"), 
+HYPERLINK("Active\" & YEAR([@[Date Taken]]) & "\" & [@[Brand]] & " " & [@[Size]] & "\" & LEFT([@[Card Number/Serial Number]], FIND(",", [@[Card Number/Serial Number]] & ",")-1), "Open Folder")))
+
+```
 # PDF to Excel; Just for Cards
 
 ```
@@ -166,7 +174,7 @@ End Function
 ```
 
 
-## Normalizing for Size Sheets Unchanged Excel Sheet
+## Normalizing for Size Sheets Unchanged Excel Sheet (DOJ CARDS ONLY)
 
 ```
 Sub ExtractPDFDataToExcel()
@@ -569,6 +577,5 @@ End Function
 Function FormatRequester(firstName As String, lastName As String) As String
     FormatRequester = UCase(lastName & ", " & firstName)
 End Function
-
-
 ```
+
