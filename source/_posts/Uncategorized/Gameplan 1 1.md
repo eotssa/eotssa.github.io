@@ -167,7 +167,6 @@ End Function
 
 ## Normalizing for Size Sheets
 
-
 ```
 Sub ExtractPDFDataToExcel()
     Dim AcroApp As Object
@@ -236,7 +235,7 @@ Sub ExtractPDFDataToExcel()
         QTY = 0
         
         ' Check and extract each field value safely
-        Requester = GetPDFFieldValue(AcroForm, "First Name") & " " & GetPDFFieldValue(AcroForm, "Last Name")
+        Requester = FormatRequester(GetPDFFieldValue(AcroForm, "First Name"), GetPDFFieldValue(AcroForm, "Last Name"))
         size = NormalizeSize(GetPDFFieldValue(AcroForm, "Size1"))
         CardNumber = GetPDFFieldValue(AcroForm, "DOJ Card NoRow1")
         DateTaken = GetPDFFieldValue(AcroForm, "Date Property Issued")
@@ -354,6 +353,10 @@ Function GetWorksheetBySize(size As String) As Worksheet
     End Select
     On Error GoTo 0
     Set GetWorksheetBySize = ws
+End Function
+
+Function FormatRequester(firstName As String, lastName As String) As String
+    FormatRequester = UCase(lastName & ", " & firstName)
 End Function
 
 
